@@ -1,0 +1,45 @@
+{
+  "preferGlobal": "true",
+  "name": "qslide",
+  "description": "Download nhaccuatui",
+  "version": "0.0.1",
+  "homepage": "https://github.com/kureikain/qslide",
+  "author": {
+    "name": "kureikain",
+    "email": "kureikain@gmail.com",
+    "url": "http://axcoto.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kureikain/qslide.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kureikain/qslide/issues"
+  },
+  "licenses": [
+    {
+      "type": "Custom",
+      "url": "https://github.com/kureikain/qslide/LICENSE"
+    }
+  ],
+  "main": "lib/qslide",
+  "bin": {
+    "qs":"bin/qslide"
+  },
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt nodeunit"
+  },
+  "dependencies": {
+    "grunt": "~0.4.2"
+  },
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.6.4",
+    "grunt-contrib-nodeunit": "~0.2.0",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-coffee": "~0.4.0"
+  },
+  "keywords": ["slide","axcoto","remote control"]
+}
