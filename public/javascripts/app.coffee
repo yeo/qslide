@@ -3,13 +3,12 @@
 define ['jquery-private', 'underscore', 'backbone',  'firebase', 'buzz', 'localStorage', 'bootstrap'],  ($_, _, Backbone, buzz, __Firebase__) ->
   
   Connection = Backbone.Model.extend({})
-  Slide = Backbone.Model.extend({})
 
   AppView = Backbone.View.extend
     tagName: 'div'
     className: 'qcommander'
-    id: 'qcommander'
-    template: _.template '<h4>Token: </h4><img src="<%= bc %>" alt="Waiting for token" />'
+    id: '#qcommander'
+    template: _.template '<div style="text-align: center"><img src="https://chart.googleapis.com/chart?cht=qr&chs=500x500&chl=<%= token%>" alt="Waiting for token" /></div>'
 
     uuid: ()->
       S4 = () ->
@@ -36,28 +35,20 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'buzz', 'localS
       this.showConnectionBoard() 
 
     showConnectionBoard: () ->
+      uuid = this.uuid
+      bc = "https://chart.googleapis.com/chart?chs=600x600&cht=qr&chl=#{code}&choe=UTF-8"
       code = JSON.stringify(
-        token: this.uuid()
+        code: uuid
         count: 12
       )
-      #     https://chart.googleapis.com/chart?chs=450x450&cht=qr&chl={%22token%22:%228058622f-0432-5235-6639-ddef2ac08bae%22,%22count%22:12}&choe=UTF-8
-      code = encodeURI(code)
-      bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=#{code}&choe=UTF-8"
-      @connection = new Connection(
+      connection = new Connection(
+        token: uuid
         code: code
         bc: bc
       )
-      return this.render()
 
     render: ()->
-      this.$el
-          .css('position', 'fixed')
-          .css('text-align', 'center')
-          .css('zIndex', 9999)
-          .css('width', 800)
-          .css('height', 700)
-        
-      this.$el.html(this.template(@connection.attributes))
+      this.$el.html this.template({token: '3sa4'})
       console.log this.$el
       $('body').append this.$el
       return this
@@ -77,7 +68,7 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'buzz', 'localS
   
   class Remote 
     constructor: (@url) ->
-      @driver = {}
+      @driver = nil
       this.setupRemote
     # Based on url, load corresponding remote driver  
     setupRemote: () ->  

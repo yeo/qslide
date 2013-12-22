@@ -1,5 +1,5 @@
 require.config({
-    baseUrl: "//127.0.0.1/javascripts"
+    baseUrl: "//slide.dev/javascripts"
     
     // Libraries
     ,paths: {
@@ -73,6 +73,6 @@ require.config({
 })
 
 require(['app'], function (app) {
-    console.log('sasa');
+    console.log('Start');
     app.init();
 })
