@@ -4,7 +4,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['jquery-private', 'underscore', 'backbone', 'firebase', 'buzz', 'localStorage', 'bootstrap'], function($_, _, Backbone, buzz, __Firebase__) {
+  define(['jquery-private', 'underscore', 'backbone', 'firebase', 'localStorage'], function($_, _, Backbone, __Firebase__) {
     var AppView, Connection, RabbitRemote, Remote, RemoteControlDriver, ScribdRemote, Slide, SlideshareRemote, SpeakerdeskRemote;
     Connection = Backbone.Model.extend({});
     Slide = Backbone.Model.extend({});
@@ -12,7 +12,10 @@
       tagName: 'div',
       className: 'qcommander',
       id: 'qcommander',
-      template: _.template('<h4>Token: </h4><img src="<%= bc %>" alt="Waiting for token" />'),
+      template: _.template('\
+    <h4>More detail help</h4>\
+    <h4>Slideshow Token: <%= code.token %> </h4><img src="<%= bc %>" alt="Waiting for token" />\
+    '),
       uuid: function() {
         var S4;
         S4 = function() {
@@ -46,12 +49,11 @@
       },
       showConnectionBoard: function() {
         var bc, code;
-        code = JSON.stringify({
+        code = {
           token: this.uuid(),
           count: 12
-        });
-        code = encodeURI(code);
-        bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=" + code + "&choe=UTF-8";
+        };
+        bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=" + (encodeURI(JSON.stringify(code))) + "&choe=UTF-8";
         this.connection = new Connection({
           code: code,
           bc: bc
@@ -59,7 +61,7 @@
         return this.render();
       },
       render: function() {
-        this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('width', 800).css('height', 700);
+        this.$el.css('opacity', 0.8).css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('width', 800).css('height', 700).css('left', '50%').css('margin-left', '-350px').css('top', 0).css('background', '#FEE19B').css('color', '#ccc');
         this.$el.html(this.template(this.connection.attributes));
         console.log(this.$el);
         $('body').append(this.$el);

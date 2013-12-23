@@ -1,15 +1,18 @@
 'use strict'
 
-define ['jquery-private', 'underscore', 'backbone',  'firebase', 'buzz', 'localStorage', 'bootstrap'],  ($_, _, Backbone, buzz, __Firebase__) ->
+define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage'],  ($_, _, Backbone,  __Firebase__) ->
   
   Connection = Backbone.Model.extend({})
   Slide = Backbone.Model.extend({})
-
+  
   AppView = Backbone.View.extend
     tagName: 'div'
     className: 'qcommander'
     id: 'qcommander'
-    template: _.template '<h4>Token: </h4><img src="<%= bc %>" alt="Waiting for token" />'
+    template: _.template '
+    <h4>More detail help</h4>
+    <h4>Slideshow Token: <%= code.token %> </h4><img src="<%= bc %>" alt="Waiting for token" />
+    '
 
     uuid: ()->
       S4 = () ->
@@ -36,13 +39,12 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'buzz', 'localS
       this.showConnectionBoard() 
 
     showConnectionBoard: () ->
-      code = JSON.stringify(
+      code =
         token: this.uuid()
         count: 12
-      )
-      #     https://chart.googleapis.com/chart?chs=450x450&cht=qr&chl={%22token%22:%228058622f-0432-5235-6639-ddef2ac08bae%22,%22count%22:12}&choe=UTF-8
-      code = encodeURI(code)
-      bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=#{code}&choe=UTF-8"
+
+      bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=#{encodeURI(JSON.stringify(code))
+}&choe=UTF-8"
       @connection = new Connection(
         code: code
         bc: bc
@@ -51,11 +53,17 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'buzz', 'localS
 
     render: ()->
       this.$el
+          .css('opacity', 0.8)
           .css('position', 'fixed')
           .css('text-align', 'center')
           .css('zIndex', 9999)
           .css('width', 800)
           .css('height', 700)
+          .css('left', '50%')
+          .css('margin-left', '-350px')
+          .css('top', 0)
+          .css('background', '#FEE19B')
+          .css('color', '#ccc')
         
       this.$el.html(this.template(@connection.attributes))
       console.log this.$el
