@@ -16,29 +16,11 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
 
     uuid: ()->
       S4 = () ->
-        return (((1+Math.random())*0x10000)|0).toString(16).substring(1)
-      return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4())
+        #return (((1+Math.random())*0x10000)|0).toString(16).substring(1)
+        return (((1+Math.random())*0x10000)|0).toString(10).substring(1)
+      return "#{S4()}#{S4()}"
 
     initialize: () ->
-      remote = new Remote 'https://speakerdeck.com/addyosmani/automating-front-end-workflow'
-      remoteQueu = new Firebase('https://qcommander.firebaseio-demo.com/command_queues')
-      remoteQueu.limit(200).on 'child_added', (snapshot) ->
-        console.log(snapshot)
-        message = snapshot.val()
-        console.log(message)
-        switch message.cmd
-          when 'next'
-            remote.next
-          when 'prev'
-            remote.previous
-          else
-            console.log "Not implement"
-        #Okay, remove that command
-        r = new Firebase("https://qcommander.firebaseio-demo.com/command_queues/".concat(snapshot.name()))
-        r.remove()
-      this.showConnectionBoard() 
-
-    showConnectionBoard: () ->
       code =
         token: this.uuid()
         count: 12
@@ -49,6 +31,33 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
         code: code
         bc: bc
       )
+      url = window.location
+      remote = new Remote url 
+      #remoteQueu = new Firebase "https://qcommander.firebaseio-demo.com/command_queues/#{window.btoa(url)}"
+      remoteQueu = new Firebase "https://qcommander.firebaseio-demo.com/command_queues/#{@connection.get('code').token}/"
+      remoteQueu.limit(200).on 'child_added', (snapshot) ->
+        console.log(snapshot)
+        message = snapshot.val()
+        console.log(message)
+        switch message.cmd
+          when 'handshake'
+            # decide if we scan allow this
+            if confirm("Allow connection from? #{message.from}")
+              @connection.set('connected_from', message.from)
+              return true
+            end
+          when 'next'
+            remote.next
+          when 'prev'
+            remote.previous
+          else
+            console.log "Not implement"
+        #Okay, remove that command
+        r = new Firebase("https://qcommander.firebaseio-demo.com/command_queues/#{@connection.get('code').token}/".concat(snapshot.name()))
+        r.remove()
+      this.showConnectionBoard() 
+
+    showConnectionBoard: () ->
       return this.render()
 
     render: ()->
@@ -134,3 +143,4 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       appView = new AppView()
   }
   # other stuff
+  # 
