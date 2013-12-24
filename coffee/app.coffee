@@ -22,9 +22,10 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
 
     initialize: () ->
       code =
-        token: this.uuid()
+        token: if localStorage['token']? then localStorage['token'] else this.uuid()
         count: 12
 
+      localStorage['token'] = code.token
       bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=#{encodeURI(JSON.stringify(code))
 }&choe=UTF-8"
       @connection = new Connection(
