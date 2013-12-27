@@ -11,7 +11,7 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
     id: 'qcommander'
     template: _.template '
     <h4>More detail help</h4>
-    <h4>Slideshow Token: <%= code.token %> </h4><img src="<%= bc %>" alt="Waiting for token" />
+    <h4>Slideshow Token: <%= token %> </h4><img src="<%= bc %>" alt="Waiting for token" />
     '
 
     uuid: ()->
@@ -23,19 +23,24 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
     initialize: () ->
       code =
         token: if localStorage['token']? then localStorage['token'] else this.uuid()
-        count: 12
+        url: window.location.href
 
       localStorage['token'] = code.token
       bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=#{encodeURI(JSON.stringify(code))
 }&choe=UTF-8"
-      @connection = new Connection(
-        code: code
-        bc: bc
-      )
-      url = window.location
-      remote = new Remote url 
-      #remoteQueu = new Firebase "https://qcommander.firebaseio-demo.com/command_queues/#{window.btoa(url)}"
-      remoteQueu = new Firebase "https://qcommander.firebaseio-demo.com/command_queues/#{@connection.get('code').token}/"
+      code.bc = bc
+      connection = @connection = new Connection code
+      remote = new Remote code.url
+      baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/#{@connection.get('token')}/"
+      
+      # Push slide info
+      slideInfo = new Firebase "#{baseFirebaseUrl}info/"
+      slideInfo.set code
+
+      remoteQueu = new Firebase "#{baseFirebaseUrl}cmd/"
+      
+      console.log remoteQueu
+      
       remoteQueu.limit(200).on 'child_added', (snapshot) ->
         console.log(snapshot)
         message = snapshot.val()
@@ -43,18 +48,24 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
         switch message.cmd
           when 'handshake'
             # decide if we scan allow this
-            if confirm("Allow connection from? #{message.from}")
+            if localStorage['allow']? and message.from == localStorage['allow']
+              return true
+
+            if confirm("Allow connection from #{message.from}?")
               @connection.set('connected_from', message.from)
+              localStorage['allow'] = message.from
               return true
             end
           when 'next'
             remote.next
           when 'prev'
             remote.previous
+          when 'current'
+            remote.getCurrentSlide
           else
             console.log "Not implement"
         #Okay, remove that command
-        r = new Firebase("https://qcommander.firebaseio-demo.com/command_queues/#{@connection.get('code').token}/".concat(snapshot.name()))
+        r = new Firebase("https://qcommander.firebaseio-demo.com/command_queues/#{connection.get('token')}/".concat(snapshot.name()))
         r.remove()
       this.showConnectionBoard() 
 
@@ -63,7 +74,7 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
 
     render: ()->
       this.$el
-          .css('opacity', 0.8)
+          #.css('opacity', 0.8)
           .css('position', 'fixed')
           .css('text-align', 'center')
           .css('zIndex', 9999)
