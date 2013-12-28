@@ -37,7 +37,7 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       slideInfo = new Firebase "#{baseFirebaseUrl}info/"
       slideInfo.set code
 
-      remoteQueu = new Firebase "#{baseFirebaseUrl}cmd/"
+      remoteQueu = new Firebase "#{baseFirebaseUrl}qc/"
       
       console.log remoteQueu
       
@@ -58,14 +58,14 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
             end
           when 'next'
             remote.next
-          when 'prev'
+          when 'prev', 'previous'
             remote.previous
           when 'current'
             remote.getCurrentSlide
           else
             console.log "Not implement"
         #Okay, remove that command
-        r = new Firebase("https://qcommander.firebaseio-demo.com/command_queues/#{connection.get('token')}/".concat(snapshot.name()))
+        r = new Firebase("https://qcommander.firebaseio-demo.com//#{connection.get('token')}/qc/".concat(snapshot.name()))
         r.remove()
       this.showConnectionBoard() 
 
@@ -109,11 +109,19 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       @driver = {}
       this.setupRemote
     # Based on url, load corresponding remote driver  
-    setupRemote: () ->  
+    setupRemote: () -> 
+      @driver = switch
+        when @url.indexOf('http://speakerdeck.com/') > 1 then new SpeakerdeskRemote
+        when @url.indexOf('http://slideshare.net/') > 1  then new SlideshareRemote
+        when @url.indexOf('http://www.scribd.com/') > 1  then new ScribdRemote
+        else new RabbitRemote
+
     previous: () ->
-      @driver.jump(@driver.currentSlide() - 1)
+      #@driver.jump(@driver.currentSlide() - 1a
+      @driver.previous()
     next: () ->
-      @driver.jump(@driver.currentSlide() + 1)
+      #@driver.jump(@driver.currentSlide() + 1)
+      @driver.next()
     jump: (num) ->
       @driver.jump(num)
 
@@ -129,26 +137,27 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
     jump: () ->
     next: () ->
     previous: () ->
-    getCurrentSlide: () ->
+    getCurrentSlideNumber: () ->
+    getCurrentSlideScreenshot: () ->
 
-  class SpeakerdeskRemote extends Remote
+
+  class SpeakerdeskRemote extends RemoteControlDriver 
     constructor: () ->
       super
+      @container = $('.speakerdeck-iframe ').contents()
+      console? && console.log @container
+
+    getCurrentSlideScreenshot: () ->
+
     next: () ->
-      f = $('.speakerdeck-iframe');
-      console.log($('.controls > a.next'))
-      $('.controls > a.next').click();
-      $('.nav .btnNext').length && $('.nav .btnNext').click()
+      $('.overnav > .next', @container).click()
     previous: () ->
-      f = $('.speakerdeck-iframe');
-      $('.controls > a.prev').click();
-      $('.nav .btnPrevious').length && $('.nav .btnNext').click()
+      $('.overnav > .prev', @container).click()
 
 
-  class SlideshareRemote extends Remote
-  class ScribdRemote extends Remote
-  class RabbitRemote extends Remote
-    
+  class SlideshareRemote extends RemoteControlDriver
+  class ScribdRemote extends RemoteControlDriver
+  class RabbitRemote extends RemoteControlDriver
 
   return {
     init: ()->
