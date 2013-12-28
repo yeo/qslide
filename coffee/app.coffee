@@ -5,11 +5,30 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
   Connection = Backbone.Model.extend({})
   Slide = Backbone.Model.extend({})
   
+  ToggleView = Backbone.View.extend 
+    tagName: 'div'
+    className: 'qslide'
+    id: 'qslideSwitch'
+    template: _.template '<a class="" href="#">Show</a>'
+
+  WelcomeView = Backbone.View.extend   
+    tagName: 'div'
+    className: 'qcommander'
+    id: 'qcommander'
+    template: _.template '
+    <h4 class="js-close-welcome">Close</h4>
+
+    <h4>More detail help</h4>
+    <h4>Slideshow Token: <%= token %> </h4><img src="<%= bc %>" alt="Waiting for token" />
+    '
+
   AppView = Backbone.View.extend
     tagName: 'div'
     className: 'qcommander'
     id: 'qcommander'
     template: _.template '
+    <h4 class="js-close-welcome">Close</h4>
+
     <h4>More detail help</h4>
     <h4>Slideshow Token: <%= token %> </h4><img src="<%= bc %>" alt="Waiting for token" />
     '
@@ -38,36 +57,32 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       slideInfo.set code
 
       remoteQueu = new Firebase "#{baseFirebaseUrl}qc/"
-      
       console.log remoteQueu
       
+      this.showConnectionBoard() 
       remoteQueu.limit(200).on 'child_added', (snapshot) ->
         console.log(snapshot)
         message = snapshot.val()
         console.log(message)
         switch message.cmd
           when 'handshake'
-            # decide if we scan allow this
-            if localStorage['allow']? and message.from == localStorage['allow']
-              return true
+            #if localStorage['allow']? and message.from == localStorage['allow']
+              #return true
 
-            if confirm("Allow connection from #{message.from}?")
-              @connection.set('connected_from', message.from)
+            if confirm("Allow connection from #{message.name}?")
+              connection.set('connected_from', message.from)
               localStorage['allow'] = message.from
-              return true
-            end
           when 'next'
-            remote.next
+            remote.next()
           when 'prev', 'previous'
-            remote.previous
+            remote.previous()
           when 'current'
-            remote.getCurrentSlide
+            remote.getCurrentSlide()
           else
             console.log "Not implement"
         #Okay, remove that command
         r = new Firebase("https://qcommander.firebaseio-demo.com//#{connection.get('token')}/qc/".concat(snapshot.name()))
         r.remove()
-      this.showConnectionBoard() 
 
     showConnectionBoard: () ->
       return this.render()
@@ -92,10 +107,12 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       return this
 
     events:
-      "click #spin": "doPlay"
+      "click .js-close-welcome": 'closeWelcome'
       "hover #spin": "animatePlayButton"
     
-    doPlay: ()-> this.r.spin
+    closeWelcome: ()->
+      console? && console.log 'Close welcome form'
+      this.$el.hide()
 
     animatePlayButton: ()->
         this.playButton.transform
@@ -107,13 +124,13 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
   class Remote 
     constructor: (@url) ->
       @driver = {}
-      this.setupRemote
+      this.setupRemote()
     # Based on url, load corresponding remote driver  
     setupRemote: () -> 
       @driver = switch
-        when @url.indexOf('http://speakerdeck.com/') > 1 then new SpeakerdeskRemote
-        when @url.indexOf('http://slideshare.net/') > 1  then new SlideshareRemote
-        when @url.indexOf('http://www.scribd.com/') > 1  then new ScribdRemote
+        when @url.indexOf('://speakerdeck.com/') > 1 then new SpeakerdeskRemote
+        when @url.indexOf('://slideshare.net/') > 1  then new SlideshareRemote
+        when @url.indexOf('://www.scribd.com/') > 1  then new ScribdRemote
         else new RabbitRemote
 
     previous: () ->
@@ -148,12 +165,12 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       console? && console.log @container
 
     getCurrentSlideScreenshot: () ->
+      $('#player-content-wrapper > #slide_image', @container).prop('src')
 
     next: () ->
-      $('.overnav > .next', @container).click()
+      $('.overnav > .next', @container)[0].click()
     previous: () ->
-      $('.overnav > .prev', @container).click()
-
+      $('.overnav > .prev', @container)[0].click()
 
   class SlideshareRemote extends RemoteControlDriver
   class ScribdRemote extends RemoteControlDriver
