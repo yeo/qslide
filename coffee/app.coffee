@@ -92,6 +92,7 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       this.genUUID()
       
     showConnectionBoard: (uuid) ->
+      that = this
       code =
         token: uuid 
         url: window.location.href
@@ -105,10 +106,11 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       connection.set('bc', bc)
       remote = @remote = new Remote code.url
       baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/#{@connection.get('token')}/"
-      #remote.bind 'transitionSlide', (e) ->  
-        #info = new Firebase("https://qcommander.firebaseio-demo.com/#{connection.get('token')}/info")
-        #info.child('currentSlideUrl').set e.url
-
+       
+      saveCurrentSlide = (data) ->
+        info = new Firebase("https://qcommander.firebaseio-demo.com/#{connection.get('token')}/info")
+        info.child('currentSlideUrl').set data.url
+      
       # Push slide info
       slideInfo = new Firebase "#{baseFirebaseUrl}info/"
       slideInfo.set code
@@ -128,15 +130,15 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
             
             localStorage['allow'] = message.from
             localStorage['device_priority'] = 1
+            that.closeWelcome()
             #if confirm("Allow connection from #{message.name}?")
               #connection.set('connected_from', message.from)
               #localStorage['allow'] = message.from
+             
           when 'next'
-            remote.next()
-            remote.updateCurrentSlide()
+            remote.next(saveCurrentSlide)
           when 'prev', 'previous'
-            remote.previous()
-            remote.updateCurrentSlide()
+            remote.previous(saveCurrentSlide)
           else
             console.log "Not implement"
         #Okay, remove that command
@@ -144,7 +146,6 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
         r.remove()
 
       return this.render()
-    
 
     render: ()->
       this.$el
@@ -197,13 +198,15 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       url = @driver.getCurrentSlideScreenshot()
       console.log url
 
-    previous: () ->
+    previous: (cb) ->
       #@driver.jump(@driver.currentSlide() - 1a
       @driver.previous()
-      this.trigger('transitionSLide', {url: this.getCurrentSlide()})
-    next: () ->
+      cb({url: @driver.getCurrentSlideScreenshot()})
+      #this.trigger('transitionSLide', {url: this.getCurrentSlide()})
+    next: (cb) ->
       #@driver.jump(@driver.currentSlide() + 1)
       @driver.next()
+      cb({url: @driver.getCurrentSlideScreenshot()})
     jump: (num) ->
       @driver.jump(num)
 
