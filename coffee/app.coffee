@@ -234,7 +234,11 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       console? && console.log @container
 
     getCurrentSlideNumber: () ->
-      $('.goToSlideLabel > input', @container).val()
+      current_url = $('#player-content-wrapper > #slide_image', @container).prop('src')
+      r = /\/slide_([0-9]+)\./gi
+      if m = r.exec(current_url)
+        return m[1]
+      return false 
 
     getCurrentSlideScreenshot: () ->
       $('#player-content-wrapper > #slide_image', @container).prop('src')
