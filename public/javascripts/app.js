@@ -5,40 +5,111 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['jquery-private', 'underscore', 'backbone', 'firebase', 'localStorage'], function($_, _, Backbone, __Firebase__) {
-    var AppView, Connection, RabbitRemote, Remote, RemoteControlDriver, ScribdRemote, Slide, SlideshareRemote, SpeakerdeskRemote;
+    var AppView, Connection, RabbitRemote, Remote, RemoteControlDriver, ScribdRemote, Slide, SlideshareRemote, SpeakerdeskRemote, ToggleView, WelcomeView;
     Connection = Backbone.Model.extend({});
     Slide = Backbone.Model.extend({});
+    ToggleView = Backbone.View.extend({
+      tagName: 'div',
+      className: 'qslide',
+      id: 'qslideSwitch',
+      template: _.template('<a class="js-toggle-board" href="#">Show</a>'),
+      initialize: function(options) {
+        var k, v;
+        if (options != null) {
+          for (k in options) {
+            v = options[k];
+            this[k] = v;
+          }
+        }
+        return this.render();
+      },
+      events: {
+        "click .js-toggle-board": 'toggleBoard'
+      },
+      render: function() {
+        this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('width', 30).css('height', 10).css('left', 10).css('bottom', 30).css('background', '#FEE19B').css('color', '#ccc');
+        this.$el.html(this.template());
+        console.log(this.$el);
+        $('body').append(this.$el);
+        return this;
+      },
+      toggleBoard: function() {
+        return $('#qcommander').show();
+      }
+    });
+    WelcomeView = Backbone.View.extend({
+      tagName: 'div',
+      className: 'qcommander',
+      id: 'qcommander',
+      template: _.template('\
+    <h4 class="js-close-welcome">Close</h4>\
+\
+    <h4>More detail help</h4>\
+    <h4>Slideshow Token: <%= token %> </h4><img src="<%= bc %>" alt="Waiting for token" />\
+    ')
+    });
     AppView = Backbone.View.extend({
       tagName: 'div',
       className: 'qcommander',
       id: 'qcommander',
       template: _.template('\
+    <h4 class="js-close-welcome">Close</h4>\
+\
     <h4>More detail help</h4>\
     <h4>Slideshow Token: <%= token %> </h4><img src="<%= bc %>" alt="Waiting for token" />\
     '),
       uuid: function() {
         var S4;
         S4 = function() {
-          return (((1 + Math.random()) * 0x10000) | 0).toString(10).substring(1);
+          return (((1 + Math.random()) * 0x1000) | 0).toString(10).substring(1);
         };
-        return "" + (S4()) + (S4());
+        return "" + (S4());
+      },
+      genUUID: function() {
+        var rootRef, that, uuid;
+        that = this;
+        if (localStorage['token'] != null) {
+          uuid = localStorage['token'];
+          return this.showConnectionBoard(uuid);
+        }
+        uuid = this.uuid();
+        rootRef = new Firebase("https://qcommander.firebaseio-demo.com/");
+        return rootRef.child(uuid).on('value', function(snapshot) {
+          if (snapshot.val() != null) {
+            return that.genUUID();
+          }
+          return that.showConnectionBoard(uuid);
+        });
       },
       initialize: function() {
-        var baseFirebaseUrl, bc, code, connection, remote, remoteQueu, slideInfo;
+        this.isConnected = false;
+        this.toggleView = new ToggleView({
+          mainBoard: this
+        });
+        return this.genUUID();
+      },
+      showConnectionBoard: function(uuid) {
+        var baseFirebaseUrl, bc, code, connection, remote, remoteQueu, saveCurrentSlide, slideInfo, that;
+        that = this;
         code = {
-          token: localStorage['token'] != null ? localStorage['token'] : this.uuid(),
-          url: window.location.href
+          token: uuid,
+          url: window.location.href,
+          title: $(document).prop('title')
         };
         localStorage['token'] = code.token;
         bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=" + (encodeURI(JSON.stringify(code))) + "&choe=UTF-8";
-        code.bc = bc;
         connection = this.connection = new Connection(code);
-        remote = new Remote(code.url);
+        connection.set('bc', bc);
+        remote = this.remote = new Remote(code.url);
         baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/" + (this.connection.get('token')) + "/";
+        saveCurrentSlide = function(data) {
+          var info;
+          info = new Firebase("https://qcommander.firebaseio-demo.com/" + (connection.get('token')) + "/info");
+          return info.child('currentSlideUrl').set(data.url);
+        };
         slideInfo = new Firebase("" + baseFirebaseUrl + "info/");
         slideInfo.set(code);
-        remoteQueu = new Firebase("" + baseFirebaseUrl + "cmd/");
-        console.log(remoteQueu);
+        remoteQueu = new Firebase("" + baseFirebaseUrl + "qc/");
         remoteQueu.limit(200).on('child_added', function(snapshot) {
           var message, r;
           console.log(snapshot);
@@ -46,35 +117,27 @@
           console.log(message);
           switch (message.cmd) {
             case 'handshake':
-              if ((localStorage['allow'] != null) && message.from === localStorage['allow']) {
-                return true;
-              }
-              if (confirm("Allow connection from " + message.from + "?")) {
-                this.connection.set('connected_from', message.from);
+              if (!that.isConnected) {
                 localStorage['allow'] = message.from;
-                return true;
+                localStorage['device_priority'] = 1;
+                that.closeWelcome();
+              } else {
+                (typeof console !== "undefined" && console !== null) && console.log("Connected before from " + localStorage['allow']);
               }
-              end;
-
               break;
             case 'next':
-              remote.next;
+              remote.next(saveCurrentSlide);
               break;
             case 'prev':
-              remote.previous;
-              break;
-            case 'current':
-              remote.getCurrentSlide;
+            case 'previous':
+              remote.previous(saveCurrentSlide);
               break;
             default:
               console.log("Not implement");
           }
-          r = new Firebase(("https://qcommander.firebaseio-demo.com/command_queues/" + (connection.get('token')) + "/").concat(snapshot.name()));
+          r = new Firebase(("https://qcommander.firebaseio-demo.com//" + (connection.get('token')) + "/qc/").concat(snapshot.name()));
           return r.remove();
         });
-        return this.showConnectionBoard();
-      },
-      showConnectionBoard: function() {
         return this.render();
       },
       render: function() {
@@ -85,11 +148,12 @@
         return this;
       },
       events: {
-        "click #spin": "doPlay",
+        "click .js-close-welcome": 'closeWelcome',
         "hover #spin": "animatePlayButton"
       },
-      doPlay: function() {
-        return this.r.spin;
+      closeWelcome: function() {
+        (typeof console !== "undefined" && console !== null) && console.log('Close welcome form');
+        return this.$el.hide();
       },
       animatePlayButton: function() {
         return this.playButton.transform({
@@ -105,17 +169,42 @@
       function Remote(url) {
         this.url = url;
         this.driver = {};
-        this.setupRemote;
+        this.setupRemote();
       }
 
-      Remote.prototype.setupRemote = function() {};
-
-      Remote.prototype.previous = function() {
-        return this.driver.jump(this.driver.currentSlide() - 1);
+      Remote.prototype.setupRemote = function() {
+        return this.driver = (function() {
+          switch (false) {
+            case !(this.url.indexOf('speakerdeck.com/') > 1):
+              return new SpeakerdeskRemote;
+            case !(this.url.indexOf('slideshare.net/') > 1):
+              return new SlideshareRemote;
+            case !(this.url.indexOf('scribd.com/') > 1):
+              return new ScribdRemote;
+            default:
+              return new RabbitRemote;
+          }
+        }).call(this);
       };
 
-      Remote.prototype.next = function() {
-        return this.driver.jump(this.driver.currentSlide() + 1);
+      Remote.prototype.getCurrentSlide = function() {
+        var url;
+        url = this.driver.getCurrentSlideScreenshot();
+        return console.log(url);
+      };
+
+      Remote.prototype.previous = function(cb) {
+        this.driver.previous();
+        return cb({
+          url: this.driver.getCurrentSlideScreenshot()
+        });
+      };
+
+      Remote.prototype.next = function(cb) {
+        this.driver.next();
+        return cb({
+          url: this.driver.getCurrentSlideScreenshot()
+        });
       };
 
       Remote.prototype.jump = function(num) {
@@ -140,7 +229,9 @@
 
       RemoteControlDriver.prototype.previous = function() {};
 
-      RemoteControlDriver.prototype.getCurrentSlide = function() {};
+      RemoteControlDriver.prototype.getCurrentSlideNumber = function() {};
+
+      RemoteControlDriver.prototype.getCurrentSlideScreenshot = function() {};
 
       return RemoteControlDriver;
 
@@ -151,37 +242,76 @@
 
       function SpeakerdeskRemote() {
         SpeakerdeskRemote.__super__.constructor.apply(this, arguments);
+        this.container = $('.speakerdeck-iframe ').contents();
+        (typeof console !== "undefined" && console !== null) && console.log(this.container);
       }
 
+      SpeakerdeskRemote.prototype.getCurrentSlideNumber = function() {
+        var current_url, m, r;
+        current_url = $('#player-content-wrapper > #slide_image', this.container).prop('src');
+        r = /\/slide_([0-9]+)\./gi;
+        if (m = r.exec(current_url)) {
+          return m[1];
+        }
+        return false;
+      };
+
+      SpeakerdeskRemote.prototype.getCurrentSlideScreenshot = function() {
+        return $('#player-content-wrapper > #slide_image', this.container).prop('src');
+      };
+
+      SpeakerdeskRemote.prototype.first = function() {};
+
+      SpeakerdeskRemote.prototype.last = function() {};
+
       SpeakerdeskRemote.prototype.next = function() {
-        var f;
-        f = $('.speakerdeck-iframe');
-        console.log($('.controls > a.next'));
-        $('.controls > a.next').click();
-        return $('.nav .btnNext').length && $('.nav .btnNext').click();
+        return $('.overnav > .next', this.container)[0].click();
       };
 
       SpeakerdeskRemote.prototype.previous = function() {
-        var f;
-        f = $('.speakerdeck-iframe');
-        $('.controls > a.prev').click();
-        return $('.nav .btnPrevious').length && $('.nav .btnNext').click();
+        return $('.overnav > .prev', this.container)[0].click();
       };
 
       return SpeakerdeskRemote;
 
-    })(Remote);
+    })(RemoteControlDriver);
     SlideshareRemote = (function(_super) {
 
       __extends(SlideshareRemote, _super);
 
       function SlideshareRemote() {
-        return SlideshareRemote.__super__.constructor.apply(this, arguments);
+        SlideshareRemote.__super__.constructor.apply(this, arguments);
+        this.container = $('#svPlayerId');
+        (typeof console !== "undefined" && console !== null) && console.log(this.container);
       }
+
+      SlideshareRemote.prototype.getCurrentSlideNumber = function() {
+        return $('.goToSlideLabel > input', this.container).val();
+      };
+
+      SlideshareRemote.prototype.getCurrentSlideScreenshot = function() {
+        return $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').prop('src');
+      };
+
+      SlideshareRemote.prototype.first = function() {
+        return $('.nav > .btnFirst', this.container)[0].click();
+      };
+
+      SlideshareRemote.prototype.last = function() {
+        return $('.nav > .btnLast', this.container)[0].click();
+      };
+
+      SlideshareRemote.prototype.next = function() {
+        return $('.nav > .btnNext', this.container)[0].click();
+      };
+
+      SlideshareRemote.prototype.previous = function() {
+        return $('.nav > .btnPrevious', this.container)[0].click();
+      };
 
       return SlideshareRemote;
 
-    })(Remote);
+    })(RemoteControlDriver);
     ScribdRemote = (function(_super) {
 
       __extends(ScribdRemote, _super);
@@ -192,7 +322,7 @@
 
       return ScribdRemote;
 
-    })(Remote);
+    })(RemoteControlDriver);
     RabbitRemote = (function(_super) {
 
       __extends(RabbitRemote, _super);
@@ -203,7 +333,7 @@
 
       return RabbitRemote;
 
-    })(Remote);
+    })(RemoteControlDriver);
     return {
       init: function() {
         var appView;

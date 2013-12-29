@@ -85,6 +85,7 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       )
     
     initialize: () ->
+      @isConnected = false
       @toggleView = new ToggleView(
         mainBoard: this
       )
@@ -96,6 +97,7 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       code =
         token: uuid 
         url: window.location.href
+        title: $(document).prop('title')
 
       localStorage['token'] = code.token
 
@@ -127,14 +129,15 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
             # First time connection, just alow it. make it simple
             # The second connection coming, let iOS handle it
             # if locaStprage['allow']?
-            
-            localStorage['allow'] = message.from
-            localStorage['device_priority'] = 1
-            that.closeWelcome()
+            if !that.isConnected
+              localStorage['allow'] = message.from
+              localStorage['device_priority'] = 1
+              that.closeWelcome()
             #if confirm("Allow connection from #{message.name}?")
               #connection.set('connected_from', message.from)
               #localStorage['allow'] = message.from
-             
+            else 
+              console? && console.log("Connected before from #{localStorage['allow']}")
           when 'next'
             remote.next(saveCurrentSlide)
           when 'prev', 'previous'
