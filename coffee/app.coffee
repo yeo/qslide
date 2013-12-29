@@ -189,9 +189,9 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
     # Based on url, load corresponding remote driver  
     setupRemote: () -> 
       @driver = switch
-        when @url.indexOf('://speakerdeck.com/') > 1 then new SpeakerdeskRemote
-        when @url.indexOf('://slideshare.net/') > 1  then new SlideshareRemote
-        when @url.indexOf('://www.scribd.com/') > 1  then new ScribdRemote
+        when @url.indexOf('speakerdeck.com/') > 1 then new SpeakerdeskRemote
+        when @url.indexOf('slideshare.net/') > 1  then new SlideshareRemote
+        when @url.indexOf('scribd.com/') > 1  then new ScribdRemote
         else new RabbitRemote
 
     getCurrentSlide: () ->
@@ -229,12 +229,18 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
   class SpeakerdeskRemote extends RemoteControlDriver 
     constructor: () ->
       super
+      # The player is put inside a iframe so, let get its contents
       @container = $('.speakerdeck-iframe ').contents()
       console? && console.log @container
 
+    getCurrentSlideNumber: () ->
+      $('.goToSlideLabel > input', @container).val()
+
     getCurrentSlideScreenshot: () ->
       $('#player-content-wrapper > #slide_image', @container).prop('src')
-
+    
+    first: () ->
+    last: () ->
     next: () ->
       $('.overnav > .next', @container)[0].click()
     previous: () ->
@@ -243,16 +249,23 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
   class SlideshareRemote extends RemoteControlDriver
     constructor: () ->
       super
-      @container = $('.speakerdeck-iframe ').contents()
+      @container = $('#svPlayerId') 
       console? && console.log @container
+    
+    getCurrentSlideNumber: () ->
+      $('.goToSlideLabel > input', @container).val()
 
     getCurrentSlideScreenshot: () ->
-      $('#player-content-wrapper > #slide_image', @container).prop('src')
+      $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').prop('src')
 
+    first: () ->
+      $('.nav > .btnFirst', @container)[0].click()
+    last: () ->
+      $('.nav > .btnLast', @container)[0].click()
     next: () ->
-      $('.overnav > .next', @container)[0].click()
+      $('.nav > .btnNext', @container)[0].click()
     previous: () ->
-      $('.overnav > .prev', @container)[0].click()
+      $('.nav > .btnPrevious', @container)[0].click()
 
   class ScribdRemote extends RemoteControlDriver
   class RabbitRemote extends RemoteControlDriver
