@@ -102,7 +102,16 @@
         code = {
           token: uuid,
           url: window.location.href,
-          title: $(document).prop('title')
+          title: $(document).prop('title'),
+          provider: window.location.host,
+          author: (function() {
+            switch (false) {
+              case !window.location.host.indexOf('speakerdeck.com'):
+                return $('.title .h-author-name').html();
+              case !window.location.host.indexOf('slideshare.net'):
+                return $('#talk-details h2 a').html();
+            }
+          })()
         };
         localStorage['token'] = code.token;
         bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=" + (encodeURI(JSON.stringify(code))) + "&choe=UTF-8";

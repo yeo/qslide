@@ -104,6 +104,10 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
         token: uuid 
         url: window.location.href
         title: $(document).prop('title')
+        provider: window.location.host
+        author: switch 
+          when window.location.host.indexOf('speakerdeck.com') then   $('.title .h-author-name').html()
+          when window.location.host.indexOf('slideshare.net')  then   $('#talk-details h2 a').html()
 
       localStorage['token'] = code.token
 
