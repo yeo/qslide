@@ -6,7 +6,15 @@
 
   define(['jquery-private', 'underscore', 'backbone', 'firebase', 'localStorage'], function($_, _, Backbone, __Firebase__) {
     var AppView, Connection, RabbitRemote, Remote, RemoteControlDriver, ScribdRemote, Slide, SlideshareRemote, SpeakerdeskRemote, ToggleView, WelcomeView;
-    Connection = Backbone.Model.extend({});
+    Connection = Backbone.Model.extend({
+      defaults: {
+        from: 'unknow'
+      },
+      initialize: function() {
+        console && console.log("Start a connection");
+        return this.on('change:from', function(model) {});
+      }
+    });
     Slide = Backbone.Model.extend({});
     ToggleView = Backbone.View.extend({
       tagName: 'div',

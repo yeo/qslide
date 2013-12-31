@@ -2,7 +2,13 @@
 
 define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage'],  ($_, _, Backbone,  __Firebase__) ->
   
-  Connection = Backbone.Model.extend({})
+  Connection = Backbone.Model.extend
+    defaults: 
+      from: 'unknow'
+    initialize: () ->
+      console && console.log "Start a connection"
+      this.on 'change:from', (model) ->
+
   Slide = Backbone.Model.extend({})
  
 
