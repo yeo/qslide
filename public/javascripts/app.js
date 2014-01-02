@@ -126,7 +126,7 @@
           case 'handshake':
             if (!this.isConnected) {
               localStorage['allow'] = message.from;
-              localStorage['at'] = new Date.getTime();
+              localStorage['at'] = new Date().getTime();
               localStorage['device_priority'] = 1;
               return this.closeWelcome();
             } else {
@@ -173,7 +173,7 @@
         this.queue.url = "" + baseFirebaseUrl + "qc/";
         console.log(this.queue);
         slideInfo = new Firebase("" + baseFirebaseUrl + "info/");
-        slideInfo.set(code);
+        slideInfo.set(this.connection.toJSON());
         this.remoteQueu = new Firebase("" + baseFirebaseUrl + "qc/");
         this.remoteQueu.limit(200).on('child_added', function(snapshot) {
           var message;
@@ -303,7 +303,7 @@
       }
 
       SpeakerdeskRemote.prototype.getAuthor = function() {
-        return $('.title .h-author-name').html();
+        return $('#talk-details h2 a').html();
       };
 
       SpeakerdeskRemote.prototype.getCurrentSlideNumber = function() {
@@ -346,7 +346,7 @@
       }
 
       SlideshareRemote.prototype.getAuthor = function() {
-        return $('#talk-details h2 a').html();
+        return $('.title .h-author-name').html();
       };
 
       SlideshareRemote.prototype.getCurrentSlideNumber = function() {

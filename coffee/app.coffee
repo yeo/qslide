@@ -130,7 +130,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
           # if locaStprage['allow']?
           if !this.isConnected
             localStorage['allow'] = message.from
-            localStorage['at'] = new Date.getTime()
+            localStorage['at'] = new Date().getTime()
             localStorage['device_priority'] = 1
             this.closeWelcome()
           #if confirm("Allow connection from #{message.name}?")
@@ -182,7 +182,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
      
       # Push slide info
       slideInfo = new Firebase "#{baseFirebaseUrl}info/"
-      slideInfo.set code
+      slideInfo.set @connection.toJSON()
 
       @remoteQueu = new Firebase "#{baseFirebaseUrl}qc/"
       @remoteQueu.limit(200).on 'child_added', (snapshot) ->
@@ -288,7 +288,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       console? && console.log @container
 
     getAuthor: () ->
-      $('.title .h-author-name').html()
+      $('#talk-details h2 a').html()
           #when window.location.host.indexOf('slideshare.net')  then   $('#talk-details h2 a').html()
 
     getCurrentSlideNumber: () ->
@@ -315,7 +315,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       console? && console.log @container
     
     getAuthor: () ->
-      $('#talk-details h2 a').html()
+      $('.title .h-author-name').html()
 
     getCurrentSlideNumber: () ->
       $('.goToSlideLabel > input', @container).val()
