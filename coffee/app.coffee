@@ -1,7 +1,6 @@
 'use strict'
 
 define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localStorage'],  ($_, _, Backbone, sha1, __Firebase__) ->
-  console.log sha1 
   Connection = Backbone.Model.extend
     defaults: 
       from: 'unknow'
@@ -14,8 +13,10 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
   Command = Backbone.Model.extend({
     initialize: () ->
       console.log 'New command'
-    remove: () ->
-      this.destroy()
+    #remove: () ->
+      #this.destroy()
+    destroy: () ->
+
   })
 
   CommandQueue = Backbone.Collection.extend({
@@ -50,13 +51,11 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
           .css('color', '#ccc')
         
       this.$el.html(this.template())
-      console.log this.$el
       $('body').append this.$el
       return this
     
     toggleBoard: () ->
       $('#qcommander').show()
-
 
   WelcomeView = Backbone.View.extend   
     tagName: 'div'
@@ -79,18 +78,19 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
     <h4>More detail help</h4>
     <h4>Slideshow Token: <%= token %> </h4><img src="<%= bc %>" alt="Waiting for token" />
     '
-
     uuid: ()->
       S4 = () ->
-        #return (((1+Math.random())*0x10000)|0).toString(16).substring(1)
-        return ( ((1+Math.random()) * 0x1000) | 0 ).toString(10).substring(1)
-      return "#{sha1(S4()+ new Date().getTime())}"
+        return (((1+Math.random())*0x10000)|0).toString(16).substring(1)
+      return "#{sha1(S4()+ new Date().getTime())}".substr(0, 6)
     
     # Generate URl. RUn showConnectionBoard whe finish
     genUUID: () ->
-      # @TODO Store token for 8 hours only
       that = this
       if localStorage['token']?
+        #if (new Date().getTime() - localStorage['at']) / 1000 / 60  > 5 
+          ## we only keep it for 8 hours
+          #localStorage = null
+        #else 
         uuid = localStorage['token']  
         return this.showConnectionBoard(uuid) 
 
@@ -119,6 +119,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
         model.destroy()
       this.genUUID()
     
+    # Exec a command from queue.
     exec: (model) ->
       message = model.toJSON()
       switch message.cmd
@@ -148,7 +149,11 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
             ).bind this  
           )    
         when 'prev', 'previous'
-          @remote.previous(this.saveCurrentSlide)
+          @remote.previous(
+            ((data) ->
+              this.saveCurrentSlide(data)
+            ).bind this  
+          )
         else
           console.log "Not implement"
       #connection.re
@@ -166,7 +171,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
         url: window.location.href
         title: $(document).prop('title')
         provider: window.location.host
-        
+         
       localStorage['token'] = code.token
       bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=#{encodeURI(JSON.stringify(code))
 }&choe=UTF-8"
@@ -175,6 +180,8 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       @connection.set('bc', bc)
       @remote = new Remote code.url
       @connection.set 'author', @remote.getAuthor()
+      @connection.set 'currentSlideUrl', @remote.driver.getCurrentSlideScreenshot() 
+      @connection.set 'currentSlideNumber', @remote.driver.getCurrentSlideNumber() 
 
       baseFirebaseUrl = @baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/#{@connection.get('token')}/"
       @queue.url = "#{baseFirebaseUrl}qc/"
@@ -295,7 +302,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       current_url = $('#player-content-wrapper > #slide_image', @container).prop('src')
       r = /\/slide_([0-9]+)\./gi
       if m = r.exec(current_url)
-        return m[1]
+        return 1 + parseInt(m[1])
       return false 
 
     getCurrentSlideScreenshot: () ->
@@ -318,7 +325,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       $('.title .h-author-name').html()
 
     getCurrentSlideNumber: () ->
-      $('.goToSlideLabel > input', @container).val()
+      1 + parseInt($('.goToSlideLabel > input', @container).val())
 
     getCurrentSlideScreenshot: () ->
       $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').prop('src')
@@ -339,6 +346,4 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
     init: ()->
       appView = new AppView()
   }
-  # other stuff
-  # 
- 
+  # RequireJS 

@@ -6,7 +6,6 @@
 
   define(['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localStorage'], function($_, _, Backbone, sha1, __Firebase__) {
     var AppView, Command, CommandQueue, Connection, RabbitRemote, Remote, RemoteControlDriver, ScribdRemote, Slide, SlideshareRemote, SpeakerdeskRemote, ToggleView, WelcomeView;
-    console.log(sha1);
     Connection = Backbone.Model.extend({
       defaults: {
         from: 'unknow'
@@ -21,9 +20,7 @@
       initialize: function() {
         return console.log('New command');
       },
-      remove: function() {
-        return this.destroy();
-      }
+      destroy: function() {}
     });
     CommandQueue = Backbone.Collection.extend({
       model: Command
@@ -49,7 +46,6 @@
       render: function() {
         this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('width', 30).css('height', 10).css('left', 10).css('bottom', 30).css('background', '#FEE19B').css('color', '#ccc');
         this.$el.html(this.template());
-        console.log(this.$el);
         $('body').append(this.$el);
         return this;
       },
@@ -81,9 +77,9 @@
       uuid: function() {
         var S4;
         S4 = function() {
-          return (((1 + Math.random()) * 0x1000) | 0).toString(10).substring(1);
+          return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
         };
-        return "" + (sha1(S4() + new Date().getTime()));
+        return ("" + (sha1(S4() + new Date().getTime()))).substr(0, 6);
       },
       genUUID: function() {
         var rootRef, that, uuid;
@@ -143,7 +139,9 @@
             }).bind(this));
           case 'prev':
           case 'previous':
-            return this.remote.previous(this.saveCurrentSlide);
+            return this.remote.previous((function(data) {
+              return this.saveCurrentSlide(data);
+            }).bind(this));
           default:
             return console.log("Not implement");
         }
@@ -169,6 +167,8 @@
         this.connection.set('bc', bc);
         this.remote = new Remote(code.url);
         this.connection.set('author', this.remote.getAuthor());
+        this.connection.set('currentSlideUrl', this.remote.driver.getCurrentSlideScreenshot());
+        this.connection.set('currentSlideNumber', this.remote.driver.getCurrentSlideNumber());
         baseFirebaseUrl = this.baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/" + (this.connection.get('token')) + "/";
         this.queue.url = "" + baseFirebaseUrl + "qc/";
         console.log(this.queue);
@@ -311,7 +311,7 @@
         current_url = $('#player-content-wrapper > #slide_image', this.container).prop('src');
         r = /\/slide_([0-9]+)\./gi;
         if (m = r.exec(current_url)) {
-          return m[1];
+          return 1 + parseInt(m[1]);
         }
         return false;
       };
@@ -350,7 +350,7 @@
       };
 
       SlideshareRemote.prototype.getCurrentSlideNumber = function() {
-        return $('.goToSlideLabel > input', this.container).val();
+        return 1 + parseInt($('.goToSlideLabel > input', this.container).val());
       };
 
       SlideshareRemote.prototype.getCurrentSlideScreenshot = function() {
