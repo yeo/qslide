@@ -4,8 +4,9 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['jquery-private', 'underscore', 'backbone', 'firebase', 'localStorage'], function($_, _, Backbone, __Firebase__) {
-    var AppView, Connection, RabbitRemote, Remote, RemoteControlDriver, ScribdRemote, Slide, SlideshareRemote, SpeakerdeskRemote, ToggleView, WelcomeView;
+  define(['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localStorage'], function($_, _, Backbone, sha1, __Firebase__) {
+    var AppView, Command, CommandQueue, Connection, RabbitRemote, Remote, RemoteControlDriver, ScribdRemote, Slide, SlideshareRemote, SpeakerdeskRemote, ToggleView, WelcomeView;
+    console.log(sha1);
     Connection = Backbone.Model.extend({
       defaults: {
         from: 'unknow'
@@ -16,6 +17,17 @@
       }
     });
     Slide = Backbone.Model.extend({});
+    Command = Backbone.Model.extend({
+      initialize: function() {
+        return console.log('New command');
+      },
+      remove: function() {
+        return this.destroy();
+      }
+    });
+    CommandQueue = Backbone.Collection.extend({
+      model: Command
+    });
     ToggleView = Backbone.View.extend({
       tagName: 'div',
       className: 'qslide',
@@ -71,7 +83,7 @@
         S4 = function() {
           return (((1 + Math.random()) * 0x1000) | 0).toString(10).substring(1);
         };
-        return "" + (S4());
+        return "" + (sha1(S4() + new Date().getTime()));
       },
       genUUID: function() {
         var rootRef, that, uuid;
@@ -90,70 +102,87 @@
         });
       },
       initialize: function() {
+        var that;
         this.isConnected = false;
         this.toggleView = new ToggleView({
           mainBoard: this
         });
+        this.queue = new CommandQueue();
+        that = this;
+        this.queue.on('add', function(model) {
+          var r;
+          that.exec(model);
+          (typeof console !== "undefined" && console !== null) && console.log("" + this.url + (model.get('name')));
+          r = new Firebase("" + this.url + (model.get('name')));
+          r.remove();
+          return model.destroy();
+        });
         return this.genUUID();
       },
+      exec: function(model) {
+        var message;
+        message = model.toJSON();
+        switch (message.cmd) {
+          case 'handshake':
+            if (!this.isConnected) {
+              localStorage['allow'] = message.from;
+              localStorage['at'] = new Date.getTime();
+              localStorage['device_priority'] = 1;
+              return this.closeWelcome();
+            } else {
+              if (message.from === localStorage['allow']) {
+                return (typeof console !== "undefined" && console !== null) && console.log("Reconnect");
+              } else {
+                return (typeof console !== "undefined" && console !== null) && console.log("Connected before from " + localStorage['allow']);
+              }
+            }
+            break;
+          case 'next':
+            return this.remote.next((function(data) {
+              return this.saveCurrentSlide(data);
+            }).bind(this));
+          case 'prev':
+          case 'previous':
+            return this.remote.previous(this.saveCurrentSlide);
+          default:
+            return console.log("Not implement");
+        }
+      },
+      saveCurrentSlide: function(data) {
+        var info;
+        console.log(this);
+        info = new Firebase("https://qcommander.firebaseio-demo.com/" + (this.connection.get('token')) + "/info");
+        return info.child('currentSlideUrl').set(data.url);
+      },
       showConnectionBoard: function(uuid) {
-        var baseFirebaseUrl, bc, code, connection, remote, remoteQueu, saveCurrentSlide, slideInfo, that;
+        var baseFirebaseUrl, bc, code, slideInfo, that;
         that = this;
         code = {
           token: uuid,
           url: window.location.href,
           title: $(document).prop('title'),
-          provider: window.location.host,
-          author: (function() {
-            switch (false) {
-              case !window.location.host.indexOf('speakerdeck.com'):
-                return $('.title .h-author-name').html();
-              case !window.location.host.indexOf('slideshare.net'):
-                return $('#talk-details h2 a').html();
-            }
-          })()
+          provider: window.location.host
         };
         localStorage['token'] = code.token;
         bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=" + (encodeURI(JSON.stringify(code))) + "&choe=UTF-8";
-        connection = this.connection = new Connection(code);
-        connection.set('bc', bc);
-        remote = this.remote = new Remote(code.url);
-        baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/" + (this.connection.get('token')) + "/";
-        saveCurrentSlide = function(data) {
-          var info;
-          info = new Firebase("https://qcommander.firebaseio-demo.com/" + (connection.get('token')) + "/info");
-          return info.child('currentSlideUrl').set(data.url);
-        };
+        this.connection = new Connection(code);
+        this.connection.set('bc', bc);
+        this.remote = new Remote(code.url);
+        this.connection.set('author', this.remote.getAuthor());
+        baseFirebaseUrl = this.baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/" + (this.connection.get('token')) + "/";
+        this.queue.url = "" + baseFirebaseUrl + "qc/";
+        console.log(this.queue);
         slideInfo = new Firebase("" + baseFirebaseUrl + "info/");
         slideInfo.set(code);
-        remoteQueu = new Firebase("" + baseFirebaseUrl + "qc/");
-        remoteQueu.limit(200).on('child_added', function(snapshot) {
-          var message, r;
-          console.log(snapshot);
+        this.remoteQueu = new Firebase("" + baseFirebaseUrl + "qc/");
+        this.remoteQueu.limit(200).on('child_added', function(snapshot) {
+          var message;
           message = snapshot.val();
-          console.log(message);
-          switch (message.cmd) {
-            case 'handshake':
-              if (!that.isConnected) {
-                localStorage['allow'] = message.from;
-                localStorage['device_priority'] = 1;
-                that.closeWelcome();
-              } else {
-                (typeof console !== "undefined" && console !== null) && console.log("Connected before from " + localStorage['allow']);
-              }
-              break;
-            case 'next':
-              remote.next(saveCurrentSlide);
-              break;
-            case 'prev':
-            case 'previous':
-              remote.previous(saveCurrentSlide);
-              break;
-            default:
-              console.log("Not implement");
-          }
-          r = new Firebase(("https://qcommander.firebaseio-demo.com//" + (connection.get('token')) + "/qc/").concat(snapshot.name()));
-          return r.remove();
+          return that.queue.add(new Command({
+            name: snapshot.name(),
+            cmd: message.cmd,
+            data: message
+          }));
         });
         return this.render();
       },
@@ -204,10 +233,18 @@
         }).call(this);
       };
 
+      Remote.prototype.control = function() {
+        return this.driver;
+      };
+
       Remote.prototype.getCurrentSlide = function() {
         var url;
         url = this.driver.getCurrentSlideScreenshot();
         return console.log(url);
+      };
+
+      Remote.prototype.getAuthor = function() {
+        return this.driver.getAuthor();
       };
 
       Remote.prototype.previous = function(cb) {
@@ -250,6 +287,8 @@
 
       RemoteControlDriver.prototype.getCurrentSlideScreenshot = function() {};
 
+      RemoteControlDriver.prototype.getAuthor = function() {};
+
       return RemoteControlDriver;
 
     })();
@@ -262,6 +301,10 @@
         this.container = $('.speakerdeck-iframe ').contents();
         (typeof console !== "undefined" && console !== null) && console.log(this.container);
       }
+
+      SpeakerdeskRemote.prototype.getAuthor = function() {
+        return $('.title .h-author-name').html();
+      };
 
       SpeakerdeskRemote.prototype.getCurrentSlideNumber = function() {
         var current_url, m, r;
@@ -301,6 +344,10 @@
         this.container = $('#svPlayerId');
         (typeof console !== "undefined" && console !== null) && console.log(this.container);
       }
+
+      SlideshareRemote.prototype.getAuthor = function() {
+        return $('#talk-details h2 a').html();
+      };
 
       SlideshareRemote.prototype.getCurrentSlideNumber = function() {
         return $('.goToSlideLabel > input', this.container).val();

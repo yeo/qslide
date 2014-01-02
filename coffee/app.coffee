@@ -1,7 +1,7 @@
 'use strict'
 
-define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage'],  ($_, _, Backbone,  __Firebase__) ->
-  
+define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localStorage'],  ($_, _, Backbone, sha1, __Firebase__) ->
+  console.log sha1 
   Connection = Backbone.Model.extend
     defaults: 
       from: 'unknow'
@@ -10,7 +10,18 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       this.on 'change:from', (model) ->
 
   Slide = Backbone.Model.extend({})
- 
+
+  Command = Backbone.Model.extend({
+    initialize: () ->
+      console.log 'New command'
+    remove: () ->
+      this.destroy()
+  })
+
+  CommandQueue = Backbone.Collection.extend({
+    model: Command
+    
+  })
 
   ToggleView = Backbone.View.extend 
     tagName: 'div'
@@ -73,8 +84,9 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       S4 = () ->
         #return (((1+Math.random())*0x10000)|0).toString(16).substring(1)
         return ( ((1+Math.random()) * 0x1000) | 0 ).toString(10).substring(1)
-      return "#{S4()}"
-  
+      return "#{sha1(S4()+ new Date().getTime())}"
+    
+    # Generate URl. RUn showConnectionBoard whe finish
     genUUID: () ->
       # @TODO Store token for 8 hours only
       that = this
@@ -95,9 +107,58 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       @toggleView = new ToggleView(
         mainBoard: this
       )
-      #@welcomeView = new WelcomeView()
+      @queue = new CommandQueue()
+      that = this
+      @queue.on 'add', (model) ->
+        that.exec model
+        #Okay, remove that command
+        console? && console.log "#{this.url}#{model.get('name')}"
+        r = new Firebase "#{this.url}#{model.get('name')}"
+        #r = new Firebase("https://qcommander.firebaseio-demo.com//#{connection.get('token')}/qc/".concat(snapshot.name()))
+        r.remove() 
+        model.destroy()
       this.genUUID()
-      
+    
+    exec: (model) ->
+      message = model.toJSON()
+      switch message.cmd
+        when 'handshake'
+          #if localStorage['allow']? and message.from == localStorage['allow']
+            #return true
+          # First time connection, just alow it. make it simple
+          # The second connection coming, let iOS handle it
+          # if locaStprage['allow']?
+          if !this.isConnected
+            localStorage['allow'] = message.from
+            localStorage['at'] = new Date.getTime()
+            localStorage['device_priority'] = 1
+            this.closeWelcome()
+          #if confirm("Allow connection from #{message.name}?")
+            #connection.set('connected_from', message.from)
+            #localStorage['allow'] = message.from
+          else 
+            if (message.from == localStorage['allow'])
+              console? && console.log "Reconnect"
+            else 
+              console? && console.log("Connected before from #{localStorage['allow']}")
+        when 'next'
+          @remote.next(
+            ((data) -> 
+              this.saveCurrentSlide(data)
+            ).bind this  
+          )    
+        when 'prev', 'previous'
+          @remote.previous(this.saveCurrentSlide)
+        else
+          console.log "Not implement"
+      #connection.re
+    
+    saveCurrentSlide: (data) ->
+      console.log this
+      info = new Firebase("https://qcommander.firebaseio-demo.com/#{@connection.get('token')}/info")
+      info.child('currentSlideUrl').set data.url
+ 
+    # Init the app, setup connection, show the welcome board
     showConnectionBoard: (uuid) ->
       that = this
       code =
@@ -105,58 +166,31 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
         url: window.location.href
         title: $(document).prop('title')
         provider: window.location.host
-        author: switch 
-          when window.location.host.indexOf('speakerdeck.com') then   $('.title .h-author-name').html()
-          when window.location.host.indexOf('slideshare.net')  then   $('#talk-details h2 a').html()
-
+        
       localStorage['token'] = code.token
-
       bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=#{encodeURI(JSON.stringify(code))
 }&choe=UTF-8"
       
-      connection = @connection = new Connection code
-      connection.set('bc', bc)
-      remote = @remote = new Remote code.url
-      baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/#{@connection.get('token')}/"
-       
-      saveCurrentSlide = (data) ->
-        info = new Firebase("https://qcommander.firebaseio-demo.com/#{connection.get('token')}/info")
-        info.child('currentSlideUrl').set data.url
-      
+      @connection = new Connection code
+      @connection.set('bc', bc)
+      @remote = new Remote code.url
+      @connection.set 'author', @remote.getAuthor()
+
+      baseFirebaseUrl = @baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/#{@connection.get('token')}/"
+      @queue.url = "#{baseFirebaseUrl}qc/"
+      console.log @queue
+     
       # Push slide info
       slideInfo = new Firebase "#{baseFirebaseUrl}info/"
       slideInfo.set code
 
-      remoteQueu = new Firebase "#{baseFirebaseUrl}qc/"
-      remoteQueu.limit(200).on 'child_added', (snapshot) ->
-        console.log(snapshot)
+      @remoteQueu = new Firebase "#{baseFirebaseUrl}qc/"
+      @remoteQueu.limit(200).on 'child_added', (snapshot) ->
         message = snapshot.val()
-        console.log(message)
-        switch message.cmd
-          when 'handshake'
-            #if localStorage['allow']? and message.from == localStorage['allow']
-              #return true
-            # First time connection, just alow it. make it simple
-            # The second connection coming, let iOS handle it
-            # if locaStprage['allow']?
-            if !that.isConnected
-              localStorage['allow'] = message.from
-              localStorage['device_priority'] = 1
-              that.closeWelcome()
-            #if confirm("Allow connection from #{message.name}?")
-              #connection.set('connected_from', message.from)
-              #localStorage['allow'] = message.from
-            else 
-              console? && console.log("Connected before from #{localStorage['allow']}")
-          when 'next'
-            remote.next(saveCurrentSlide)
-          when 'prev', 'previous'
-            remote.previous(saveCurrentSlide)
-          else
-            console.log "Not implement"
-        #Okay, remove that command
-        r = new Firebase("https://qcommander.firebaseio-demo.com//#{connection.get('token')}/qc/".concat(snapshot.name()))
-        r.remove()
+        that.queue.add new Command
+          name: snapshot.name()
+          cmd: message.cmd
+          data: message 
 
       return this.render()
 
@@ -182,6 +216,7 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
     events:
       "click .js-close-welcome": 'closeWelcome'
       "hover #spin": "animatePlayButton"
+
       
     closeWelcome: ()->
       console? && console.log 'Close welcome form'
@@ -206,10 +241,16 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
         when @url.indexOf('slideshare.net/') > 1  then new SlideshareRemote
         when @url.indexOf('scribd.com/') > 1  then new ScribdRemote
         else new RabbitRemote
+    
+    control: () ->
+      @driver
 
     getCurrentSlide: () ->
       url = @driver.getCurrentSlideScreenshot()
       console.log url
+
+    getAuthor: () ->
+      @driver.getAuthor()
 
     previous: (cb) ->
       #@driver.jump(@driver.currentSlide() - 1a
@@ -237,7 +278,7 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
     previous: () ->
     getCurrentSlideNumber: () ->
     getCurrentSlideScreenshot: () ->
-
+    getAuthor: () ->
 
   class SpeakerdeskRemote extends RemoteControlDriver 
     constructor: () ->
@@ -245,6 +286,10 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       # The player is put inside a iframe so, let get its contents
       @container = $('.speakerdeck-iframe ').contents()
       console? && console.log @container
+
+    getAuthor: () ->
+      $('.title .h-author-name').html()
+          #when window.location.host.indexOf('slideshare.net')  then   $('#talk-details h2 a').html()
 
     getCurrentSlideNumber: () ->
       current_url = $('#player-content-wrapper > #slide_image', @container).prop('src')
@@ -269,6 +314,9 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
       @container = $('#svPlayerId') 
       console? && console.log @container
     
+    getAuthor: () ->
+      $('#talk-details h2 a').html()
+
     getCurrentSlideNumber: () ->
       $('.goToSlideLabel > input', @container).val()
 
@@ -293,3 +341,4 @@ define ['jquery-private', 'underscore', 'backbone',  'firebase', 'localStorage']
   }
   # other stuff
   # 
+ 
