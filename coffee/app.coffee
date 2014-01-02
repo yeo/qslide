@@ -154,6 +154,18 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
               this.saveCurrentSlide(data)
             ).bind this  
           )
+        when 'last'
+          @remote.jump(@remote.driver.quantity, 
+            ((data) ->
+              this.saveCurrentSlide data
+            ).bind this
+          )
+        when 'first'
+          @remote.jump(0, 
+            ((data) ->
+              this.saveCurrentSlide data
+            ).bind this
+          )
         else
           console.log "Not implement"
       #connection.re
@@ -249,6 +261,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
         when @url.indexOf('scribd.com/') > 1  then new ScribdRemote
         else new RabbitRemote
     
+
     control: () ->
       @driver
 
@@ -268,8 +281,9 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       #@driver.jump(@driver.currentSlide() + 1)
       @driver.next()
       cb({url: @driver.getCurrentSlideScreenshot()})
-    jump: (num) ->
-      @driver.jump(num)
+    jump: (num, cb) ->
+      @driver.jump num
+      cb({url: @driver.getCurrentSlideScreenshot()})
 
   # Base control class 
   class RemoteControlDriver
@@ -292,11 +306,15 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       super
       # The player is put inside a iframe so, let get its contents
       @container = $('.speakerdeck-iframe ').contents()
+      @quantity = this.getSlideQuantity()
       console? && console.log @container
 
     getAuthor: () ->
       $('#talk-details h2 a').html()
           #when window.location.host.indexOf('slideshare.net')  then   $('#talk-details h2 a').html()
+    
+    getSlideQuantity: () ->
+      $('.previews > img', @container).length
 
     getCurrentSlideNumber: () ->
       current_url = $('#player-content-wrapper > #slide_image', @container).prop('src')
@@ -308,8 +326,8 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
     getCurrentSlideScreenshot: () ->
       $('#player-content-wrapper > #slide_image', @container).prop('src')
     
-    first: () ->
-    last: () ->
+    jump: (num) ->
+      $('.speakerdeck-iframe ')[0].contentWindow.player.goToSlide num
     next: () ->
       $('.overnav > .next', @container)[0].click()
     previous: () ->
@@ -324,16 +342,17 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
     getAuthor: () ->
       $('.title .h-author-name').html()
 
+    getSlideQuantity: () ->
+      $('.previews > img', @container).length
+
     getCurrentSlideNumber: () ->
       1 + parseInt($('.goToSlideLabel > input', @container).val())
 
     getCurrentSlideScreenshot: () ->
       $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').prop('src')
 
-    first: () ->
-      $('.nav > .btnFirst', @container)[0].click()
-    last: () ->
-      $('.nav > .btnLast', @container)[0].click()
+    jump: (num) ->
+      $('.speakerdeck-iframe ')[0].contentWindow.player.goToSlide num
     next: () ->
       $('.nav > .btnNext', @container)[0].click()
     previous: () ->
