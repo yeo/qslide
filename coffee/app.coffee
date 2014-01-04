@@ -28,7 +28,8 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
     tagName: 'div'
     className: 'qslide'
     id: 'qslideSwitch'
-    template: _.template '<a class="js-toggle-board" href="#">Show</a>'
+    template: _.template '<div>Via: <%= device %></div>
+    <a class="js-toggle-board" href="#">Show</a>'
     
     initialize: (options) ->
       if options? 
@@ -50,7 +51,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
           .css('background', '#FEE19B')
           .css('color', '#ccc')
         
-      this.$el.html(this.template())
+      this.$el.html(this.template({device: @device}))
       $('body').append this.$el
       return this
     
