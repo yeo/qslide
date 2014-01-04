@@ -8,6 +8,8 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       console && console.log "Start a connection"
       this.on 'change:from', (model) ->
 
+        
+
   Slide = Backbone.Model.extend({})
 
   Command = Backbone.Model.extend({
@@ -175,7 +177,17 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       console.log this
       info = new Firebase("https://qcommander.firebaseio-demo.com/#{@connection.get('token')}/info")
       info.child('currentSlideUrl').set data.url
- 
+   
+    presenceNoty: () ->
+      connectionRef = new Firebase "#{@baseFirebaseUrl}/info/connection"
+      lastOnlineRef = new Firebase "#{@baseFirebaseUrl}/info/lastOnline"
+      connectedRef = new Firebase "#{@baseFirebaseUrl}.info/connected"
+      connectedRef.on 'value', (s) ->
+        if s.val() == true
+          conn = connectionRef.push true
+          conn.onDisconnect().remove()
+          lastOnlineRef.onDisconnect().set Firebase.ServerValue.TIMESTAMP
+
     # Init the app, setup connection, show the welcome board
     showConnectionBoard: (uuid) ->
       that = this
@@ -195,11 +207,13 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       @connection.set 'author', @remote.getAuthor()
       @connection.set 'currentSlideUrl', @remote.driver.getCurrentSlideScreenshot() 
       @connection.set 'currentSlideNumber', @remote.driver.getCurrentSlideNumber() 
-
+      
       baseFirebaseUrl = @baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/#{@connection.get('token')}/"
       @queue.url = "#{baseFirebaseUrl}qc/"
       console.log @queue
-     
+      
+      this.presenceNoty()
+
       # Push slide info
       slideInfo = new Firebase "#{baseFirebaseUrl}info/"
       slideInfo.set @connection.toJSON()
