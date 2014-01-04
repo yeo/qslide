@@ -179,10 +179,11 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       info.child('currentSlideUrl').set data.url
    
     presenceNoty: () ->
-      connectionRef = new Firebase "#{@baseFirebaseUrl}/info/connection"
-      lastOnlineRef = new Firebase "#{@baseFirebaseUrl}/info/lastOnline"
-      connectedRef = new Firebase "#{@baseFirebaseUrl}.info/connected"
+      connectionRef = new Firebase "#{@baseFirebaseUrl}info/connection"
+      lastOnlineRef = new Firebase "#{@baseFirebaseUrl}info/lastOnline"
+      connectedRef  = new Firebase "https://qcommander.firebaseio-demo.com/.info/connected"
       connectedRef.on 'value', (s) ->
+        console? && console.log "Connected"
         if s.val() == true
           conn = connectionRef.push true
           conn.onDisconnect().remove()
@@ -212,11 +213,15 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       @queue.url = "#{baseFirebaseUrl}qc/"
       console.log @queue
       
-      this.presenceNoty()
 
       # Push slide info
       slideInfo = new Firebase "#{baseFirebaseUrl}info/"
-      slideInfo.set @connection.toJSON()
+      slideInfo.set @connection.toJSON(), (e) ->
+        if e
+          alert "Cannot connec to server. Check internet connection"
+          return false
+        else
+          that.presenceNoty()
 
       @remoteQueu = new Firebase "#{baseFirebaseUrl}qc/"
       @remoteQueu.limit(200).on 'child_added', (snapshot) ->
@@ -352,6 +357,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
     constructor: () ->
       super
       @container = $('#svPlayerId') 
+      @quantity = this.getSlideQuantity()
       console? && console.log @container
     
     getAuthor: () ->
@@ -367,12 +373,16 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').prop('src')
 
     jump: (num) ->
-      $('.speakerdeck-iframe ')[0].contentWindow.player.goToSlide num
+      e = $.Event 'keydown'
+      e.which = 13
+      e.keyCode = 13
+      $('.navActions .goToSlideLabel input', @container).val(num).trigger e
+
     next: () ->
       $('.nav > .btnNext', @container)[0].click()
     previous: () ->
       $('.nav > .btnPrevious', @container)[0].click()
-
+    
   class ScribdRemote extends RemoteControlDriver
   class RabbitRemote extends RemoteControlDriver
 

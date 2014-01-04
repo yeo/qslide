@@ -29,7 +29,8 @@
       tagName: 'div',
       className: 'qslide',
       id: 'qslideSwitch',
-      template: _.template('<a class="js-toggle-board" href="#">Show</a>'),
+      template: _.template('<div>Via: <%= device %></div>\
+    <a class="js-toggle-board" href="#">Show</a>'),
       initialize: function(options) {
         var k, v;
         if (options != null) {
@@ -45,7 +46,9 @@
       },
       render: function() {
         this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('width', 30).css('height', 10).css('left', 10).css('bottom', 30).css('background', '#FEE19B').css('color', '#ccc');
-        this.$el.html(this.template());
+        this.$el.html(this.template({
+          device: this.device
+        }));
         $('body').append(this.$el);
         return this;
       },
@@ -142,6 +145,14 @@
             return this.remote.previous((function(data) {
               return this.saveCurrentSlide(data);
             }).bind(this));
+          case 'last':
+            return this.remote.jump(this.remote.driver.quantity, (function(data) {
+              return this.saveCurrentSlide(data);
+            }).bind(this));
+          case 'first':
+            return this.remote.jump(0, (function(data) {
+              return this.saveCurrentSlide(data);
+            }).bind(this));
           default:
             return console.log("Not implement");
         }
@@ -151,6 +162,21 @@
         console.log(this);
         info = new Firebase("https://qcommander.firebaseio-demo.com/" + (this.connection.get('token')) + "/info");
         return info.child('currentSlideUrl').set(data.url);
+      },
+      presenceNoty: function() {
+        var connectedRef, connectionRef, lastOnlineRef;
+        connectionRef = new Firebase("" + this.baseFirebaseUrl + "info/connection");
+        lastOnlineRef = new Firebase("" + this.baseFirebaseUrl + "info/lastOnline");
+        connectedRef = new Firebase("https://qcommander.firebaseio-demo.com/.info/connected");
+        return connectedRef.on('value', function(s) {
+          var conn;
+          (typeof console !== "undefined" && console !== null) && console.log("Connected");
+          if (s.val() === true) {
+            conn = connectionRef.push(true);
+            conn.onDisconnect().remove();
+            return lastOnlineRef.onDisconnect().set(Firebase.ServerValue.TIMESTAMP);
+          }
+        });
       },
       showConnectionBoard: function(uuid) {
         var baseFirebaseUrl, bc, code, slideInfo, that;
@@ -173,7 +199,14 @@
         this.queue.url = "" + baseFirebaseUrl + "qc/";
         console.log(this.queue);
         slideInfo = new Firebase("" + baseFirebaseUrl + "info/");
-        slideInfo.set(this.connection.toJSON());
+        slideInfo.set(this.connection.toJSON(), function(e) {
+          if (e) {
+            alert("Cannot connec to server. Check internet connection");
+            return false;
+          } else {
+            return that.presenceNoty();
+          }
+        });
         this.remoteQueu = new Firebase("" + baseFirebaseUrl + "qc/");
         this.remoteQueu.limit(200).on('child_added', function(snapshot) {
           var message;
@@ -261,8 +294,11 @@
         });
       };
 
-      Remote.prototype.jump = function(num) {
-        return this.driver.jump(num);
+      Remote.prototype.jump = function(num, cb) {
+        this.driver.jump(num);
+        return cb({
+          url: this.driver.getCurrentSlideScreenshot()
+        });
       };
 
       return Remote;
@@ -299,11 +335,16 @@
       function SpeakerdeskRemote() {
         SpeakerdeskRemote.__super__.constructor.apply(this, arguments);
         this.container = $('.speakerdeck-iframe ').contents();
+        this.quantity = this.getSlideQuantity();
         (typeof console !== "undefined" && console !== null) && console.log(this.container);
       }
 
       SpeakerdeskRemote.prototype.getAuthor = function() {
         return $('#talk-details h2 a').html();
+      };
+
+      SpeakerdeskRemote.prototype.getSlideQuantity = function() {
+        return $('.previews > img', this.container).length;
       };
 
       SpeakerdeskRemote.prototype.getCurrentSlideNumber = function() {
@@ -320,9 +361,9 @@
         return $('#player-content-wrapper > #slide_image', this.container).prop('src');
       };
 
-      SpeakerdeskRemote.prototype.first = function() {};
-
-      SpeakerdeskRemote.prototype.last = function() {};
+      SpeakerdeskRemote.prototype.jump = function(num) {
+        return $('.speakerdeck-iframe ')[0].contentWindow.player.goToSlide(num);
+      };
 
       SpeakerdeskRemote.prototype.next = function() {
         return $('.overnav > .next', this.container)[0].click();
@@ -342,11 +383,16 @@
       function SlideshareRemote() {
         SlideshareRemote.__super__.constructor.apply(this, arguments);
         this.container = $('#svPlayerId');
+        this.quantity = this.getSlideQuantity();
         (typeof console !== "undefined" && console !== null) && console.log(this.container);
       }
 
       SlideshareRemote.prototype.getAuthor = function() {
         return $('.title .h-author-name').html();
+      };
+
+      SlideshareRemote.prototype.getSlideQuantity = function() {
+        return $('.previews > img', this.container).length;
       };
 
       SlideshareRemote.prototype.getCurrentSlideNumber = function() {
@@ -357,12 +403,12 @@
         return $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').prop('src');
       };
 
-      SlideshareRemote.prototype.first = function() {
-        return $('.nav > .btnFirst', this.container)[0].click();
-      };
-
-      SlideshareRemote.prototype.last = function() {
-        return $('.nav > .btnLast', this.container)[0].click();
+      SlideshareRemote.prototype.jump = function(num) {
+        var e;
+        e = $.Event('keydown');
+        e.which = 13;
+        e.keyCode = 13;
+        return $('.navActions .goToSlideLabel input', this.container).val(num).trigger(e);
       };
 
       SlideshareRemote.prototype.next = function() {
