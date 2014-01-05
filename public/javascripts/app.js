@@ -409,7 +409,12 @@
       };
 
       SlideshareRemote.prototype.getSlideQuantity = function() {
-        return $('.previews > img', this.container).length;
+        if ($('.slide_container').length > 0) {
+          return $('.slide_container .slide', this.container).length;
+        }
+        if ($('.slidesContainer').length > 0) {
+          return $('.slidesContainer .jsplBgColorBigfoot').length;
+        }
       };
 
       SlideshareRemote.prototype.getCurrentSlideNumber = function() {
@@ -417,12 +422,15 @@
       };
 
       SlideshareRemote.prototype.getCurrentSlideScreenshot = function() {
-        return $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').prop('src');
+        if ($('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img') > 0) {
+          return $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').prop('src');
+        }
+        return '';
       };
 
       SlideshareRemote.prototype.jump = function(num) {
         var e;
-        e = $.Event('keydown');
+        e = $.Event('keyup');
         e.which = 13;
         e.keyCode = 13;
         return $('.navActions .goToSlideLabel input', this.container).val(num).trigger(e);

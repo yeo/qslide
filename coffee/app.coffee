@@ -386,16 +386,21 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       $('.title .h-author-name').html()
 
     getSlideQuantity: () ->
-      $('.previews > img', @container).length
+      if $('.slide_container').length > 0
+        return $('.slide_container .slide', @container).length 
+      if $('.slidesContainer').length > 0 
+        return $('.slidesContainer .jsplBgColorBigfoot').length
 
     getCurrentSlideNumber: () ->
       1 + parseInt($('.goToSlideLabel > input', @container).val())
 
     getCurrentSlideScreenshot: () ->
-      $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').prop('src')
+      if $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img') > 0 
+        return $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').prop('src')
+      return ''
 
     jump: (num) ->
-      e = $.Event 'keydown'
+      e = $.Event 'keyup'
       e.which = 13
       e.keyCode = 13
       $('.navActions .goToSlideLabel input', @container).val(num).trigger e
