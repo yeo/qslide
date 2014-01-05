@@ -203,7 +203,6 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       code =
         token: uuid 
         url: window.location.href
-        title: $(document).prop('title')
         provider: window.location.host
          
       localStorage['token'] = code.token
@@ -217,7 +216,8 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       @connection.set 'currentSlideUrl', @remote.driver.getCurrentSlideScreenshot() 
       @connection.set 'currentSlideNumber', @remote.driver.getCurrentSlideNumber() 
       @connection.set 'quantity', @remote.driver.quantity
-      
+      @connection.set 'title',    @remote.driver.getTitle()
+
       baseFirebaseUrl = @baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/#{@connection.get('token')}/"
       @queue.url = "#{baseFirebaseUrl}qc/"
       console.log @queue
@@ -338,6 +338,8 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
     getCurrentSlideNumber: () ->
     getCurrentSlideScreenshot: () ->
     getAuthor: () ->
+    getTitle: () ->
+      $(document).prop('title')
 
   class SpeakerdeskRemote extends RemoteControlDriver 
     constructor: () ->
@@ -350,7 +352,9 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
     getAuthor: () ->
       $('#talk-details h2 a').html()
           #when window.location.host.indexOf('slideshare.net')  then   $('#talk-details h2 a').html()
-    
+    getTitle: () ->
+        $(document).prop('title').replace("// Speaker Deck", '').trim()
+
     getSlideQuantity: () ->
       $('.previews > img', @container).length
 

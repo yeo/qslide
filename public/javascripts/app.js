@@ -153,6 +153,10 @@
             return this.remote.jump(0, (function(data) {
               return this.saveCurrentSlide(data);
             }).bind(this));
+          case 'jump':
+            return this.remote.jump(message.data.number, (function(data) {
+              return this.saveCurrentSlide(data);
+            }).bind(this));
           default:
             return console.log("Not implement");
         }
@@ -161,7 +165,8 @@
         var info;
         console.log(this);
         info = new Firebase("https://qcommander.firebaseio-demo.com/" + (this.connection.get('token')) + "/info");
-        return info.child('currentSlideUrl').set(data.url);
+        info.child('currentSlideUrl').set(data.url);
+        return info.child('currentSlideNumber').set(data.currentSlideNumber);
       },
       presenceNoty: function() {
         var connectedRef, connectionRef, lastOnlineRef;
@@ -184,7 +189,6 @@
         code = {
           token: uuid,
           url: window.location.href,
-          title: $(document).prop('title'),
           provider: window.location.host
         };
         localStorage['token'] = code.token;
@@ -195,6 +199,8 @@
         this.connection.set('author', this.remote.getAuthor());
         this.connection.set('currentSlideUrl', this.remote.driver.getCurrentSlideScreenshot());
         this.connection.set('currentSlideNumber', this.remote.driver.getCurrentSlideNumber());
+        this.connection.set('quantity', this.remote.driver.quantity);
+        this.connection.set('title', this.remote.driver.getTitle());
         baseFirebaseUrl = this.baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/" + (this.connection.get('token')) + "/";
         this.queue.url = "" + baseFirebaseUrl + "qc/";
         console.log(this.queue);
@@ -283,21 +289,24 @@
       Remote.prototype.previous = function(cb) {
         this.driver.previous();
         return cb({
-          url: this.driver.getCurrentSlideScreenshot()
+          url: this.driver.getCurrentSlideScreenshot(),
+          currentSlideNumber: this.driver.getCurrentSlideNumber()
         });
       };
 
       Remote.prototype.next = function(cb) {
         this.driver.next();
         return cb({
-          url: this.driver.getCurrentSlideScreenshot()
+          url: this.driver.getCurrentSlideScreenshot(),
+          currentSlideNumber: this.driver.getCurrentSlideNumber()
         });
       };
 
       Remote.prototype.jump = function(num, cb) {
         this.driver.jump(num);
         return cb({
-          url: this.driver.getCurrentSlideScreenshot()
+          url: this.driver.getCurrentSlideScreenshot(),
+          currentSlideNumber: this.driver.getCurrentSlideNumber()
         });
       };
 
@@ -325,6 +334,10 @@
 
       RemoteControlDriver.prototype.getAuthor = function() {};
 
+      RemoteControlDriver.prototype.getTitle = function() {
+        return $(document).prop('title');
+      };
+
       return RemoteControlDriver;
 
     })();
@@ -341,6 +354,10 @@
 
       SpeakerdeskRemote.prototype.getAuthor = function() {
         return $('#talk-details h2 a').html();
+      };
+
+      SpeakerdeskRemote.prototype.getTitle = function() {
+        return $(document).prop('title').replace("// Speaker Deck", '').trim();
       };
 
       SpeakerdeskRemote.prototype.getSlideQuantity = function() {
