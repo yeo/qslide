@@ -87,8 +87,8 @@
       genUUID: function() {
         var rootRef, that, uuid;
         that = this;
-        if (localStorage['token'] != null) {
-          uuid = localStorage['token'];
+        if (this.localStorage['token'] != null) {
+          uuid = this.localStorage['token'];
           return this.showConnectionBoard(uuid);
         }
         uuid = this.uuid();
@@ -102,6 +102,11 @@
       },
       initialize: function() {
         var that;
+        if (localStorage[window.location.pathname] != null) {
+          this.localStorage = localStorage[window.location.pathname];
+        } else {
+          this.localStorage = localStorage[window.location.pathname] = {};
+        }
         this.isConnected = false;
         this.toggleView = new ToggleView({
           mainBoard: this
@@ -124,15 +129,15 @@
         switch (message.cmd) {
           case 'handshake':
             if (!this.isConnected) {
-              localStorage['allow'] = message.from;
-              localStorage['at'] = new Date().getTime();
-              localStorage['device_priority'] = 1;
+              this.localStorage['allow'] = message.from;
+              this.localStorage['at'] = new Date().getTime();
+              this.localStorage['device_priority'] = 1;
               return this.closeWelcome();
             } else {
-              if (message.from === localStorage['allow']) {
+              if (message.from === this.localStorage['allow']) {
                 return (typeof console !== "undefined" && console !== null) && console.log("Reconnect");
               } else {
-                return (typeof console !== "undefined" && console !== null) && console.log("Connected before from " + localStorage['allow']);
+                return (typeof console !== "undefined" && console !== null) && console.log("Connected before from " + this.localStorage['allow']);
               }
             }
             break;
@@ -191,7 +196,7 @@
           url: window.location.href,
           provider: window.location.host
         };
-        localStorage['token'] = code.token;
+        this.localStorage['token'] = code.token;
         bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=" + (encodeURI(JSON.stringify(code))) + "&choe=UTF-8";
         this.connection = new Connection(code);
         this.connection.set('bc', bc);

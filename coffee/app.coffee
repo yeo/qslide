@@ -89,12 +89,12 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
     # Generate URl. RUn showConnectionBoard whe finish
     genUUID: () ->
       that = this
-      if localStorage['token']?
+      if @localStorage['token']?
         #if (new Date().getTime() - localStorage['at']) / 1000 / 60  > 5 
           ## we only keep it for 8 hours
           #localStorage = null
         #else 
-        uuid = localStorage['token']  
+        uuid = @localStorage['token']  
         return this.showConnectionBoard(uuid) 
 
       uuid = this.uuid()
@@ -106,6 +106,11 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       )
     
     initialize: () ->
+      if localStorage[window.location.pathname]?
+        @localStorage = localStorage[window.location.pathname]
+      else
+        @localStorage = localStorage[window.location.pathname] = {}
+
       @isConnected = false
       @toggleView = new ToggleView(
         mainBoard: this
@@ -133,18 +138,18 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
           # The second connection coming, let iOS handle it
           # if locaStprage['allow']?
           if !this.isConnected
-            localStorage['allow'] = message.from
-            localStorage['at'] = new Date().getTime()
-            localStorage['device_priority'] = 1
+            @localStorage['allow'] = message.from
+            @localStorage['at'] = new Date().getTime()
+            @localStorage['device_priority'] = 1
             this.closeWelcome()
           #if confirm("Allow connection from #{message.name}?")
             #connection.set('connected_from', message.from)
             #localStorage['allow'] = message.from
           else 
-            if (message.from == localStorage['allow'])
+            if (message.from == @localStorage['allow'])
               console? && console.log "Reconnect"
             else 
-              console? && console.log("Connected before from #{localStorage['allow']}")
+              console? && console.log("Connected before from #{@localStorage['allow']}")
         when 'next'
           @remote.next(
             ((data) -> 
@@ -205,7 +210,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
         url: window.location.href
         provider: window.location.host
          
-      localStorage['token'] = code.token
+      @localStorage['token'] = code.token
       bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=#{encodeURI(JSON.stringify(code))
 }&choe=UTF-8"
       
@@ -411,7 +416,9 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       $('.nav > .btnPrevious', @container)[0].click()
     
   class ScribdRemote extends RemoteControlDriver
+
   class RabbitRemote extends RemoteControlDriver
+
 
   return {
     init: ()->
