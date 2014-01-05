@@ -169,6 +169,13 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
               this.saveCurrentSlide data
             ).bind this
           )
+        when 'jump'
+          @remote.jump(message.data.number, 
+            ((data) ->
+              this.saveCurrentSlide data
+            ).bind this
+          )
+
         else
           console.log "Not implement"
       #connection.re
@@ -177,6 +184,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       console.log this
       info = new Firebase("https://qcommander.firebaseio-demo.com/#{@connection.get('token')}/info")
       info.child('currentSlideUrl').set data.url
+      info.child('currentSlideNumber').set data.currentSlideNumber
    
     presenceNoty: () ->
       connectionRef = new Firebase "#{@baseFirebaseUrl}info/connection"
@@ -208,6 +216,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
       @connection.set 'author', @remote.getAuthor()
       @connection.set 'currentSlideUrl', @remote.driver.getCurrentSlideScreenshot() 
       @connection.set 'currentSlideNumber', @remote.driver.getCurrentSlideNumber() 
+      @connection.set 'quantity', @remote.driver.quantity
       
       baseFirebaseUrl = @baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/#{@connection.get('token')}/"
       @queue.url = "#{baseFirebaseUrl}qc/"
@@ -295,15 +304,24 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
     previous: (cb) ->
       #@driver.jump(@driver.currentSlide() - 1a
       @driver.previous()
-      cb({url: @driver.getCurrentSlideScreenshot()})
+      cb(
+        url: @driver.getCurrentSlideScreenshot()
+        currentSlideNumber: @driver.getCurrentSlideNumber()
+      )
       #this.trigger('transitionSLide', {url: this.getCurrentSlide()})
     next: (cb) ->
       #@driver.jump(@driver.currentSlide() + 1)
       @driver.next()
-      cb({url: @driver.getCurrentSlideScreenshot()})
+      cb(
+        url: @driver.getCurrentSlideScreenshot()
+        currentSlideNumber: @driver.getCurrentSlideNumber()
+      )
     jump: (num, cb) ->
       @driver.jump num
-      cb({url: @driver.getCurrentSlideScreenshot()})
+      cb(
+        url: @driver.getCurrentSlideScreenshot()
+        currentSlideNumber: @driver.getCurrentSlideNumber()
+      )
 
   # Base control class 
   class RemoteControlDriver
