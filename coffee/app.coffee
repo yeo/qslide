@@ -89,28 +89,30 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
     # Generate URl. RUn showConnectionBoard whe finish
     genUUID: () ->
       that = this
-      if @localStorage['token']?
+      if this.localStorage('token')?
         #if (new Date().getTime() - localStorage['at']) / 1000 / 60  > 5 
           ## we only keep it for 8 hours
           #localStorage = null
         #else 
-        uuid = @localStorage['token']  
+        uuid = this.localStorage('token')
         return this.showConnectionBoard(uuid) 
 
       uuid = this.uuid()
       rootRef = new Firebase "https://qcommander.firebaseio-demo.com/"
-      rootRef.child(uuid).on(
+      rootRef.child("#{uuid}/token").on(
         'value', (snapshot) ->
-          return that.genUUID() if snapshot.val()?
+          return that.genUUID() if snapshot.val()? 
           that.showConnectionBoard(uuid) 
       )
     
-    initialize: () ->
-      if localStorage[window.location.pathname]?
-        @localStorage = localStorage[window.location.pathname]
+    localStorage: (k,v ) ->
+      s = sha1(window.location.pathname).substr(0, 10)
+      if v? 
+        localStorage.setItem("#{s}.#{k}", v)
       else
-        @localStorage = localStorage[window.location.pathname] = {}
+        return localStorage.getItem("#{s}.#{k}")
 
+    initialize: () ->
       @isConnected = false
       @toggleView = new ToggleView(
         mainBoard: this
@@ -138,18 +140,18 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
           # The second connection coming, let iOS handle it
           # if locaStprage['allow']?
           if !this.isConnected
-            @localStorage['allow'] = message.from
-            @localStorage['at'] = new Date().getTime()
-            @localStorage['device_priority'] = 1
+            this.localStorage('allow', message.from)
+            this.localStorage('at' ,new Date().getTime())
+            this.localStorage('device_priority', 1)
             this.closeWelcome()
           #if confirm("Allow connection from #{message.name}?")
             #connection.set('connected_from', message.from)
             #localStorage['allow'] = message.from
           else 
-            if (message.from == @localStorage['allow'])
+            if (message.from == this.localStorage('allow'))
               console? && console.log "Reconnect"
             else 
-              console? && console.log("Connected before from #{@localStorage['allow']}")
+              console? && console.log("Connected before from #{this.localStorage('allow')}")
         when 'next'
           @remote.next(
             ((data) -> 
@@ -210,7 +212,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
         url: window.location.href
         provider: window.location.host
          
-      @localStorage['token'] = code.token
+      this.localStorage 'token', code.token
       bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=#{encodeURI(JSON.stringify(code))
 }&choe=UTF-8"
       
