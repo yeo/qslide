@@ -158,31 +158,35 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
               this.saveCurrentSlide(data)
             ).bind this  
           )    
+          this.closeWelcome()
         when 'prev', 'previous'
           @remote.previous(
             ((data) ->
               this.saveCurrentSlide(data)
             ).bind this  
           )
+          this.closeWelcome()
         when 'last'
           @remote.jump(@remote.driver.quantity, 
             ((data) ->
               this.saveCurrentSlide data
             ).bind this
           )
+          this.closeWelcome()
         when 'first'
           @remote.jump(0, 
             ((data) ->
               this.saveCurrentSlide data
             ).bind this
           )
+          this.closeWelcome()
         when 'jump'
           @remote.jump(message.data.number, 
             ((data) ->
               this.saveCurrentSlide data
             ).bind this
           )
-
+          this.closeWelcome()
         else
           console.log "Not implement"
       #connection.re
