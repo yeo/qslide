@@ -146,26 +146,31 @@
             }
             break;
           case 'next':
-            return this.remote.next((function(data) {
+            this.remote.next((function(data) {
               return this.saveCurrentSlide(data);
             }).bind(this));
+            return this.closeWelcome();
           case 'prev':
           case 'previous':
-            return this.remote.previous((function(data) {
+            this.remote.previous((function(data) {
               return this.saveCurrentSlide(data);
             }).bind(this));
+            return this.closeWelcome();
           case 'last':
-            return this.remote.jump(this.remote.driver.quantity, (function(data) {
+            this.remote.jump(this.remote.driver.quantity, (function(data) {
               return this.saveCurrentSlide(data);
             }).bind(this));
+            return this.closeWelcome();
           case 'first':
-            return this.remote.jump(0, (function(data) {
+            this.remote.jump(0, (function(data) {
               return this.saveCurrentSlide(data);
             }).bind(this));
+            return this.closeWelcome();
           case 'jump':
-            return this.remote.jump(message.data.number, (function(data) {
+            this.remote.jump(message.data.number, (function(data) {
               return this.saveCurrentSlide(data);
             }).bind(this));
+            return this.closeWelcome();
           default:
             return console.log("Not implement");
         }
