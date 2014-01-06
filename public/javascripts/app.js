@@ -87,26 +87,30 @@
       genUUID: function() {
         var rootRef, that, uuid;
         that = this;
-        if (this.localStorage['token'] != null) {
-          uuid = this.localStorage['token'];
+        if (this.localStorage('token') != null) {
+          uuid = this.localStorage('token');
           return this.showConnectionBoard(uuid);
         }
         uuid = this.uuid();
         rootRef = new Firebase("https://qcommander.firebaseio-demo.com/");
-        return rootRef.child(uuid).on('value', function(snapshot) {
+        return rootRef.child("" + uuid + "/token").on('value', function(snapshot) {
           if (snapshot.val() != null) {
             return that.genUUID();
           }
           return that.showConnectionBoard(uuid);
         });
       },
+      localStorage: function(k, v) {
+        var s;
+        s = sha1(window.location.pathname).substr(0, 10);
+        if (v != null) {
+          return localStorage.setItem("" + s + "." + k, v);
+        } else {
+          return localStorage.getItem("" + s + "." + k);
+        }
+      },
       initialize: function() {
         var that;
-        if (localStorage[window.location.pathname] != null) {
-          this.localStorage = localStorage[window.location.pathname];
-        } else {
-          this.localStorage = localStorage[window.location.pathname] = {};
-        }
         this.isConnected = false;
         this.toggleView = new ToggleView({
           mainBoard: this
@@ -129,15 +133,15 @@
         switch (message.cmd) {
           case 'handshake':
             if (!this.isConnected) {
-              this.localStorage['allow'] = message.from;
-              this.localStorage['at'] = new Date().getTime();
-              this.localStorage['device_priority'] = 1;
+              this.localStorage('allow', message.from);
+              this.localStorage('at', new Date().getTime());
+              this.localStorage('device_priority', 1);
               return this.closeWelcome();
             } else {
-              if (message.from === this.localStorage['allow']) {
+              if (message.from === this.localStorage('allow')) {
                 return (typeof console !== "undefined" && console !== null) && console.log("Reconnect");
               } else {
-                return (typeof console !== "undefined" && console !== null) && console.log("Connected before from " + this.localStorage['allow']);
+                return (typeof console !== "undefined" && console !== null) && console.log("Connected before from " + (this.localStorage('allow')));
               }
             }
             break;
@@ -196,7 +200,7 @@
           url: window.location.href,
           provider: window.location.host
         };
-        this.localStorage['token'] = code.token;
+        this.localStorage('token', code.token);
         bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=" + (encodeURI(JSON.stringify(code))) + "&choe=UTF-8";
         this.connection = new Connection(code);
         this.connection.set('bc', bc);
