@@ -9,7 +9,7 @@ require 'mina/git'
 set :user, 'kurei'
 set :domain, 'qslide.axcoto.com'
 set :deploy_to, '*'
-set :repository, 'https://github.com/qSlide/qslide/'
+set :repository, 'https://github.com/qSlide/qslide.git'
 set :branch, 'master'
 set :keep_releases, 1 
 
@@ -36,6 +36,7 @@ end
 # For Rails apps, we'll make some of the shared paths that are shared between
 # all releases.
 task :setup => :environment do
+
   queue! %[mkdir -p "#{deploy_to}/shared/wp-content"]
   queue! %[ln -s /srv/http/media/blog/uploads "#{deploy_to}/shared/wp-content/uploads"]
   queue! %[chmod g+rx,u+rwx "#{deploy_to}/shared/wp-content/uploads"]
@@ -48,6 +49,10 @@ task :setup => :environment do
   
   queue! %[touch "#{deploy_to}/shared/wp-config.php"]
   queue  %[echo "-----> Be sure to edit 'shared/wp-config.php'."]
+
+  # install go stuff
+  queue %[touch "go get github.com/codegangsta/martini"]
+  queue %[touch "go get github.com/codegangsta/martini-contrib/render"]
 end
 
 desc "Deploys the current version to the server."
@@ -62,8 +67,9 @@ task :deploy => :environment do
     #invoke :'rails:assets_precompile'
 
     to :launch do
+      queue "export GOPATH=\"/home/kurei/go\";cd #{deploy_to}/current && go build qs.go"
       #queue "touch #{deploy_to}/tmp/restart.txt"
-      queue "go run #{deploy_to}qs"
+      queue "#{deploy_to}/current/qs &"
     end
 
     invoke :'deploy:cleanup'
