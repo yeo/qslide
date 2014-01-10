@@ -14,7 +14,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
 
   Command = Backbone.Model.extend({
     initialize: () ->
-      console.log 'New command'
+      console? && console.log 'New command'
     #remove: () ->
       #this.destroy()
     destroy: () ->
@@ -188,11 +188,11 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
           )
           this.closeWelcome()
         else
-          console.log "Not implement"
+          console? && console.log "Not implement"
       #connection.re
     
     saveCurrentSlide: (data) ->
-      console.log this
+      console? && console.log this
       info = new Firebase("https://qcommander.firebaseio-demo.com/#{@connection.get('token')}/info")
       info.child('currentSlideUrl').set data.url
       info.child('currentSlideNumber').set data.currentSlideNumber
@@ -231,7 +231,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
 
       baseFirebaseUrl = @baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/#{@connection.get('token')}/"
       @queue.url = "#{baseFirebaseUrl}qc/"
-      console.log @queue
+      console? && console.log @queue
       
 
       # Push slide info
@@ -268,7 +268,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
           .css('color', '#ccc')
         
       this.$el.html(this.template(@connection.attributes))
-      console.log this.$el
+      console? && console.log this.$el
       $('body').append this.$el
       return this
 
@@ -307,7 +307,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localSt
 
     getCurrentSlide: () ->
       url = @driver.getCurrentSlideScreenshot()
-      console.log url
+      console? && console.log url
 
     getAuthor: () ->
       @driver.getAuthor()

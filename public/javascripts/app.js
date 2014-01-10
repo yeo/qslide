@@ -18,7 +18,7 @@
     Slide = Backbone.Model.extend({});
     Command = Backbone.Model.extend({
       initialize: function() {
-        return console.log('New command');
+        return (typeof console !== "undefined" && console !== null) && console.log('New command');
       },
       destroy: function() {}
     });
@@ -172,12 +172,12 @@
             }).bind(this));
             return this.closeWelcome();
           default:
-            return console.log("Not implement");
+            return (typeof console !== "undefined" && console !== null) && console.log("Not implement");
         }
       },
       saveCurrentSlide: function(data) {
         var info;
-        console.log(this);
+        (typeof console !== "undefined" && console !== null) && console.log(this);
         info = new Firebase("https://qcommander.firebaseio-demo.com/" + (this.connection.get('token')) + "/info");
         info.child('currentSlideUrl').set(data.url);
         return info.child('currentSlideNumber').set(data.currentSlideNumber);
@@ -217,7 +217,7 @@
         this.connection.set('title', this.remote.driver.getTitle());
         baseFirebaseUrl = this.baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/" + (this.connection.get('token')) + "/";
         this.queue.url = "" + baseFirebaseUrl + "qc/";
-        console.log(this.queue);
+        (typeof console !== "undefined" && console !== null) && console.log(this.queue);
         slideInfo = new Firebase("" + baseFirebaseUrl + "info/");
         slideInfo.set(this.connection.toJSON(), function(e) {
           if (e) {
@@ -242,7 +242,7 @@
       render: function() {
         this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('width', 800).css('height', 700).css('left', '50%').css('margin-left', '-350px').css('top', 0).css('background', '#FEE19B').css('color', '#ccc');
         this.$el.html(this.template(this.connection.attributes));
-        console.log(this.$el);
+        (typeof console !== "undefined" && console !== null) && console.log(this.$el);
         $('body').append(this.$el);
         return this;
       },
@@ -293,7 +293,7 @@
       Remote.prototype.getCurrentSlide = function() {
         var url;
         url = this.driver.getCurrentSlideScreenshot();
-        return console.log(url);
+        return (typeof console !== "undefined" && console !== null) && console.log(url);
       };
 
       Remote.prototype.getAuthor = function() {
