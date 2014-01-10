@@ -5,14 +5,29 @@ import (
   "net/http"
   "github.com/codegangsta/martini"
   "github.com/codegangsta/martini-contrib/render"
+  "os"
+  "encoding/json"
 )
 
-const (
-  Domain = "slide.dev"
-)
+type Configuration struct
+{
+  Domain string;
+  Port string;
+}
+
+func loadConfiguration(config *Configuration) {
+  file, _ := os.Open("config.json")
+  decoder := json.NewDecoder(file)
+  configuration := &Configuration{}
+  decoder.Decode(&configuration)
+  fmt.Println(configuration) 
+}
+
+var config Configuration;
 
 func main() {
-  fmt.Sprintf("Domain: %s", Domain);
+  loadConfiguration(&config);
+  fmt.Sprintf("Domain: %s", config.Domain);
   m := martini.Classic()
   //m.Use(render.Renderer())
   m.Use(render.Renderer(render.Options{
@@ -29,13 +44,22 @@ func main() {
       Domain string
       VisitCount  uint
     }
-    site := Site{Domain, 12}
+    site := Site{config.Domain, 12}
 
     r.HTML(200, "hello", struct{A,B string; Site Site}{ "Guesis", "bar", site })
     //return "<h1>Hello, world!</h1>"
   })
 
-  //m.Run()
-  http.ListenAndServe(":10005", m)
-}
+  m.Get("/download", func (r render.Render) {
+  })
 
+  m.Get("/support", func (r render.Render) {
+  })
+
+  m.Get("/tutorial", func (r render.Render) {
+  })
+
+  //m.Run()
+  http.ListenAndServe(fmt.Sprintf(":%s", config.Port), m)
+  //http.ListenAndServe(":10005", m)
+}
