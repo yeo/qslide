@@ -24,10 +24,9 @@ func loadConfiguration() *Configuration {
   return configuration;
 }
 
-var config *Configuration;
-
 func main() {
   //loadConfiguration(&config);
+  var config *Configuration;
   config = loadConfiguration();
   fmt.Printf("%s is domain", config.Port);
   fmt.Printf("Domain: %s", config.Domain);
