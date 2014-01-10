@@ -1,19 +1,101 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <meta name="keywords" content="six rows, html css iphone theme, iphone sales theme, iphone app theme, iphone app web template" />
+  <link REL="SHORTCUT ICON" HREF="images/favicon.ico">
+  <link rel="apple-touch-icon-precomposed" href="images/add-your-own-app-icon.png">
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="A set of small, responsive CSS modules that you can use in every web project.">
   <title>QSLide</title>
 
-<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css">
-<link rel="stylesheet" href="/combo/1.8.2?/css/main.css&/css/home.css&/css/rainbow/baby-blue.css">
+  <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css">
+  <link rel="stylesheet" href="/combo/1.8.2?/css/main.css&/css/home.css&/css/rainbow/baby-blue.css">
 
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,300' rel='stylesheet' type='text/css'>
 </head>
-<body>
 
-<div id="app"></div>
-{{ yield }}
+<body>
+	<header id="background"></header>
+
+  <section id="container">
+
+    <header>
+      <header id="left">
+        <img src="images/logo.png">
+        <p>A simple tool to control slideshow on <span class="bold">SpeakerDeck</span>,<a href="#">Slideshare</a> right on your iPhone, iPod, iPad.</p>
+        <a class="button" href="#">Download for <span class="bold">iPhone</span></a>
+        <p id="snippet">From the App Store</p>
+        <a class="button" href="javascript:(function(){var%20s=document.createElement('script');s.setAttribute('type','text/javascript');s.setAttribute('src','//{{.Site.Domain}}/javascripts/require.js');s.setAttribute('data-main','//{{.Site.Domain}}/javascripts/main.js');document.body.appendChild(s);})();">Install <span class="bold">bookmarklet</span></a>
+      </header>
+      <header id="right"><img src="images/homescreen.png"></header>
+    </header>
+
+    <section id="main">
+      
+      <h2>How it works</h2>  
+      <section class="box">
+        <p class="title">Add bookmarklet<span class="icon">Q</span></p>
+        <p class="info">Install the Instapaper bookmarklet by dragging it to your bookmark bar.</p>
+      </section><!-- END BOX -->
+
+      <section class="box">
+        <p class="title">Pairing the slide and your iPhone, iPad<span class="icon">a</span></p>
+        <p class="info">When you want to control a slide, click on bookmarklet icon. A form will open with a unique number. Enter this number on iPhone/iPad app to pair your phone with slide on browser.</p>
+      </section><!-- END BOX -->
+
+      <section class="boxnomargin">
+        <p class="title">Control right on lockscreen.<span class="icon">T</span></p>
+        <p class="info">Once connecting, you can control slideshow with navigation button or slider to jump quickly between slideshow. Similiar to Music or Podcast app, you can control slideshow on lockscreen.</p>
+      </section><!-- END BOX -->
+
+      <h2>Setup instruction</h2>  
+      <section class="box">
+        <p class="title">Secure<span class="icon">j</span></p>
+        <p class="info">Share your iPhone's homescreen with the world and inspire. Share your iPhone's homescreen.</p>
+      </section><!-- END BOX -->
+
+      <section class="box">
+        <p class="title">Download<span class="icon">H</span></p>
+        <p class="info">Share your iPhone's homescreen with the world and inspire. Share your iPhone's homescreen.</p>
+      </section><!-- END BOX -->
+
+      <section class="boxnomargin">
+        <p class="title">Purchase<span class="icon">d</span></p>
+        <p class="info">Share your iPhone's homescreen with the world and inspire. Share your iPhone's homescreen.</p>
+      </section><!-- END BOX -->
+
+      <section class="box">
+        <p class="title">Customize<span class="icon">P</span></p>
+        <p class="info">Share your iPhone's homescreen with the world and inspire. Share your iPhone's homescreen.</p>
+      </section><!-- END BOX -->
+
+      <section class="box">
+        <p class="title">Storage<span class="icon">z</span></p>
+        <p class="info">Share your iPhone's homescreen with the world and inspire. Share your iPhone's homescreen.</p>
+      </section><!-- END BOX -->
+
+      <section class="boxnomargin">
+        <p class="title">Pixels<span class="icon">"</span></p>
+        <p class="info">Share your iPhone's homescreen with the world and inspire. Share your iPhone's homescreen.</p>
+      </section><!-- END BOX -->
+
+    </section><!-- END MAIN -->
+
+    <div>
+      <div id="app"></div>
+      {{ yield }}
+    </div>
+
+    <footer>
+      <p class="left"><span class="bold">&copy; <a href="http://axcoto.com">Axcoto</a>.</span> All Rights Reserved.</p>
+      <p class="right"><a href="http://twitter.com/kureikain">Twitter</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="http://facebook.com/axcoto">Facebook</a></p>
+    </footer><!-- END FOOTER -->
+
+  </section><!-- END CONTAINER -->
 
 </body>
 </html>
