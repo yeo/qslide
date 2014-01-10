@@ -1,5 +1,5 @@
 {
-  "Domain": "slide.dev",
-  "path": "sas",
-  "port": "10005"
+  "Domain":"slide.dev",
+  "path":"sas",
+  "Port":"10005"
 }

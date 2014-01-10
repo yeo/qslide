@@ -15,19 +15,22 @@ type Configuration struct
   Port string;
 }
 
-func loadConfiguration(config *Configuration) {
+func loadConfiguration() *Configuration {
   file, _ := os.Open("config.json")
   decoder := json.NewDecoder(file)
   configuration := &Configuration{}
   decoder.Decode(&configuration)
   fmt.Println(configuration) 
+  return configuration;
 }
 
-var config Configuration;
+var config *Configuration;
 
 func main() {
-  loadConfiguration(&config);
-  fmt.Sprintf("Domain: %s", config.Domain);
+  //loadConfiguration(&config);
+  config = loadConfiguration();
+  fmt.Printf("%s is domain", config.Port);
+  fmt.Printf("Domain: %s", config.Domain);
   m := martini.Classic()
   //m.Use(render.Renderer())
   m.Use(render.Renderer(render.Options{
