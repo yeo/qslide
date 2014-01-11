@@ -8,7 +8,7 @@ require 'mina/git'
 
 set :user, 'kurei'
 set :domain, 'qslide.axcoto.com'
-set :deploy_to, '*'
+set :deploy_to, "#{ENV['AXCOTO_SRV_DIR']}qslide.axcoto.com"
 set :repository, 'https://github.com/qSlide/qslide.git'
 set :branch, 'master'
 set :keep_releases, 1 
@@ -65,11 +65,18 @@ task :deploy => :environment do
     #invoke :'bundle:install'
     #invoke :'rails:db_migrate'
     #invoke :'rails:assets_precompile'
-
+  
+    queue "curl -d \"room_id=qSlide&from=BuildBot&message=Build+Status:+Passing&color=green\" https://api.hipchat.com/v1/rooms/message?auth_token=2ae557614c0fae56e176ae7e282bcb&format=json"
+    
     to :launch do
+      kill the old ones
+      queue "killall qs"
+
+      queue "curl -d \"room_id=qSlide&from=BuildBot&message=Deploy+Status:+Starting&color=green\" \"https://api.hipchat.com/v1/rooms/message?auth_token=2ae557614c0fae56e176ae7e282bcb&format=json\""
       queue "export GOPATH=\"/home/kurei/go\";cd #{deploy_to}/current && go build qs.go"
       #queue "touch #{deploy_to}/tmp/restart.txt"
       queue "#{deploy_to}/current/qs &"
+      queue "curl -d \"room_id=qSlide&from=BuildBot&message=Deploy+Status:+Done&color=green\" \"https://api.hipchat.com/v1/rooms/message?auth_token=2ae557614c0fae56e176ae7e282bcb&format=json\""
     end
 
     invoke :'deploy:cleanup'
