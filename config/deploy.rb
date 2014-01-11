@@ -15,7 +15,7 @@ set :keep_releases, 1
 
 # Manually create these paths in shared/ (eg: shared/config/database.yml) in your server.
 # They will be linked in the 'deploy:link_shared_paths' step.
-set :shared_paths, ['config.json', 'wp-content/uploads', 'sitemap.xml', 'sitemap.gz']
+set :shared_paths, ['config.json']
 
 # Optional settings:
 #   set :user, 'foobar'    # Username in the server to SSH to.
@@ -36,17 +36,6 @@ end
 # For Rails apps, we'll make some of the shared paths that are shared between
 # all releases.
 task :setup => :environment do
-
-  queue! %[mkdir -p "#{deploy_to}/shared/wp-content"]
-  queue! %[ln -s /srv/http/media/blog/uploads "#{deploy_to}/shared/wp-content/uploads"]
-  queue! %[chmod g+rx,u+rwx "#{deploy_to}/shared/wp-content/uploads"]
-  
-  queue! %[touch "#{deploy_to}/shared/sitemap.xml"]
-  queue! %[chmod g+rwx,u+rwx "#{deploy_to}/shared/sitemap.xml"]
-   
-  queue! %[touch "#{deploy_to}/shared/sitemap.gz"]
-  queue! %[chmod g+rwx,u+rwx "#{deploy_to}/shared/sitemap.gz"]
-  
   queue! %[touch "#{deploy_to}/shared/wp-config.php"]
   queue  %[echo "-----> Be sure to edit 'shared/wp-config.php'."]
 
