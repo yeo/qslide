@@ -7,12 +7,15 @@ import (
   "github.com/codegangsta/martini-contrib/render"
   "os"
   "encoding/json"
+  "github.com/sirsean/go-mailgun/mailgun"
 )
 
 type Configuration struct
 {
   Domain string;
   Port string;
+  MG_API_KEY string;
+  MG_DOMAIN string;
 }
 
 func loadConfiguration() *Configuration {
@@ -24,8 +27,8 @@ func loadConfiguration() *Configuration {
   return configuration;
 }
 
+
 func main() {
-  //loadConfiguration(&config);
   var config *Configuration;
   config = loadConfiguration();
   fmt.Printf("%s is domain", config.Port);
@@ -56,6 +59,26 @@ func main() {
   })
 
   m.Get("/support", func (r render.Render) {
+    var config *Configuration
+    config = loadConfiguration()
+    mg_client := mailgun.NewClient(config.MG_API_KEY, config.MG_DOMAIN)
+    message1 := mailgun.Message{
+      FromName: "QSlider",
+      FromAddress: "qslide@mg.axcoto.com",
+      ToAddress: "kureikain@gmail.com",
+      Subject: "Go Mailgun sample message",
+      Body: "It's *way* easy to send messages via the Go Mailgun API!",
+    }
+
+    fmt.Println("Attempting to send to ", mg_client.Endpoint(message1))
+
+    body, err := mg_client.Send(message1)
+    if err != nil {
+      fmt.Println("Got an error:", err)
+    } else {
+      fmt.Println(body)
+    }
+
   })
 
   m.Get("/tutorial", func (r render.Render) {
