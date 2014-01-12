@@ -8,6 +8,8 @@ import (
   "os"
   "encoding/json"
   "github.com/sirsean/go-mailgun/mailgun"
+  "math/rand"
+  "log"
 )
 
 type Configuration struct
@@ -50,26 +52,31 @@ func main() {
       VisitCount  uint
     }
     site := Site{config.Domain, 12}
-
-    r.HTML(200, "hello", struct{A,B string; Site Site}{ "Guesis", "bar", site })
+    rand := rand.New(rand.NewSource(99))
+    
+    r.HTML(200, "hello", struct{A,B, CSRF string; Site Site}{ "Guesis", "bar", fmt.Sprintf("%f", rand.Float64()*1000000), site })
     //return "<h1>Hello, world!</h1>"
   })
 
   m.Get("/download", func (r render.Render) {
   })
 
-  m.Get("/support", func (r render.Render) {
+  m.Post("/support", func (res http.ResponseWriter, req *http.Request, params martini.Params) {
     var config *Configuration
     config = loadConfiguration()
     mg_client := mailgun.NewClient(config.MG_API_KEY, config.MG_DOMAIN)
+
+    req.ParseForm()
+    p := req.Form
+    log.Println(req.Form)
     message1 := mailgun.Message{
       FromName: "QSlider",
       FromAddress: "qslide@mg.axcoto.com",
       ToAddress: "kureikain@gmail.com",
-      Subject: "Go Mailgun sample message",
-      Body: "It's *way* easy to send messages via the Go Mailgun API!",
+      Subject: "Ticket on qslide.axcoto.com",
+      Body: "Contact from: " + p["youremail"][0] + " with content: \n<br />" + p["content"][0],
     }
-
+    
     fmt.Println("Attempting to send to ", mg_client.Endpoint(message1))
 
     body, err := mg_client.Send(message1)
@@ -77,8 +84,8 @@ func main() {
       fmt.Println("Got an error:", err)
     } else {
       fmt.Println(body)
+      http.Redirect(res, req, "http://slide.dev", http.StatusTemporaryRedirect) 
     }
-
   })
 
   m.Get("/tutorial", func (r render.Render) {
