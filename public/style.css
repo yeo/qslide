@@ -236,8 +236,6 @@ p#snippet {
 }
 
 header#right {
-	width: 417px;
-	height: 433px;
 	background-image: url(images/iphone.png);
 	background-size: 417px 433px;
 	margin-top: 67px;
@@ -292,9 +290,8 @@ header#right img {
 /*------ MAIN ------*/
 
 #main {
-	width: 100%;
 	border-bottom: 1px solid #e0e0e0;
-	margin-bottom: 40px;
+	margin: 40px 0;
 }
 
 .box {
@@ -346,4 +343,36 @@ p.right a {
 
 p.right a:hover {
 	opacity: 1;
+}
+
+
+
+
+
+
+
+
+
+
+.notification {
+  background: none repeat scroll 0 0 #1F8DD6;
+  border-radius: 3px;
+  color: #FFFFFF;
+  padding: 0.3em 1em;
+}
+
+.hero {
+  text-align: center;
+  /*background: #fafafa;*/
+}
+
+.hero-titles {
+  font-family: "omnes-pro",sans-serif;
+}
+
+.hero h2 {
+  color: #666666;
+  font-size: 260%;
+  font-weight: 100;
+  margin: 0.25em 0;
 }
