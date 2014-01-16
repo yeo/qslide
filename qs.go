@@ -102,7 +102,7 @@ func main() {
       } else {
         fmt.Println(body)
         session.Set("FlashMessage", "Message sent")
-        http.Redirect(res, req, config.Domain, 302) 
+        http.Redirect(res, req, "/", 302) 
         //http.Redirect(res, req, "http://slide.dev", http.StatusTemporaryRedirect) 
       }
     }
