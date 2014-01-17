@@ -7,8 +7,6 @@ require.config({
         bootstrap: 'bootstrap.min',
         'underscore': 'underscore-min',
         'backbone': 'backbone-min',
-        buzz: 'buzz',
-        parse: 'parse-1.2.0.min',
         'localStorage': 'backbone.localStorage-min',
         firebase: '//cdn.firebase.com/v0/firebase'
     }
@@ -56,23 +54,11 @@ require.config({
                 // 'jquery'
             ]
              //,"exports": "transform"
-        },
-
-        'buzz': {
-            exports: 'buzz'
         }
 
-        ,worker: {
-            exports : 'worker'
-        },
-
-        'parse': {
-            exports: 'Parse'
-        }
     }
 })
 
-require(['app'], function (app) {
-    console.log('Start');
-    app.init();
+require(['front'], function (app) {
+  app.init()
 })

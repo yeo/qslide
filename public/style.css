@@ -58,6 +58,7 @@ a {
 	font-family: 'Open Sans';
 	font-size: 14px;
 	color: #5d6778;
+  text-decoration: none;
 }
 
 .bold {
@@ -91,9 +92,9 @@ header#background {
 	z-index: -9999;
 }
 
-header#left {
-	width: 220px;
-	margin-top: 130px;
+header#apava {
+	/*margin: 130px 20px 0 20px;*/
+  padding:130px 50px 0;
 	-webkit-animation-name: headerleftAnim;
     -moz-animation-name: headerleftAnim;
     -ms-animation-name: headerleftAnim;
@@ -115,6 +116,7 @@ header#left {
 	-o-animation-duration: 0.75s;
 	animation-duration: 0.75s;
 	z-index: 999;
+  text-align:center;
 }
 
 @-webkit-keyframes headerleftAnim {
@@ -137,11 +139,11 @@ header#left {
 	100% { opacity: 1; -webkit-transform: translateX(0px); }
 }
 
-header#left img {
+header#apava img {
 	margin-bottom: 30px;
 }
 
-header#left p {
+header#apava p {
 	margin-bottom: 50px;
 }
 
@@ -175,7 +177,7 @@ p#snippet {
 	opacity: 0.75;
 }
 
-header#right {
+header#appro {
 	background-image: url(images/phone_small.png);
 	background-size: 320px 673px;
   width: 320px;
@@ -201,9 +203,14 @@ header#right {
 	-o-animation-duration: 0.75s;
 	animation-duration: 0.75s;
 	z-index: 999;
+  position: relative;
 }
-header#right img {
+header#appro img {
+  display: block;
+  position: absolute;
 	margin: 98px 0 0 29px;
+  top: 0;
+  left: 0;
 }
 
 
