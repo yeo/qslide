@@ -1,65 +1,5 @@
 @charset "UTF-8";
-
-/*-----------------------------------------------------------------------------------
-
-	Author: @ben_bate
-	Author URL: http://benbate.com
-	
------------------------------------------------------------------------------------*/
-
-
-/*------ CSS RESET ------*/
-
-/*html, body, div, span, applet, object, iframe,*/
-/*h1, h2, h3, h4, h5, h6, p, blockquote, pre,*/
-/*a, abbr, acronym, address, big, cite, code,*/
-/*del, dfn, em, img, ins, kbd, q, s, samp,*/
-/*small, strike, strong, sub, sup, tt, var,*/
-/*b, u, i, center,*/
-/*dl, dt, dd, ol, ul, li,*/
-/*fieldset, form, label, legend,*/
-/*table, caption, tbody, tfoot, thead, tr, th, td,*/
-/*article, aside, canvas, details, embed, */
-/*figure, figcaption, footer, header, hgroup, */
-/*menu, nav, output, ruby, section, summary,*/
-/*time, mark, audio, video {*/
-	/*margin: 0;*/
-	/*padding: 0;*/
-	/*border: 0;*/
-	/*font-size: 100%;*/
-	/*font: inherit;*/
-	/*vertical-align: baseline;*/
-	/*text-decoration: none;*/
-/*}*/
-/*article, aside, details, figcaption, figure, */
-/*footer, header, hgroup, menu, nav, section {*/
-	/*display: block;*/
-/*}*/
-/*body {*/
-	/*line-height: 1;*/
-/*}*/
-/*ol, ul {*/
-	/*list-style: none;*/
-/*}*/
-/*blockquote, q {*/
-	/*quotes: none;*/
-/*}*/
-/*blockquote:before, blockquote:after,*/
-/*q:before, q:after {*/
-	/*content: '';*/
-	/*content: none;*/
-/*}*/
-/*table {*/
-	/*border-collapse: collapse;*/
-	/*border-spacing: 0;*/
-/*}*/
-
-
-/*------ BEGIN MAIN CSS ------*/
-
-
 /*------ GENERAL ------*/
-
 @font-face { font-family: 'TI'; src: url('fonts/typicons-regular-webfont.ttf'); } 
 
 body {
@@ -133,9 +73,9 @@ a {
 }
 
 #container {
-	width: 700px;
+	width: 960px;
 	height: auto;
-	margin: 0 auto;
+	margin: 20px auto;
 }
 
 
@@ -236,9 +176,10 @@ p#snippet {
 }
 
 header#right {
-	background-image: url(images/iphone.png);
-	background-size: 417px 433px;
-	margin-top: 67px;
+	background-image: url(images/phone_small.png);
+	background-size: 320px 673px;
+  width: 320px;
+  height: 673px;
 	-webkit-animation-name: headerrightAnim;
     -moz-animation-name: headerrightAnim;
     -ms-animation-name: headerrightAnim;
@@ -261,6 +202,10 @@ header#right {
 	animation-duration: 0.75s;
 	z-index: 999;
 }
+header#right img {
+	margin: 98px 0 0 29px;
+}
+
 
 @-webkit-keyframes headerrightAnim {
 	0%   { opacity: 0; -webkit-transform: translateX(100px); }
@@ -280,10 +225,6 @@ header#right {
 @keyframes headerrightAnim {
 	0%   { opacity: 0; -webkit-transform: translateX(100px); }
 	100% { opacity: 1; -webkit-transform: translateX(0px); }
-}
-
-header#right img {
-	margin: 133px 0 0 39px;
 }
 
 
@@ -374,5 +315,37 @@ p.right a:hover {
   color: #666666;
   font-size: 260%;
   font-weight: 100;
-  margin: 0.25em 0;
+}
+
+/**
+ * Color bar
+ *
+ */
+.colorbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
+}
+.colorbar > div {
+  height: 8px;
+}
+
+.colorbar > div:nth-child(6n) {
+  background: #67C2F0; 
+}
+.colorbar > div:nth-child(6n+1) {
+  background: #8058A5;
+}
+.colorbar > div:nth-child(6n+2) {
+  background: #5EB95E;
+}
+.colorbar > div:nth-child(6n+3) {
+  background:#DD514C;
+}
+.colorbar > div:nth-child(6n+4) {
+  background: #F37B1D;
+}
+.colorbar > div:nth-child(6n+5) {
+  background: #FAD232;
 }
