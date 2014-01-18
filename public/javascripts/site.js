@@ -1,7 +1,6 @@
 require.config({
     baseUrl: "/javascripts"
     
-    // Libraries
     ,paths: {
         jquery: 'jquery.min',
         bootstrap: 'bootstrap.min',
@@ -23,14 +22,6 @@ require.config({
             "exports": "_"
         },
 
-        "easing" : {
-            // "deps": ["jquery"],
-        },
-
-        "bootstrap" : {
-            // "deps": ["jquery"],
-        },
-
         "backbone": {
             // Depends on underscore/lodash and jQuery
             "deps": ["underscore"], //, "jquery"],
@@ -48,14 +39,6 @@ require.config({
             // Depends on underscore/lodash and jQuery
             "deps": ["backbone"]
         },
-
-        'transform': {
-            deps: [
-                // 'jquery'
-            ]
-             //,"exports": "transform"
-        }
-
     }
 })
 
