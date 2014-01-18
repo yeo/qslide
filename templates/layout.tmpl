@@ -14,28 +14,25 @@
   <title>QSLide</title>
 
   <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css">
-  <link rel="stylesheet" href="/combo/1.8.2?/css/main.css&/css/home.css&/css/rainbow/baby-blue.css">
-
   <link href="style.css" rel="stylesheet" type="text/css" />
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,300' rel='stylesheet' type='text/css'>
 </head>
 
-<body>
-
-<div class="colorbar pure-g-r">
-  <div class="colorbar-yellow pure-u-1-12"></div>
-  <div class="colorbar-amber pure-u-1-12"></div>
-  <div class="colorbar-orange pure-u-1-12"></div>
-  <div class="colorbar-sunset pure-u-1-12"></div>
-  <div class="colorbar-red pure-u-1-12"></div>
-  <div class="colorbar-fuchsia pure-u-1-12"></div>
-  <div class="colorbar-purple pure-u-1-12"></div>
-  <div class="colorbar-indigo pure-u-1-12"></div>
-  <div class="colorbar-blue pure-u-1-12"></div>
-  <div class="colorbar-aqua pure-u-1-12"></div>
-  <div class="colorbar-green pure-u-1-12"></div>
-  <div class="colorbar-lime pure-u-1-12"></div>
-</div>
+<body class="page-front">
+  <div class="colorbar pure-g-r">
+    <div class="colorbar-yellow pure-u-1-12"></div>
+    <div class="colorbar-amber pure-u-1-12"></div>
+    <div class="colorbar-orange pure-u-1-12"></div>
+    <div class="colorbar-sunset pure-u-1-12"></div>
+    <div class="colorbar-red pure-u-1-12"></div>
+    <div class="colorbar-fuchsia pure-u-1-12"></div>
+    <div class="colorbar-purple pure-u-1-12"></div>
+    <div class="colorbar-indigo pure-u-1-12"></div>
+    <div class="colorbar-blue pure-u-1-12"></div>
+    <div class="colorbar-aqua pure-u-1-12"></div>
+    <div class="colorbar-green pure-u-1-12"></div>
+    <div class="colorbar-lime pure-u-1-12"></div>
+  </div>
 
 	<header id="background"></header>
   
@@ -46,58 +43,40 @@
         <header id="apava"> <!-- app avatar -->
           <img src="/images/qslider_xs.png" width="128" height="128"  alt="QSlider - Turn your phone into a slideshow remote control"/>
           <p>A simple tool to control slideshow on <strong>SpeakerDeck</strong>, <strong>Slideshare</strong>, <strong>Rabbit</strong> and more right on your iPhone, iPod or iPad.</p>
-          <a class="button" href="/download">Download for <span class="bold">iPhone</span></a>
-          <p id="snippet">From the App Store</p>
-          <a class="button" href="javascript:(function(){var%20s=document.createElement('script');s.setAttribute('type','text/javascript');s.setAttribute('src','//{{.Site.Domain}}/javascripts/require.js');s.setAttribute('data-main','//{{.Site.Domain}}/javascripts/main.js');document.body.appendChild(s);})();">Install <span class="bold">bookmarklet</span></a>
+          <a class="pure-button pure-button-primary pure-button-xlarge" href="/download">Download for <span class="bold">iPhone</span></a>
+          <p>$1.99 on AppStore for iPhone, iPod, iPad</p>
+          <a class="pure-button pure-button-success pure-button-xlarge" href="javascript:(function(){var%20s=document.createElement('script');s.setAttribute('type','text/javascript');s.setAttribute('src','//{{.Site.Domain}}/javascripts/require.js');s.setAttribute('data-main','//{{.Site.Domain}}/javascripts/main.js');document.body.appendChild(s);})();">Install <span class="bold">bookmarklet</span></a>
+          <p>Drag into toolbar to install</p>
         </header>
       </div>      
       <div class="pure-u-1-2">
           <header id="appro"> <!-- appintro -->
-            <img src="/screenshot/1.png" alt="Home screen" />
-            <img src="/screenshot/2.png" alt="Control screen" />
-            <img src="/screenshot/3.png" alt="Control right on lock screen" />
+            <img width="270" height="479" data-g-tip="135,250" src="/screenshot/1.png" alt="Home screen" />
+            <img width="270" height="479" data-g-tip="20,385" src="/screenshot/2.png" alt="Control screen" />
+            <img width="270" height="479" data-g-tip="260,287" src="/screenshot/3.png" alt="Control right on lock screen" />
           </header>
         </div>    
       </header>
 
       <section id="main">
         {{if .FlashMessage}}
-        <div class="ntofication">{{.FlashMessage}}</div>
+        <div class="notification">{{.FlashMessage}}</div>
         {{end}}
         {{ yield }}
       </section><!-- END MAIN -->
-      <footer>
-        <p class="left"><span class="bold">&copy; <a href="http://axcoto.com">Axcoto</a></span></p>
-        <p class="right">
+      <footer class="pure-g-r">
+        <div class="pure-u-1-4">
+          <p ><span class="bold">&copy; <a href="http://axcoto.com">Axcoto</a></span></p>
+          <a href="https://mixpanel.com/f/partner"><img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" /></a>
+        </div>  
+        <div class="pure-u-3-4">
           Follow us on twitter or facebook for support and get more update.<br />
           <a href="http://twitter.com/axcoto">Twitter</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="http://facebook.com/axcoto">Facebook</a>
-        </p>
-      </footer><!-- END FOOTER -->
+        </div>
+              </footer><!-- END FOOTER -->
 
     </section><!-- END CONTAINER -->
     <script src="/javascripts/require.js" data-main="/javascripts/site.js"></script>
-
-  <!-- begin olark code -->
-  <script data-cfasync="false" type='text/javascript'>/*<![CDATA[*/window.olark||(function(c){var f=window,d=document,l=f.location.protocol=="https:"?"https:":"http:",z=c.name,r="load";var nt=function(){
-  f[z]=function(){
-  (a.s=a.s||[]).push(arguments)};var a=f[z]._={
-  },q=c.methods.length;while(q--){(function(n){f[z][n]=function(){
-  f[z]("call",n,arguments)}})(c.methods[q])}a.l=c.loader;a.i=nt;a.p={
-  0:+new Date};a.P=function(u){
-  a.p[u]=new Date-a.p[0]};function s(){
-  a.P(r);f[z](r)}f.addEventListener?f.addEventListener(r,s,false):f.attachEvent("on"+r,s);var ld=function(){function p(hd){
-  hd="head";return["<",hd,"></",hd,"><",i,' onl' + 'oad="var d=',g,";d.getElementsByTagName('head')[0].",j,"(d.",h,"('script')).",k,"='",l,"//",a.l,"'",'"',"></",i,">"].join("")}var i="body",m=d[i];if(!m){
-  return setTimeout(ld,100)}a.P(1);var j="appendChild",h="createElement",k="src",n=d[h]("div"),v=n[j](d[h](z)),b=d[h]("iframe"),g="document",e="domain",o;n.style.display="none";m.insertBefore(n,m.firstChild).id=z;b.frameBorder="0";b.id=z+"-loader";if(/MSIE[ ]+6/.test(navigator.userAgent)){
-  b.src="javascript:false"}b.allowTransparency="true";v[j](b);try{
-  b.contentWindow[g].open()}catch(w){
-  c[e]=d[e];o="javascript:var d="+g+".open();d.domain='"+d.domain+"';";b[k]=o+"void(0);"}try{
-  var t=b.contentWindow[g];t.write(p());t.close()}catch(x){
-  b[k]=o+'d.write("'+p().replace(/"/g,String.fromCharCode(92)+'"')+'");d.close();'}a.P(2)};ld()};nt()})({
-  loader: "static.olark.com/jsclient/loader0.js",name:"olark",methods:["configure","extend","declare","identify"]});
-  /* custom configuration goes here (www.olark.com/documentation) */
-  olark.identify('6861-706-10-5495');/*]]>*/</script><noscript><a href="https://www.olark.com/site/6861-706-10-5495/contact" title="Contact us" target="_blank">Questions? Feedback?</a> powered by <a href="http://www.olark.com?welcome" title="Olark live chat software">Olark live chat software</a></noscript>
-  <!-- end olark code -->
-
 </body>
 </html>

@@ -86,7 +86,7 @@ header#background {
 	position: absolute;
 	top: 0;
 	left: 0;
-	height: 500px;
+	height: 800px;
 	width: 100%;
 	background-color: #EEF4F7;
 	z-index: -9999;
@@ -204,6 +204,10 @@ header#appro {
 	animation-duration: 0.75s;
 	z-index: 999;
   position: relative;
+
+  -moz-transition: left 1.5s ease-in-out;
+  -webkit-transition: left 1.5s ease-in-out;
+  transition: left 1.5s ease-in-out;
 }
 header#appro img {
   display: block;
@@ -211,6 +215,11 @@ header#appro img {
 	margin: 98px 0 0 29px;
   top: 0;
   left: 0;
+
+-moz-transition: left 1.5s ease-in-out;
+-webkit-transition: left 1.5s ease-in-out;
+transition: left 1.5s ease-in-out;
+
 }
 
 
@@ -246,11 +255,14 @@ header#appro img {
 	margin: 0px 65px 50px 0px;
 }
 
-.boxnomargin {
-	width: 190px;
-	height: 120px;
-	float: left;
-	margin: 0px 0px 50px 0px;
+.box h1 {
+  width: 60px;
+  height: 60px;
+  border-radius: 60px;
+  border: 2px solid #8058A5;
+  text-align:center;
+  line-height: 2em;
+  margin: auto;
 }
 
 p.title {
@@ -356,3 +368,112 @@ p.right a:hover {
 .colorbar > div:nth-child(6n+5) {
   background: #FAD232;
 }
+
+/**
+ * Twingle module
+ */
+.twinkle {
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  background: #8058A5;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display:none;
+  z-index: 9999;
+  margin: 98px 0 0 29px;  
+}
+
+/**
+ * Button module
+ */
+.pure-button-success,
+        .pure-button-error,
+        .pure-button-warning,
+        .pure-button-secondary {
+            color: white;
+            border-radius: 4px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        .pure-button-success {
+            background: rgb(28, 184, 65); /* this is a green */
+        }
+
+        .pure-button-error {
+            background: rgb(202, 60, 60); /* this is a maroon */
+        }
+
+        .pure-button-warning {
+            background: rgb(223, 117, 20); /* this is an orange */
+        }
+
+        .pure-button-secondary {
+            background: rgb(66, 184, 221); /* this is a light blue */
+        }
+.pure-button-xsmall {
+            font-size: 70%;
+        }
+
+        .pure-button-small {
+            font-size: 85%;
+        }
+
+        .pure-button-large {
+            font-size: 110%;
+        }
+
+        .pure-button-xlarge {
+            font-size: 125%;
+        }
+
+.pure-button-a {
+    background: #e1f2fa;
+    color: #5992aa;
+}
+
+.pure-button-b {
+    background: #fcebbd;
+    color: #af9540;
+}
+
+.pure-button-c,
+.pure-button-d,
+.pure-button-e {
+    border-radius: 8px;
+}
+
+.pure-button-f,
+.pure-button-g,
+.pure-button-h {
+    border-radius: 20px;
+}
+
+.pure-button-c {
+    background: #333;
+    color: #fff;
+}
+.pure-button-d {
+    background: #d3eda3;
+    color: #72962e;
+}
+
+.pure-button-e {
+    background: #f5ab9e;
+    color: #8c3a2b;
+}
+.pure-button-f {
+    background: #ddaeff;
+    color: #8156a7;
+}
+
+.pure-button-g {
+    background: #f57b00;
+    color: #ffca95;
+}
+
+.pure-button-h {
+    background: #008ed4;
+    color: #fff;
+}        
