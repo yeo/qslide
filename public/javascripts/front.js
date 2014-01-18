@@ -35,7 +35,7 @@
           var p = $j('img', that.el).first().data('g-tip').split(',')
           console.log(that.pointer)
           console.log(p)
-          that.pointer.css({top: p[0]+'px', left: p[1]+'px'}).fadeIn(500, function () {
+          that.pointer.css({left: p[0]+'px', top: p[1]+'px'}).fadeIn(500, function () {
 
             that.pointer.css({top: (parseInt(p[0]) + 1)+'px', left: (parseInt(p[1])+1)+'px'})
             setTimeout(function() {

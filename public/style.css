@@ -216,10 +216,10 @@ header#appro img {
   top: 0;
   left: 0;
 
--moz-transition: left 1.5s ease-in-out;
--webkit-transition: left 1.5s ease-in-out;
-transition: left 1.5s ease-in-out;
-
+  -moz-transition: left 1.5s ease-in-out;
+  -webkit-transition: left 1.5s ease-in-out;
+  transition: left 1.5s ease-in-out;
+  z-index: 10;
 }
 
 
