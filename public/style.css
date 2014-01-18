@@ -252,9 +252,8 @@ transition: left 1.5s ease-in-out;
 }
 
 .box {
-	margin: 0px 65px 50px 0px;
+  margin: 0 0 5em 0;
 }
-
 .box h1 {
   width: 60px;
   height: 60px;
