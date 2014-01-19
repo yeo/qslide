@@ -37,8 +37,8 @@
           console.log(p)
           that.pointer.css({left: p[0]+'px', top: p[1]+'px'}).fadeIn(500, function () {
 
-            that.pointer.css({top: (parseInt(p[0]) + 1)+'px', left: (parseInt(p[1])+1)+'px'})
-            setTimeout(function() {
+            that.pointer.css({left: (parseInt(p[0]) + 1)+'px', top: (parseInt(p[1])+1)+'px'})
+            //setTimeout(function() {
               that.pointer.fadeOut(100, function () {
                 $('#appro > img:first')
                   .fadeOut(1000)
@@ -47,7 +47,7 @@
                   .end()
                   .appendTo('#appro')
               })
-            }, 500)   
+            //}, 500)   
           
           })
         },  3000); 

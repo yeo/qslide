@@ -49,9 +49,9 @@ body {
 
 p {
 	font-family: 'Open Sans';
-	font-size: 14px;
+	font-size: 18px;
 	color: #5d6778;
-	line-height: 20px;
+	line-height: 1.3em;
 }
 
 a {
@@ -476,3 +476,10 @@ p.right a:hover {
     background: #008ed4;
     color: #fff;
 }        
+
+/**
+ * Head line
+ */
+.headline {
+  text-align: center;
+}
