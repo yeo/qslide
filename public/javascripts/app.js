@@ -45,7 +45,7 @@
         "click .js-toggle-board": 'toggleBoard'
       },
       render: function() {
-        this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('width', 30).css('height', 10).css('left', 10).css('bottom', 30).css('background', '#FEE19B').css('color', '#ccc');
+        this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('width', 30).css('height', 10).css('left', 10).css('bottom', 30).css('background', '#666').css('color', '#ccc');
         this.$el.html(this.template({
           device: this.device
         }));
@@ -72,10 +72,10 @@
       className: 'qcommander',
       id: 'qcommander',
       template: _.template('\
-    <h4 class="js-close-welcome">Close</h4>\
-\
-    <h4>More detail help</h4>\
-    <h4>Slideshow Token: <%= token %> </h4><img src="<%= bc %>" alt="Waiting for token" />\
+    <h4 class="js-close-welcome" style="position: absolute; right: 5px; top: 10px; text-align: right;">Close</h4>\
+    <!-- <h4>More detail help</h4> -->\
+    <h1>Slide ID: <%= token %> </h1>\
+    <img src="<%= bc %>" alt="Waiting for token" />\
     '),
       uuid: function() {
         var S4;
@@ -202,11 +202,11 @@
         that = this;
         code = {
           token: uuid,
-          url: window.location.href,
+          url: escape(window.location.href),
           provider: window.location.host
         };
         this.localStorage('token', code.token);
-        bc = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=" + (encodeURI(JSON.stringify(code))) + "&choe=UTF-8";
+        bc = "https://chart.googleapis.com/chart?chs=350x350&cht=qr&chl=" + (encodeURI(JSON.stringify(code))) + "&choe=UTF-8";
         this.connection = new Connection(code);
         this.connection.set('bc', bc);
         this.remote = new Remote(code.url);
@@ -240,7 +240,7 @@
         return this.render();
       },
       render: function() {
-        this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('width', 800).css('height', 700).css('left', '50%').css('margin-left', '-350px').css('top', 0).css('background', '#FEE19B').css('color', '#ccc');
+        this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('width', 800).css('height', 700).css('left', '50%').css('margin-left', '-350px').css('top', 0).css('background', '#666').css('color', '#ccc');
         this.$el.html(this.template(this.connection.attributes));
         (typeof console !== "undefined" && console !== null) && console.log(this.$el);
         $('body').append(this.$el);
