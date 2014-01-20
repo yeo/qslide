@@ -4,7 +4,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localStorage'], function($_, _, Backbone, sha1, __Firebase__) {
+  define(['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'], function($_, _, Backbone, sha1, __Firebase__) {
     var AppView, Command, CommandQueue, Connection, RabbitRemote, Remote, RemoteControlDriver, ScribdRemote, Slide, SlideshareRemote, SpeakerdeskRemote, ToggleView, WelcomeView;
     Connection = Backbone.Model.extend({
       defaults: {

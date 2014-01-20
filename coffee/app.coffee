@@ -1,14 +1,12 @@
 'use strict'
 
-define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'localStorage'],  ($_, _, Backbone, sha1, __Firebase__) ->
+define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _, Backbone, sha1, __Firebase__) ->
   Connection = Backbone.Model.extend
     defaults: 
       from: 'unknow'
     initialize: () ->
       console && console.log "Start a connection"
       this.on 'change:from', (model) ->
-
-        
 
   Slide = Backbone.Model.extend({})
 

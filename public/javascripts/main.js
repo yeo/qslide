@@ -11,7 +11,7 @@ require.config({
         buzz: 'buzz',
         parse: 'parse-1.2.0.min',
         'localStorage': 'backbone.localStorage-min',
-        firebase: '//cdn.firebase.com/v0/firebase'
+        firebase: 'firebase'
     }
 
     ,shim: {
