@@ -1,0 +1,11 @@
+[Unit]
+Description=QSlider app
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=/run/qs.pid
+ExecStart=/current/qs
+
+[Install]
+WantedBy=multi-user.target
