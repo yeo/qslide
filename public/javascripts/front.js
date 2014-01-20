@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  define(['jquery-private', 'underscore', 'backbone', 'firebase', 'localStorage'], function($j, _, Backbone,  __Firebase__) {
+  define(['jquery-private', 'underscore', 'backbone' ], function($j, _, Backbone) {
     var $ = $j
     Backbone.$ = $j
 

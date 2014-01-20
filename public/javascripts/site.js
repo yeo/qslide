@@ -1,5 +1,6 @@
 require.config({
-    baseUrl: "/javascripts"
+    baseUrl: "//slide.dev/javascripts/"
+    //baseUrl: "//https://axcoto.com/qslider/javascripts/"
     
     ,paths: {
         jquery: 'jquery.min',
