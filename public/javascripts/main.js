@@ -1,5 +1,6 @@
 require.config({
     baseUrl: "//slide.dev/javascripts"
+    //baseUrl: "//https://axcoto.com/qslider/javascripts/"
     
     // Libraries
     ,paths: {
@@ -73,6 +74,5 @@ require.config({
 })
 
 require(['app'], function (app) {
-    console.log('Start');
     app.init();
 })
