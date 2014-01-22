@@ -397,6 +397,10 @@ p.right a:hover {
   cursor: pointer;
   padding: 0.5em 1.5em;
 }
+.pure-button {
+  -webkit-user-drag: auto;
+
+}
 .pure-button-success,
         .pure-button-error,
         .pure-button-warning,
