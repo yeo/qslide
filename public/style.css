@@ -387,6 +387,16 @@ p.right a:hover {
 /**
  * Button module
  */
+.bookmarklet-button {
+  display: inline-block;
+  zoom: 1;
+  line-height: normal;
+  white-space: nowrap;
+  vertical-align: baseline;
+  text-align: center;
+  cursor: pointer;
+  padding: 0.5em 1.5em;
+}
 .pure-button-success,
         .pure-button-error,
         .pure-button-warning,
