@@ -1,78 +1,78 @@
 require.config({
-    baseUrl: "//slide.dev/javascripts"
-    //baseUrl: "//https://axcoto.com/qslider/javascripts/"
-    
-    // Libraries
+  baseUrl: "//slide.dev/javascripts"
+  //baseUrl: "//https://axcoto.com/qslider/javascripts/"
+
+  // Libraries
     ,paths: {
-        jquery: 'jquery.min',
-        bootstrap: 'bootstrap.min',
-        'underscore': 'underscore-min',
-        'backbone': 'backbone-min',
-        buzz: 'buzz',
-        parse: 'parse-1.2.0.min',
-        'localStorage': 'backbone.localStorage-min',
-        firebase: 'firebase'
+  jquery: 'jquery.min',
+  bootstrap: 'bootstrap.min',
+  'underscore': 'underscore-min',
+  'backbone': 'backbone-min',
+  buzz: 'buzz',
+  parse: 'parse-1.2.0.min',
+  'localStorage': 'backbone.localStorage-min',
+  firebase: 'firebase'
     }
 
     ,shim: {
-        '*': { 'jquery': 'jquery-private' },
-        'jquery-private': { 'jquery': 'jquery' },
+  '*': { 'jquery': 'jquery-private' },
+  'jquery-private': { 'jquery': 'jquery' },
 
-        "jquery": {
-            "exports": "$j"
-        },
+  "jquery": {
+    "exports": "$j"
+  },
 
-        "underscore": {
-            "exports": "_"
-        },
+  "underscore": {
+    "exports": "_"
+  },
 
-        "easing" : {
-            // "deps": ["jquery"],
-        },
+  "easing" : {
+    // "deps": ["jquery"],
+  },
 
-        "bootstrap" : {
-            // "deps": ["jquery"],
-        },
+  "bootstrap" : {
+    // "deps": ["jquery"],
+  },
 
-        "backbone": {
-            // Depends on underscore/lodash and jQuery
-            "deps": ["underscore"], //, "jquery"],
-            // "deps": ["underscore", "jquery"],
+  "backbone": {
+    // Depends on underscore/lodash and jQuery
+    "deps": ["underscore"], //, "jquery"],
+    // "deps": ["underscore", "jquery"],
 
-            // Exports the global window.Backbone object
-            "exports": "Backbone"
-        },
+    // Exports the global window.Backbone object
+    "exports": "Backbone"
+  },
 
-        "firebase": {
-          "exports": "Firebase"  
-        },
+  "firebase": {
+    "exports": "Firebase"  
+  },
 
-        "localStorage" : {
-            // Depends on underscore/lodash and jQuery
-            "deps": ["backbone"]
-        },
+  "localStorage" : {
+    // Depends on underscore/lodash and jQuery
+    "deps": ["backbone"]
+  },
 
-        'transform': {
-            deps: [
-                // 'jquery'
-            ]
-             //,"exports": "transform"
-        },
+  'transform': {
+    deps: [
+      // 'jquery'
+    ]
+    //,"exports": "transform"
+  },
 
-        'buzz': {
-            exports: 'buzz'
-        }
+  'buzz': {
+    exports: 'buzz'
+  }
 
         ,worker: {
-            exports : 'worker'
+      exports : 'worker'
         },
 
         'parse': {
-            exports: 'Parse'
+          exports: 'Parse'
         }
     }
 })
 
 require(['app'], function (app) {
-    app.init();
+  app.init();
 })
