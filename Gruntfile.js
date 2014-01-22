@@ -25,7 +25,7 @@ module.exports = function(grunt) {
     watch: {
       dev: {
         files: ['coffee/*.coffee'],
-        tasks: ['coffee'],
+        tasks: ['coffee', 'shell'],
         options: {
           debounceDelay: 250,
         },
@@ -49,6 +49,15 @@ module.exports = function(grunt) {
         dest: 'public/javascripts',
         ext: '.js'
       }
+    },
+
+    shell: {                                // Task
+        listFolders: {                      // Target
+            options: {                      // Options
+                stdout: true
+            },
+            command: 'node public/javascripts/r.js -o public/javascripts/build/main.js'
+        }
     }
 
   });
@@ -58,7 +67,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-coffee')
-
-  // Default task.
+   // Default task.
   grunt.registerTask('default', ['jshint', 'nodeunit']);
+ 
+  // run custom coomand
+  grunt.loadNpmTasks('grunt-shell')
+  grunt.registerTask('default', ['shell']);
+
+
 };
