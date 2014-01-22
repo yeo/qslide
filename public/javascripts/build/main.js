@@ -1,5 +1,5 @@
 ({
-  baseUrl: ".",
+  baseUrl: "../",
   paths: {
     jquery: 'jquery.min',
     underscore: 'underscore-min',
@@ -55,17 +55,17 @@
 
     'buzz': {
       exports: 'buzz'
-    }
+    },
 
-        ,worker: {
+    worker: {
       exports : 'worker'
-        },
+    },
 
-        'parse': {
-          exports: 'Parse'
-        }
+    'parse': {
+      exports: 'Parse'
+    }
   },
-  name: "../main",
+  name: "main",
   out: "../prod/main-min.js",
   include: "requireLib"
 })
