@@ -9,5 +9,5 @@
   },
   name: "main",
   out: "main-min.js",
-  include: requireLib
+  include: "requireLib"
 })
