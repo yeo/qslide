@@ -7,14 +7,20 @@ import (
   "github.com/codegangsta/martini-contrib/render"
   "github.com/codegangsta/martini-contrib/sessions"
   "os"
+  "os/exec"
   "encoding/json"
   "github.com/sirsean/go-mailgun/mailgun"
   "math/rand"
   "log"
+  "html/template"
 )
-
+const (
+  PROD = "Production"
+  VERSION = "1.4.1"
+)
 type Configuration struct
 {
+  Env string;
   Domain string;
   Port string;
   MG_API_KEY string;
@@ -39,6 +45,19 @@ func main() {
   fmt.Printf("Domain: %s", config.Domain);
   m := martini.Classic()
 
+  f := []template.FuncMap{ 
+      template.FuncMap{
+        "eq": func(a, b string) bool {
+          return a == b
+        },
+      },
+      template.FuncMap{
+        "ne": func(a, b string) bool {
+          return a != b
+        },
+      },
+  }
+
   //m.Use(render.Renderer())
   m.Use(render.Renderer(render.Options{
     Directory: "templates", // Specify what path to load the templates from.
@@ -47,6 +66,7 @@ func main() {
     //Funcs: []template.FuncMap{AppHelpers}, // Specify helper function maps for templates to access.
     //Delims: render.Delims{"{[{", "}]}"}, // Sets delimiters to the specified strings.
     Charset: "UTF-8", // Sets encoding for json and html content-types.
+    Funcs: f,
   }))
 
   store := sessions.NewCookieStore([]byte(config.CookieSecret))
@@ -56,8 +76,14 @@ func main() {
     type Site struct {
       Domain string
       VisitCount  uint
+      Env string
+      BookmarkletURL string
     }
-    site := Site{config.Domain, 12}
+    BookmarkletURL := "//" + config.Domain + "/javascripts/main.js"
+    if config.Env == PROD {
+      BookmarkletURL = "//" + config.Domain + "/javascripts/main.js"
+    }
+    site := Site{config.Domain, 12, config.Env, BookmarkletURL}
     rand := rand.New(rand.NewSource(99))
     csrf := fmt.Sprintf("%f", rand.Float64()*1000000)
     session.Set("CSRF", csrf)
@@ -112,6 +138,14 @@ func main() {
   })
 
   //m.Run()
+  cmd := exec.Command("pwd","> /tmp/101")
+  //cmd := exec.Command("", "5")
+  err := cmd.Start()
+  if err != nil {
+    log.Fatal(err)
+  }
+  log.Printf("Waiting for command to finish...")
+  err = cmd.Wait()
   http.ListenAndServe(fmt.Sprintf(":%s", config.Port), m)
   //http.ListenAndServe(":10005", m)
 }
