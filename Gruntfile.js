@@ -25,7 +25,15 @@ module.exports = function(grunt) {
     watch: {
       dev: {
         files: ['coffee/*.coffee'],
-        tasks: ['coffee', 'shell'],
+        tasks: ['coffee', 'shell:requirejs'],
+        options: {
+          debounceDelay: 250,
+        },
+      },
+      
+      server: {
+        files: ['*.go'],
+        tasks: ['shell:restartServer'],
         options: {
           debounceDelay: 250,
         },
@@ -52,12 +60,19 @@ module.exports = function(grunt) {
     },
 
     shell: {                                // Task
-        listFolders: {                      // Target
+        requirejs: {                      // Target
             options: {                      // Options
                 stdout: true
             },
             command: 'node public/javascripts/r.js -o public/javascripts/build/main.js'
-        }
+        },
+
+        restartServer: {                      // Target
+            options: {                      // Options
+                stdout: true
+            },
+            command: 'killall go && go run qs.go &'
+        },
     }
 
   });
