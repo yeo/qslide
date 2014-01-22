@@ -63,7 +63,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
     className: 'qcommander'
     id: 'qcommander'
     template: _.template '
-    <h4 class="js-close-welcome">Close</h4>
+    <h4 class="js-close-welcome" style="cursor: pointer">Close</h4>
 
     <h4>More detail help</h4>
     <h4>Slideshow Token: <%= token %> </h4><img src="<%= bc %>" alt="Waiting for token" />
@@ -74,7 +74,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
     className: 'qcommander'
     id: 'qcommander'
     template: _.template '
-    <h4 class="js-close-welcome" style="position: absolute; right: 5px; top: 10px; text-align: right;">Close</h4>
+    <h4 class="js-close-welcome" style="position: absolute; right: 5px; top: 10px; text-align: right; cursor: pointer;">Close</h4>
     <!-- <h4>More detail help</h4> -->
     <h1>Slide ID: <%= token %> </h1>
     <img src="<%= bc %>" alt="Waiting for token" />
