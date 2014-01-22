@@ -29,8 +29,8 @@
       tagName: 'div',
       className: 'qslide',
       id: 'qslideSwitch',
-      template: _.template('<div>Via: <%= device %></div>\
-    <a class="js-toggle-board" href="#">Show</a>'),
+      template: _.template('<h4>QSlider</h4><div>Control By: <%= device %></div>\
+    <a class="js-toggle-board" href="#">Show Info</a>'),
       initialize: function(options) {
         var k, v;
         if (options != null) {
@@ -45,7 +45,7 @@
         "click .js-toggle-board": 'toggleBoard'
       },
       render: function() {
-        this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('width', 30).css('height', 10).css('left', 10).css('bottom', 30).css('background', '#666').css('color', '#ccc');
+        this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('left', 10).css('bottom', 30).css('background', '#666').css('color', '#ccc').css('width', '7em').css('height', '6em');
         this.$el.html(this.template({
           device: this.device
         }));
@@ -61,7 +61,7 @@
       className: 'qcommander',
       id: 'qcommander',
       template: _.template('\
-    <h4 class="js-close-welcome">Close</h4>\
+    <h4 class="js-close-welcome" style="cursor: pointer">Close</h4>\
 \
     <h4>More detail help</h4>\
     <h4>Slideshow Token: <%= token %> </h4><img src="<%= bc %>" alt="Waiting for token" />\
@@ -72,7 +72,7 @@
       className: 'qcommander',
       id: 'qcommander',
       template: _.template('\
-    <h4 class="js-close-welcome" style="position: absolute; right: 5px; top: 10px; text-align: right;">Close</h4>\
+    <h4 class="js-close-welcome" style="position: absolute; right: 5px; top: 10px; text-align: right; cursor: pointer;">Close</h4>\
     <!-- <h4>More detail help</h4> -->\
     <h1>Slide ID: <%= token %> </h1>\
     <img src="<%= bc %>" alt="Waiting for token" />\
@@ -240,7 +240,7 @@
         return this.render();
       },
       render: function() {
-        this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('width', 800).css('height', 700).css('left', '50%').css('margin-left', '-350px').css('top', 0).css('background', '#666').css('color', '#ccc');
+        this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('width', 800).css('height', 700).css('left', '50%').css('margin-left', '-350px').css('top', 0).css('padding-top', '2em').css('background', '#666').css('color', '#ccc');
         this.$el.html(this.template(this.connection.attributes));
         (typeof console !== "undefined" && console !== null) && console.log(this.$el);
         $('body').append(this.$el);

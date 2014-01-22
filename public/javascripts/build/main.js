@@ -67,5 +67,6 @@
   },
   name: "main",
   out: "../prod/main-min.js",
-  include: "requireLib"
+  include: "requireLib",
+  optimize: "none"
 })

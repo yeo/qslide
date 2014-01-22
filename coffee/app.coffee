@@ -28,8 +28,8 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
     tagName: 'div'
     className: 'qslide'
     id: 'qslideSwitch'
-    template: _.template '<div>Via: <%= device %></div>
-    <a class="js-toggle-board" href="#">Show</a>'
+    template: _.template '<h4>QSlider</h4><div>Control By: <%= device %></div>
+    <a class="js-toggle-board" href="#">Show Info</a>'
     
     initialize: (options) ->
       if options? 
@@ -44,12 +44,12 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
           .css('position', 'fixed')
           .css('text-align', 'center')
           .css('zIndex', 9999)
-          .css('width', 30)
-          .css('height', 10)
           .css('left', 10)
           .css('bottom', 30)
           .css('background', '#666')
           .css('color', '#ccc')
+          .css('width', '7em')
+          .css('height', '6em')
         
       this.$el.html(this.template({device: @device}))
       $('body').append this.$el
@@ -262,6 +262,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
           .css('left', '50%')
           .css('margin-left', '-350px')
           .css('top', 0)
+          .css('padding-top', '2em')
           .css('background', '#666')
           .css('color', '#ccc')
         
