@@ -505,6 +505,11 @@ p.right a:hover {
 	margin-bottom: 15px;
 	font-weight: 600;
 }
+.guide__video {
+  margin: 1em auto;
+  display: block;
+  text-align: center;
+}
 
 .box {
   margin: 1em 2.5em ;
