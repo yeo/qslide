@@ -86,7 +86,7 @@ header#background {
 
 header#apava {
 	/*margin: 130px 20px 0 20px;*/
-  padding:130px 50px 0;
+  padding:100px 50px 0;
 	-webkit-animation-name: headerleftAnim;
     -moz-animation-name: headerleftAnim;
     -ms-animation-name: headerleftAnim;
