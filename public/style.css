@@ -1,7 +1,5 @@
 @charset "UTF-8";
 /*------ GENERAL ------*/
-@font-face { font-family: 'TI'; src: url('fonts/typicons-regular-webfont.ttf'); } 
-
 body {
 	background-color: #fff;
 	margin: 0 auto;
@@ -25,6 +23,7 @@ body {
 	-ms-animation-duration: 0.5s;
 	-o-animation-duration: 0.5s;
 	animation-duration: 0.5s; 
+  color: #333332;
 }
 
 @-webkit-keyframes bodyAnim {
@@ -50,8 +49,8 @@ body {
 p {
 	font-family: 'Open Sans';
 	font-size: 18px;
-	color: #5d6778;
-	line-height: 1.3em;
+	/*color: #5d6778;*/
+	line-height: 1.5;
 }
 
 a {
@@ -64,13 +63,6 @@ a {
 .bold {
 	font-family: 'Open Sans';
 	font-weight: 600;
-}
-
-.icon {
-	font-family: 'TI';
-	font-size: 20px;
-	color: #5d6778;
-	float: right;
 }
 
 #container {
@@ -251,23 +243,7 @@ header#appro img {
 	margin: 40px 0;
 }
 
-.box {
-  margin: 0 0 5em 0;
-}
-.box h1 {
-  width: 60px;
-  height: 60px;
-  border-radius: 60px;
-  border: 2px solid #8058A5;
-  text-align:center;
-  line-height: 2em;
-  margin: auto;
-}
 
-p.title {
-	margin-bottom: 15px;
-	font-weight: 600;
-}
 
 p.info {
 	font-family: 'Open Sans';
@@ -330,7 +306,7 @@ p.right a:hover {
 }
 
 .hero h2 {
-  color: #666666;
+  color: #1F8DD6;
   font-size: 260%;
   font-weight: 100;
 }
@@ -440,6 +416,10 @@ p.right a:hover {
         .pure-button-xlarge {
             font-size: 125%;
         }
+        .pure-button-huge {
+            font-size: 150%;
+        }
+
 
 .pure-button-a {
     background: #e1f2fa;
@@ -499,6 +479,37 @@ p.right a:hover {
   padding: 0 0.5em;
 }
 
+.guide {
+  margin: 0 0 5em 0;
+  padding-bottom: 5em;
+  border-bottom: 1px solid #EEEEEE;
+}
+
+.guide__head {
+  width: 2em;
+  height: 2em;
+  border-radius: 2em;
+  border: 2px solid #8058A5;
+  text-align: center;
+  line-height: 2em;
+  margin: auto;
+  font-size: 4em;
+}
+.guide__pic {
+  text-align: center;
+}
+.guide__pic img {
+  
+}
+.guide__title {
+	margin-bottom: 15px;
+	font-weight: 600;
+}
+
+.box {
+  margin: 1em 2.5em ;
+}
+
 @media screen and (max-width: 775px) {
   .colorbar {
     display: none;
@@ -520,3 +531,5 @@ p.right a:hover {
     width: 100%;
   } 
 }
+
+
