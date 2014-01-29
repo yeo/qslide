@@ -99,11 +99,11 @@ func main() {
     //return "<h1>Hello, world!</h1>"
   })
 
-  m.Get("/download", func (r render.Render, session sessions.Session) {
+  m.Get("/qslider/download", func (r render.Render, session sessions.Session) {
 
   })
 
-  m.Post("/support", func (res http.ResponseWriter, req *http.Request, params martini.Params, session sessions.Session) {
+  m.Post("/qslider/support", func (res http.ResponseWriter, req *http.Request, params martini.Params, session sessions.Session) {
     var config *Configuration
     config = loadConfiguration()
     mg_client := mailgun.NewClient(config.MG_API_KEY, config.MG_DOMAIN)
@@ -134,7 +134,7 @@ func main() {
     }
   })
 
-  m.Get("/tutorial", func (r render.Render) {
+  m.Get("/qslider/tutorial", func (r render.Render) {
   })
 
   //m.Run()
