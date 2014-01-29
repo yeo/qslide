@@ -138,7 +138,12 @@ define("backbone", ["underscore"], (function (global) {
       },
 
       events: {
-          "load"      : "onLoad"
+          "load"      : "onLoad",
+          "click .js-download" : "download"
+      },
+      
+      download: function () {
+        mixpanel.track("Page.Download")   
       },
 
       onLoad: function () {
