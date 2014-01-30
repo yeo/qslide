@@ -436,7 +436,7 @@
       };
 
       SlideshareRemote.prototype.getCurrentSlideScreenshot = function() {
-        if ($('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img') > 0) {
+        if ($('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').length > 0) {
           return $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').prop('src');
         }
         return '';

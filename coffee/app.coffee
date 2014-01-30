@@ -405,7 +405,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
       1 + parseInt($('.goToSlideLabel > input', @container).val())
 
     getCurrentSlideScreenshot: () ->
-      if $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img') > 0 
+      if $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').length > 0 
         return $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').prop('src')
       return ''
 
