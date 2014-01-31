@@ -432,14 +432,24 @@
       };
 
       SlideshareRemote.prototype.getCurrentSlideNumber = function() {
-        return 1 + parseInt($('.goToSlideLabel > input', this.container).val());
+        var n;
+        n = parseInt($('.goToSlideLabel > input', this.container).val());
+        if (n <= 1) {
+          return 1;
+        }
+        return n;
       };
 
       SlideshareRemote.prototype.getCurrentSlideScreenshot = function() {
-        if ($('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').length > 0) {
-          return $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').prop('src');
+        var n, url;
+        n = this.getCurrentSlideNumber();
+        if ($('.slide_container > .slide').eq(n - 1).find('img').length > 0) {
+          url = $('.slide_container > .slide').eq(n - 1).find('img').prop('src');
+          if (url.indexOf('image') >= 1) {
+            return url;
+          }
         }
-        return '';
+        return "http://placehold.it/320&text=" + n;
       };
 
       SlideshareRemote.prototype.jump = function(num) {
