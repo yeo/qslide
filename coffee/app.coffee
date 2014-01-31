@@ -402,12 +402,18 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
         return $('.slidesContainer .jsplBgColorBigfoot').length
 
     getCurrentSlideNumber: () ->
-      1 + parseInt($('.goToSlideLabel > input', @container).val())
+      n = parseInt($('.goToSlideLabel > input', @container).val())
+      if n<=1
+        return 1
+      return n
 
     getCurrentSlideScreenshot: () ->
-      if $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').length > 0 
-        return $('.slide_container > .slide').eq(this.getCurrentSlideNumber()).find('img').prop('src')
-      return ''
+      n = this.getCurrentSlideNumber()
+      if $('.slide_container > .slide').eq(n-1).find('img').length > 0 
+        url = $('.slide_container > .slide').eq(n-1).find('img').prop('src')
+        if url.indexOf('image')>=1
+          return url
+      return "http://placehold.it/320&text=#{n}"
 
     jump: (num) ->
       e = $.Event 'keyup'
