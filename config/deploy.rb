@@ -66,7 +66,7 @@ task :deploy => :environment do
       run "curl -d \"room_id=QSlide&from=BuildBot&message=Deploy+Status:+Starting&color=green\" https://api.hipchat.com/v1/rooms/message?auth_token=2ae557614c0fae56e176ae7e282bcb&format=json"
       queue "export GOPATH=\"/home/kurei/go\";cd #{deploy_to}/current && go build qs.go"
       #queue "touch #{deploy_to}/tmp/restart.txt"
-      queue "cd #{deploy_to}/current; nohup ./qs >qslide.log 2>&1 </dev/null &"
+      #queue "cd #{deploy_to}/current; nohup ./qs >qslide.log 2>&1 </dev/null &"
       run "curl -d \"room_id=QSlide&from=BuildBot&message=Deploy+Status:+Done&color=green\" \"https://api.hipchat.com/v1/rooms/message?auth_token=2ae557614c0fae56e176ae7e282bcb&format=json\""
     end
 
@@ -78,6 +78,13 @@ end
 
 task :clean_cache => :environment do 
   queue! %[rm -rf "/var/cache/nginx/qslide/*"]
+end
+
+task :start => :environment do
+  queue %[echo "---> Start"]
+  queue "cd #{deploy_to}/current; nohup ./qs >qslide.log 2>&1 </dev/null &"
+  queue %[echo "$(ps -Af | grep qs)"]
+  queue %[echo "---> Done"]
 end
 
 # For help in making your deploy script, see the Mina documentation:
