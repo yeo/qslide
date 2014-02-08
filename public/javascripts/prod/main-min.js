@@ -554,12 +554,17 @@ define("firebase", (function (global) {
         switch (message.cmd) {
           case 'handshake':
             if (!this.isConnected) {
-              this.localStorage('allow', message.from);
+              this.localStorage('allow', message.data.from);
               this.localStorage('at', new Date().getTime());
               this.localStorage('device_priority', 1);
-              return this.closeWelcome();
+              this.closeWelcome();
+              try {
+                return this.saveConnectFrom(message.data.name);
+              } catch (e) {
+                return (typeof console !== "undefined" && console !== null) && console.log(e);
+              }
             } else {
-              if (message.from === this.localStorage('allow')) {
+              if (message.data.from === this.localStorage('allow')) {
                 return (typeof console !== "undefined" && console !== null) && console.log("Reconnect");
               } else {
                 return (typeof console !== "undefined" && console !== null) && console.log("Connected before from " + (this.localStorage('allow')));
@@ -602,6 +607,12 @@ define("firebase", (function (global) {
         info = new Firebase("" + BACKEND_DATA_HOST + (this.connection.get('token')) + "/info");
         info.child('currentSlideUrl').set(data.url);
         return info.child('currentSlideNumber').set(data.currentSlideNumber);
+      },
+      saveConnectFrom: function(from) {
+        var info;
+        (typeof console !== "undefined" && console !== null) && console.log(this);
+        info = new Firebase("" + BACKEND_DATA_HOST + (this.connection.get('token')) + "/info");
+        return info.child('from').set(from);
       },
       presenceNoty: function() {
         var connectedRef, connectionRef, lastOnlineRef;
@@ -652,6 +663,7 @@ define("firebase", (function (global) {
         this.remoteQueu.limit(200).on('child_added', function(snapshot) {
           var message;
           message = snapshot.val();
+          console.log(message);
           return that.queue.add(new Command({
             name: snapshot.name(),
             cmd: message.cmd,

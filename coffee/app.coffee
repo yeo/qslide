@@ -140,15 +140,19 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
           # The second connection coming, let iOS handle it
           # if locaStprage['allow']?
           if !this.isConnected
-            this.localStorage('allow', message.from)
+            this.localStorage('allow', message.data.from)
             this.localStorage('at' ,new Date().getTime())
             this.localStorage('device_priority', 1)
             this.closeWelcome()
+            try 
+              this.saveConnectFrom(message.data.name)
+            catch e
+              console? && console.log(e)
           #if confirm("Allow connection from #{message.name}?")
             #connection.set('connected_from', message.from)
             #localStorage['allow'] = message.from
           else 
-            if (message.from == this.localStorage('allow'))
+            if (message.data.from == this.localStorage('allow'))
               console? && console.log "Reconnect"
             else 
               console? && console.log("Connected before from #{this.localStorage('allow')}")
@@ -196,7 +200,12 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
       info = new Firebase("#{BACKEND_DATA_HOST}#{@connection.get('token')}/info")
       info.child('currentSlideUrl').set data.url
       info.child('currentSlideNumber').set data.currentSlideNumber
-   
+    
+    saveConnectFrom: (from) ->
+      console? && console.log this
+      info = new Firebase("#{BACKEND_DATA_HOST}#{@connection.get('token')}/info")
+      info.child('from').set from
+
     presenceNoty: () ->
       connectionRef = new Firebase "#{@baseFirebaseUrl}info/connection"
       lastOnlineRef = new Firebase "#{@baseFirebaseUrl}info/lastOnline"
@@ -246,6 +255,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
       @remoteQueu = new Firebase "#{baseFirebaseUrl}qc/"
       @remoteQueu.limit(200).on 'child_added', (snapshot) ->
         message = snapshot.val()
+        console.log(message)
         that.queue.add new Command
           name: snapshot.name()
           cmd: message.cmd
