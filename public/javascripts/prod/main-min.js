@@ -450,8 +450,8 @@ define("firebase", (function (global) {
       tagName: 'div',
       className: 'qslide',
       id: 'qslideSwitch',
-      template: _.template('<h4>QSlider</h4><div>Control By: <%= device %></div>\
-    <a class="js-toggle-board" href="#">Show Info</a>'),
+      template: _.template('<div>Control By <a href="https://axcoto.com/qslider" style="color: #fff !important;">QSlider</a> <%= device %></div>\
+    <a class="js-toggle-board" href="#" style="color: #fff !important; tex-decoration: underline !important;">Show Info</a>'),
       initialize: function(options) {
         var k, v;
         if (options != null) {
@@ -466,7 +466,7 @@ define("firebase", (function (global) {
         "click .js-toggle-board": 'toggleBoard'
       },
       render: function() {
-        this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('left', 10).css('bottom', 30).css('background', '#666').css('color', '#ccc').css('width', '7em').css('height', '6em');
+        this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('left', 10).css('top', 100).css('background', '#666').css('color', '#ccc').css('width', '9em').css('height', '3em').css('padding', '0.5em');
         this.$el.html(this.template({
           device: this.device
         }));
@@ -493,7 +493,7 @@ define("firebase", (function (global) {
       className: 'qcommander',
       id: 'qcommander',
       template: _.template('\
-    <h4 class="js-close-welcome" style="position: absolute; right: 5px; top: 10px; text-align: right; cursor: pointer;">Close</h4>\
+    <h4 class="js-close-welcome" style="position: absolute; right: 5px; top: 10px; text-align: right; cursor: pointer; font-size: 1.5em;">Close</h4>\
     <!-- <h4>More detail help</h4> -->\
     <h1>Slide ID: <%= token %> </h1>\
     <img src="<%= bc %>" alt="Waiting for token" />\
