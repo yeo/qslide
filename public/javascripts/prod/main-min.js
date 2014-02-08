@@ -425,7 +425,8 @@ define("firebase", (function (global) {
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define('app',['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'], function($_, _, Backbone, sha1, __Firebase__) {
-    var AppView, Command, CommandQueue, Connection, RabbitRemote, Remote, RemoteControlDriver, ScribdRemote, Slide, SlideshareRemote, SpeakerdeskRemote, ToggleView, WelcomeView;
+    var AppView, BACKEND_DATA_HOST, Command, CommandQueue, Connection, RabbitRemote, Remote, RemoteControlDriver, ScribdRemote, Slide, SlideshareRemote, SpeakerdeskRemote, ToggleView, WelcomeView;
+    BACKEND_DATA_HOST = "https://qslider.firebaseio.com/";
     Connection = Backbone.Model.extend({
       defaults: {
         from: 'unknow'
@@ -512,7 +513,7 @@ define("firebase", (function (global) {
           return this.showConnectionBoard(uuid);
         }
         uuid = this.uuid();
-        rootRef = new Firebase("https://qcommander.firebaseio-demo.com/");
+        rootRef = new Firebase("" + BACKEND_DATA_HOST);
         return rootRef.child("" + uuid + "/token").on('value', function(snapshot) {
           if (snapshot.val() != null) {
             return that.genUUID();
@@ -598,7 +599,7 @@ define("firebase", (function (global) {
       saveCurrentSlide: function(data) {
         var info;
         (typeof console !== "undefined" && console !== null) && console.log(this);
-        info = new Firebase("https://qcommander.firebaseio-demo.com/" + (this.connection.get('token')) + "/info");
+        info = new Firebase("" + BACKEND_DATA_HOST + (this.connection.get('token')) + "/info");
         info.child('currentSlideUrl').set(data.url);
         return info.child('currentSlideNumber').set(data.currentSlideNumber);
       },
@@ -606,7 +607,7 @@ define("firebase", (function (global) {
         var connectedRef, connectionRef, lastOnlineRef;
         connectionRef = new Firebase("" + this.baseFirebaseUrl + "info/connection");
         lastOnlineRef = new Firebase("" + this.baseFirebaseUrl + "info/lastOnline");
-        connectedRef = new Firebase("https://qcommander.firebaseio-demo.com/.info/connected");
+        connectedRef = new Firebase("" + BACKEND_DATA_HOST + ".info/connected");
         return connectedRef.on('value', function(s) {
           var conn;
           (typeof console !== "undefined" && console !== null) && console.log("Connected");
@@ -635,7 +636,7 @@ define("firebase", (function (global) {
         this.connection.set('currentSlideNumber', this.remote.driver.getCurrentSlideNumber());
         this.connection.set('quantity', this.remote.driver.quantity);
         this.connection.set('title', this.remote.driver.getTitle());
-        baseFirebaseUrl = this.baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/" + (this.connection.get('token')) + "/";
+        baseFirebaseUrl = this.baseFirebaseUrl = "" + BACKEND_DATA_HOST + (this.connection.get('token')) + "/";
         this.queue.url = "" + baseFirebaseUrl + "qc/";
         (typeof console !== "undefined" && console !== null) && console.log(this.queue);
         slideInfo = new Firebase("" + baseFirebaseUrl + "info/");

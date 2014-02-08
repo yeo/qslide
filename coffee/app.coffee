@@ -1,6 +1,8 @@
 'use strict'
 
 define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _, Backbone, sha1, __Firebase__) ->
+  BACKEND_DATA_HOST = "https://qslider.firebaseio.com/"
+
   Connection = Backbone.Model.extend
     defaults: 
       from: 'unknow'
@@ -96,7 +98,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
         return this.showConnectionBoard(uuid) 
 
       uuid = this.uuid()
-      rootRef = new Firebase "https://qcommander.firebaseio-demo.com/"
+      rootRef = new Firebase "#{BACKEND_DATA_HOST}"
       rootRef.child("#{uuid}/token").on(
         'value', (snapshot) ->
           return that.genUUID() if snapshot.val()? 
@@ -122,7 +124,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
         #Okay, remove that command
         console? && console.log "#{this.url}#{model.get('name')}"
         r = new Firebase "#{this.url}#{model.get('name')}"
-        #r = new Firebase("https://qcommander.firebaseio-demo.com//#{connection.get('token')}/qc/".concat(snapshot.name()))
+        #r = new Firebase("#{BACKEND_DATA_HOST}#{connection.get('token')}/qc/".concat(snapshot.name()))
         r.remove() 
         model.destroy()
       this.genUUID()
@@ -191,14 +193,14 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
     
     saveCurrentSlide: (data) ->
       console? && console.log this
-      info = new Firebase("https://qcommander.firebaseio-demo.com/#{@connection.get('token')}/info")
+      info = new Firebase("#{BACKEND_DATA_HOST}#{@connection.get('token')}/info")
       info.child('currentSlideUrl').set data.url
       info.child('currentSlideNumber').set data.currentSlideNumber
    
     presenceNoty: () ->
       connectionRef = new Firebase "#{@baseFirebaseUrl}info/connection"
       lastOnlineRef = new Firebase "#{@baseFirebaseUrl}info/lastOnline"
-      connectedRef  = new Firebase "https://qcommander.firebaseio-demo.com/.info/connected"
+      connectedRef  = new Firebase "#{BACKEND_DATA_HOST}.info/connected"
       connectedRef.on 'value', (s) ->
         console? && console.log "Connected"
         if s.val() == true
@@ -227,7 +229,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
       @connection.set 'quantity', @remote.driver.quantity
       @connection.set 'title',    @remote.driver.getTitle()
 
-      baseFirebaseUrl = @baseFirebaseUrl = "https://qcommander.firebaseio-demo.com/#{@connection.get('token')}/"
+      baseFirebaseUrl = @baseFirebaseUrl = "#{BACKEND_DATA_HOST}#{@connection.get('token')}/"
       @queue.url = "#{baseFirebaseUrl}qc/"
       console? && console.log @queue
       
