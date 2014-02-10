@@ -515,6 +515,12 @@ p.right a:hover {
   margin: 1em 2.5em ;
 }
 
+@media screen and (max-width: 640px) {
+  header#apava {
+    padding: 100px 0 0 0;
+  }
+}
+
 @media screen and (max-width: 775px) {
   .colorbar {
     display: none;
@@ -531,10 +537,11 @@ p.right a:hover {
     width: 100%;
   } 
 }
-@media sreen and (max-width: 1020px) {
+@media screen and (max-width: 1020px) {
   #container {
     width: 100%;
   } 
 }
+
 
 
