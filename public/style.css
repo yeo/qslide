@@ -249,7 +249,6 @@ header#appro img {
 /*------ MAIN ------*/
 
 #main {
-	border-bottom: 1px solid #e0e0e0;
 	margin: 0;
 }
 
@@ -531,25 +530,27 @@ p.right a:hover {
  */
 .download {
   text-align: center;
-  background: #9F8668;
+  background: #F9F8F6;
   padding: 40px 0;
 }
 
 .instruction {
-  background: #EBEBEB;
+  background: #DDD8D2;
   /*overflow: scroll;*/
 }
 
 .contact {
-  background: #DED4C8;
+  background: #CCB69C;
   /*overflow: scroll;*/
 }
 
 .feedback {
-  background: #8BC4BD;
+  background: #D6CCC0;
 }
 
-
+.footer {
+  background: #DDBD96;
+}
 
 @media screen and (max-width: 640px) {
   header#apava {
