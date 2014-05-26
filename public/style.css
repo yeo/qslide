@@ -316,8 +316,10 @@ p.right a:hover {
 
 .hero h2 {
   color: #1F8DD6;
-  font-size: 260%;
-  font-weight: 100;
+  font-size: 2.6em;
+  font-weight: 300;
+  font-family: Lato;
+  margin: 0.5em;
 }
 
 /**
@@ -549,7 +551,7 @@ p.right a:hover {
 }
 
 .footer {
-  background: #DDBD96;
+  background: #EEF4F7; 
 }
 
 @media screen and (max-width: 640px) {
