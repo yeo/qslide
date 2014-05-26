@@ -79,7 +79,7 @@
 
       onLoad: function () {
         this.loadMixPanel()
-        this.loadOlark()
+        //this.loadOlark()
       },
 
       loadMixPanel: function () {
@@ -116,7 +116,7 @@ b._i.push([a,e,d])};b.__SV=1.2}})(document,window.mixpanel||[])
     return {
       init: function() {
         new AppView()
-        new Guider()
+        //new Guider()
         return this
       }
     }

@@ -26,6 +26,11 @@ body {
   color: #333332;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: Raleway, Helvetica;
+  font-weight: 400;
+}
+
 @-webkit-keyframes bodyAnim {
 	0%   { opacity: 0;}
 	100% { opacity: 1;}
@@ -54,10 +59,14 @@ p {
 }
 
 a {
-	font-family: 'Open Sans';
-	font-size: 14px;
-	color: #5d6778;
+	font-family: 'Lato';
+	font-size: 1.25em;
+  color: #FF7878;
   text-decoration: none;
+}
+
+.pure-button-primary, .pure-button-selected, a.pure-button-primary, a.pure-button-selected {
+  background: #E54028;
 }
 
 .bold {
@@ -65,10 +74,11 @@ a {
 	font-weight: 600;
 }
 
-#container {
-  width: 960px;
+.container {
+  width: 100%;
   height: auto;
-	margin: 20px auto;
+	margin: 0 auto;
+  padding: 10px 0;
 }
 
 
@@ -78,7 +88,7 @@ header#background {
 	position: absolute;
 	top: 0;
 	left: 0;
-	height: 800px;
+	height: 880px;
 	width: 100%;
 	background-color: #EEF4F7;
 	z-index: -9999;
@@ -86,7 +96,7 @@ header#background {
 
 header#apava {
 	/*margin: 130px 20px 0 20px;*/
-  padding:100px 50px 0;
+  padding: 0;
 	-webkit-animation-name: headerleftAnim;
     -moz-animation-name: headerleftAnim;
     -ms-animation-name: headerleftAnim;
@@ -240,7 +250,7 @@ header#appro img {
 
 #main {
 	border-bottom: 1px solid #e0e0e0;
-	margin: 40px 0;
+	margin: 0;
 }
 
 
@@ -477,6 +487,7 @@ p.right a:hover {
 .headline {
   text-align: center;
   padding: 0 0.5em;
+  font-size: 3em;
 }
 
 .guide {
@@ -515,9 +526,34 @@ p.right a:hover {
   margin: 1em 2.5em ;
 }
 
+/**
+ * Download section
+ */
+.download {
+  text-align: center;
+  background: #9F8668;
+  padding: 40px 0;
+}
+
+.instruction {
+  background: #EBEBEB;
+  /*overflow: scroll;*/
+}
+
+.contact {
+  background: #DED4C8;
+  /*overflow: scroll;*/
+}
+
+.feedback {
+  background: #8BC4BD;
+}
+
+
+
 @media screen and (max-width: 640px) {
   header#apava {
-    padding: 100px 0 0 0;
+    /*padding: 100px 0 0 0;*/
   }
 }
 
@@ -533,14 +569,20 @@ p.right a:hover {
 }
 
 @media screen and (max-width: 960px) {
-  #container {
+  .container {
     width: 100%;
   } 
 }
 @media screen and (max-width: 1020px) {
-  #container {
+  .container {
     width: 100%;
   } 
+}
+
+@media screen and (min-width: 1021px) {
+  .container {
+    width: 1020px;
+  }
 }
 
 
