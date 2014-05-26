@@ -17,8 +17,8 @@ slideshare" />
   <link rel="stylesheet" type="text/css" href="//{{.Site.Domain}}/stylesheets/pure-min.css" />
   <link rel="stylesheet" type="text/css" href="//{{.Site.Domain}}/style.css" />
 
-  <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,900"  rel='stylesheet' type='text/css'>
-  <link href="http://fonts.googleapis.com/css?family=Raleway:400,300,700,900"  rel='stylesheet' type='text/css'>
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,900"  rel='stylesheet' type='text/css'>
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,700,900"  rel='stylesheet' type='text/css'>
   <link href='//{{.Site.Domain}}/themify-icons/themify-icons.css' rel='stylesheet' type='text/css' />
 
   <meta property="og:title" content="QSlider - Turn your iPhone to a slideshow remote control" />
@@ -73,7 +73,7 @@ slideshare" />
 
 
     {{if eq .Site.Env "Production"}}    
-      <script src="//{{.Site.Domain}}/javascripts/prod/site-min.js"></script>
+      <script src="//{{.Site.Domain}}/javascripts/prod/site-min.js?v=2"></script>
     {{else}}  
       <script src="//{{.Site.Domain}}/javascripts/require.js" data-main="//{{.Site.Domain}}/javascripts/site.js"></script>
     {{end}}
