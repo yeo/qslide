@@ -23,7 +23,7 @@ body {
 	-ms-animation-duration: 0.5s;
 	-o-animation-duration: 0.5s;
 	animation-duration: 0.5s; 
-  color: #333332;
+  color: #555;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -52,7 +52,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 p {
-	font-family: 'Open Sans';
+	font-family: 'Lato';
 	font-size: 18px;
 	/*color: #5d6778;*/
 	line-height: 1.5;
@@ -70,7 +70,7 @@ a {
 }
 
 .bold {
-	font-family: 'Open Sans';
+	font-family: 'Lato';
 	font-weight: 600;
 }
 
@@ -156,7 +156,7 @@ a.button {
 	background: #4477C8;
 	height: 54px;
 	width: 100px;
-	font-family: 'Open Sans';
+	font-family: 'Lato';
 	-o-transition:color .2s ease-out, background 0.1s ease-in;
 	-ms-transition:color .2s ease-out, background 0.1s ease-in;
 	-moz-transition:color .2s ease-out, background 0.1s ease-in;
@@ -255,7 +255,7 @@ header#appro img {
 
 
 p.info {
-	font-family: 'Open Sans';
+	font-family: 'Lato';
 	opacity: 0.8;
 }
 
@@ -265,14 +265,14 @@ p.info {
 p.left {
 	float: left;
 	margin-bottom: 50px;
-	font-family: 'Open Sans';
+	font-family: 'Lato';
 	opacity: 0.75;
 }
 
 p.right {
 	float: right;
 	margin-bottom: 50px;
-	font-family: 'Open Sans';
+	font-family: 'Lato';
 	opacity: 0.75;
 }
 
@@ -288,15 +288,6 @@ p.right a {
 p.right a:hover {
 	opacity: 1;
 }
-
-
-
-
-
-
-
-
-
 
 .notification {
   background: none repeat scroll 0 0 #1F8DD6;
@@ -318,7 +309,7 @@ p.right a:hover {
   color: #1F8DD6;
   font-size: 2.6em;
   font-weight: 300;
-  font-family: Lato;
+  font-family: Raleway;
   margin: 0.5em;
 }
 
@@ -496,14 +487,13 @@ p.right a:hover {
   padding-bottom: 5em;
   border-bottom: 1px solid #EEEEEE;
 }
+.guide:last-child {
+  border: 0;
+  margin: 0;
+}
 
 .guide__head {
-  width: 2em;
-  height: 2em;
-  border-radius: 2em;
-  border: 2px solid #8058A5;
-  text-align: center;
-  line-height: 2em;
+  text-align: left;  
   margin: auto;
   font-size: 4em;
 }
@@ -516,6 +506,10 @@ p.right a:hover {
 .guide__title {
 	margin-bottom: 15px;
 	font-weight: 600;
+}
+.guide__title span{
+  font-weight: bold;
+  color: #E54028
 }
 .guide__video {
   margin: 1em auto;
@@ -542,12 +536,30 @@ p.right a:hover {
 }
 
 .contact {
-  background: #CCB69C;
+  background: #CAD9CA;
   /*overflow: scroll;*/
 }
 
 .feedback {
-  background: #D6CCC0;
+  background: #E0D2C5;
+}
+
+.feature {
+  background: #EEF4F7;
+}
+.feature_title {
+  font-size: 1.3em;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.feature_title span{
+  color: #E54028;
+  font-size: 1.6em;
+  font-weight: bold;
+}
+.feature_item p{
+  font-size: 1.1em;
+  padding: 0 1em ;
 }
 
 .footer {
