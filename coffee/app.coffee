@@ -1,8 +1,8 @@
 'use strict'
 
-define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _, Backbone, sha1, __Firebase__) ->
+define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($j, _, Backbone, sha1, __Firebase__) ->
+  $=$j
   BACKEND_DATA_HOST = "https://qslider.firebaseio.com/"
-
   Connection = Backbone.Model.extend
     defaults: 
       from: 'unknow'
@@ -55,11 +55,11 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
           .css('padding', '0.5em')
         
       this.$el.html(this.template({device: @device}))
-      $('body').append this.$el
+      $j('body').append this.$el
       return this
     
     toggleBoard: () ->
-      $('#qcommander').show()
+      $j('#qcommander').show()
 
   WelcomeView = Backbone.View.extend   
     tagName: 'div'
@@ -232,18 +232,22 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
       
       @connection = new Connection code
       @connection.set('bc', bc)
-      @remote = new Remote code.url
-      @connection.set 'author', @remote.getAuthor()
-      @connection.set 'currentSlideUrl', @remote.driver.getCurrentSlideScreenshot() 
-      @connection.set 'currentSlideNumber', @remote.driver.getCurrentSlideNumber() 
-      @connection.set 'quantity', @remote.driver.quantity
-      @connection.set 'title',    @remote.driver.getTitle()
+      try 
+        @remote = new Remote code.url
+        @connection.set 'author', @remote.getAuthor()
+        @connection.set 'currentSlideUrl', @remote.driver.getCurrentSlideScreenshot() 
+        @connection.set 'currentSlideNumber', @remote.driver.getCurrentSlideNumber() 
+        @connection.set 'quantity', @remote.driver.quantity
+        @connection.set 'title',    @remote.driver.getTitle()
+
+      catch error
+        alert(error)
+        return false
 
       baseFirebaseUrl = @baseFirebaseUrl = "#{BACKEND_DATA_HOST}#{@connection.get('token')}/"
       @queue.url = "#{baseFirebaseUrl}qc/"
       console? && console.log @queue
       
-
       # Push slide info
       slideInfo = new Firebase "#{baseFirebaseUrl}info/"
       slideInfo.set @connection.toJSON(), (e) ->
@@ -281,7 +285,7 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
         
       this.$el.html(this.template(@connection.attributes))
       console? && console.log this.$el
-      $('body').append this.$el
+      $j('body').append this.$el
       return this
 
     events:
@@ -307,12 +311,16 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
       this.setupRemote()
     # Based on url, load corresponding remote driver  
     setupRemote: () -> 
-      @driver = switch
-        when @url.indexOf('speakerdeck.com/') > 1 then new SpeakerdeskRemote
-        when @url.indexOf('slideshare.net/') > 1  then new SlideshareRemote
-        when @url.indexOf('scribd.com/') > 1  then new ScribdRemote
-        else new RabbitRemote
-    
+      try 
+        @driver = switch
+          when @url.indexOf('speakerdeck.com/') > 1 then new SpeakerdeskRemote
+          when @url.indexOf('slideshare.net/') > 1  then new SlideshareRemote
+          when @url.indexOf('scribd.com/') > 1  then new ScribdRemote
+          when @url.indexOf('drive.google.com/') > 1  then new GoogleRemote
+          else throw new Error("Not supported yet")
+        return this    
+      catch error
+        throw error
 
     control: () ->
       @driver
@@ -362,68 +370,70 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
     getCurrentSlideScreenshot: () ->
     getAuthor: () ->
     getTitle: () ->
-      $(document).prop('title')
+      $j(document).prop('title')
 
   class SpeakerdeskRemote extends RemoteControlDriver 
     constructor: () ->
       super
       # The player is put inside a iframe so, let get its contents
-      @container = $('.speakerdeck-iframe ').contents()
+      @container = $j('.speakerdeck-iframe ').contents()
       @quantity = this.getSlideQuantity()
       console? && console.log @container
 
     getAuthor: () ->
-      $('#talk-details h2 a').html()
-          #when window.location.host.indexOf('slideshare.net')  then   $('#talk-details h2 a').html()
+      $j('#talk-details h2 a').html()
+          #when window.location.host.indexOf('slideshare.net')  then   $j('#talk-details h2 a').html()
     getTitle: () ->
-        $(document).prop('title').replace("// Speaker Deck", '').trim()
+        $j(document).prop('title').replace("// Speaker Deck", '').trim()
 
     getSlideQuantity: () ->
-      $('.previews > img', @container).length
+      $j('.previews > img', @container).length
 
     getCurrentSlideNumber: () ->
-      current_url = $('#player-content-wrapper > #slide_image', @container).prop('src')
+      current_url = $j('#player-content-wrapper > #slide_image', @container).prop('src')
       r = /\/slide_([0-9]+)\./gi
       if m = r.exec(current_url)
         return 1 + parseInt(m[1])
       return false 
 
     getCurrentSlideScreenshot: () ->
-      $('#player-content-wrapper > #slide_image', @container).prop('src')
+      $j('#player-content-wrapper > #slide_image', @container).prop('src')
     
     jump: (num) ->
-      $('.speakerdeck-iframe ')[0].contentWindow.player.goToSlide num
+      $j('.speakerdeck-iframe ')[0].contentWindow.player.goToSlide num
     next: () ->
-      $('.overnav > .next', @container)[0].click()
+      $j('.overnav > .next', @container)[0].click()
     previous: () ->
-      $('.overnav > .prev', @container)[0].click()
+      $j('.overnav > .prev', @container)[0].click()
 
   class SlideshareRemote extends RemoteControlDriver
     constructor: () ->
       super
-      @container = $('#svPlayerId') 
+      @container = $j('#svPlayerId') 
       @quantity = this.getSlideQuantity()
       console? && console.log @container
     
     getAuthor: () ->
-      $('.title .h-author-name').html()
+      $j('.title .h-author-name').html()
 
     getSlideQuantity: () ->
-      if $('.slide_container').length > 0
-        return $('.slide_container .slide', @container).length 
-      if $('.slidesContainer').length > 0 
-        return $('.slidesContainer .jsplBgColorBigfoot').length
+      if $j('.slide_container').length > 0
+        return $j('.slide_container .slide', @container).length 
+      if $j('.slidesContainer').length > 0 
+        return $j('.slidesContainer .jsplBgColorBigfoot').length
 
     getCurrentSlideNumber: () ->
-      n = parseInt($('.goToSlideLabel > input', @container).val())
+      if $j('.goToSlideLabel > input', this.container).length == 0
+        throw new Error("This page doesn't contain a valid slide.")
+      n = parseInt($j('.goToSlideLabel > input', @container).val())
       if n<=1
         return 1
       return n
 
     getCurrentSlideScreenshot: () ->
       n = this.getCurrentSlideNumber()
-      if $('.slide_container > .slide').eq(n-1).find('img').length > 0 
-        url = $('.slide_container > .slide').eq(n-1).find('img').prop('src')
+      if $j('.slide_container > .slide').eq(n-1).find('img').length > 0 
+        url = $j('.slide_container > .slide').eq(n-1).find('img').prop('src')
         if url.indexOf('image')>=1
           return url
       return "http://placehold.it/320&text=#{n}"
@@ -432,12 +442,12 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($_, _
       e = $.Event 'keyup'
       e.which = 13
       e.keyCode = 13
-      $('.navActions .goToSlideLabel input', @container).val(num).trigger e
+      $j('.navActions .goToSlideLabel input', @container).val(num).trigger e
 
     next: () ->
-      $('.nav > .btnNext', @container)[0].click()
+      $j('.nav > .btnNext', @container)[0].click()
     previous: () ->
-      $('.nav > .btnPrevious', @container)[0].click()
+      $j('.nav > .btnPrevious', @container)[0].click()
     
   class ScribdRemote extends RemoteControlDriver
 
