@@ -4,8 +4,9 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'], function($_, _, Backbone, sha1, __Firebase__) {
-    var AppView, BACKEND_DATA_HOST, Command, CommandQueue, Connection, RabbitRemote, Remote, RemoteControlDriver, ScribdRemote, Slide, SlideshareRemote, SpeakerdeskRemote, ToggleView, WelcomeView;
+  define(['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'], function($j, _, Backbone, sha1, __Firebase__) {
+    var $, AppView, BACKEND_DATA_HOST, Command, CommandQueue, Connection, RabbitRemote, Remote, RemoteControlDriver, ScribdRemote, Slide, SlideshareRemote, SpeakerdeskRemote, ToggleView, WelcomeView;
+    $ = $j;
     BACKEND_DATA_HOST = "https://qslider.firebaseio.com/";
     Connection = Backbone.Model.extend({
       defaults: {
@@ -50,11 +51,11 @@
         this.$el.html(this.template({
           device: this.device
         }));
-        $('body').append(this.$el);
+        $j('body').append(this.$el);
         return this;
       },
       toggleBoard: function() {
-        return $('#qcommander').show();
+        return $j('#qcommander').show();
       }
     });
     WelcomeView = Backbone.View.extend({
@@ -221,12 +222,17 @@
         bc = "https://chart.googleapis.com/chart?chs=350x350&cht=qr&chl=" + (encodeURI(JSON.stringify(code))) + "&choe=UTF-8";
         this.connection = new Connection(code);
         this.connection.set('bc', bc);
-        this.remote = new Remote(code.url);
-        this.connection.set('author', this.remote.getAuthor());
-        this.connection.set('currentSlideUrl', this.remote.driver.getCurrentSlideScreenshot());
-        this.connection.set('currentSlideNumber', this.remote.driver.getCurrentSlideNumber());
-        this.connection.set('quantity', this.remote.driver.quantity);
-        this.connection.set('title', this.remote.driver.getTitle());
+        try {
+          this.remote = new Remote(code.url);
+          this.connection.set('author', this.remote.getAuthor());
+          this.connection.set('currentSlideUrl', this.remote.driver.getCurrentSlideScreenshot());
+          this.connection.set('currentSlideNumber', this.remote.driver.getCurrentSlideNumber());
+          this.connection.set('quantity', this.remote.driver.quantity);
+          this.connection.set('title', this.remote.driver.getTitle());
+        } catch (error) {
+          alert(error);
+          return false;
+        }
         baseFirebaseUrl = this.baseFirebaseUrl = "" + BACKEND_DATA_HOST + (this.connection.get('token')) + "/";
         this.queue.url = "" + baseFirebaseUrl + "qc/";
         (typeof console !== "undefined" && console !== null) && console.log(this.queue);
@@ -256,7 +262,7 @@
         this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('width', 800).css('height', 700).css('left', '50%').css('margin-left', '-350px').css('top', 0).css('padding-top', '2em').css('background', '#666').css('color', '#ccc');
         this.$el.html(this.template(this.connection.attributes));
         (typeof console !== "undefined" && console !== null) && console.log(this.$el);
-        $('body').append(this.$el);
+        $j('body').append(this.$el);
         return this;
       },
       events: {
@@ -285,18 +291,25 @@
       }
 
       Remote.prototype.setupRemote = function() {
-        return this.driver = (function() {
-          switch (false) {
-            case !(this.url.indexOf('speakerdeck.com/') > 1):
-              return new SpeakerdeskRemote;
-            case !(this.url.indexOf('slideshare.net/') > 1):
-              return new SlideshareRemote;
-            case !(this.url.indexOf('scribd.com/') > 1):
-              return new ScribdRemote;
-            default:
-              return new RabbitRemote;
-          }
-        }).call(this);
+        try {
+          this.driver = (function() {
+            switch (false) {
+              case !(this.url.indexOf('speakerdeck.com/') > 1):
+                return new SpeakerdeskRemote;
+              case !(this.url.indexOf('slideshare.net/') > 1):
+                return new SlideshareRemote;
+              case !(this.url.indexOf('scribd.com/') > 1):
+                return new ScribdRemote;
+              case !(this.url.indexOf('drive.google.com/') > 1):
+                return new GoogleRemote;
+              default:
+                throw new Error("Not supported yet");
+            }
+          }).call(this);
+          return this;
+        } catch (error) {
+          throw error;
+        }
       };
 
       Remote.prototype.control = function() {
@@ -362,7 +375,7 @@
       RemoteControlDriver.prototype.getAuthor = function() {};
 
       RemoteControlDriver.prototype.getTitle = function() {
-        return $(document).prop('title');
+        return $j(document).prop('title');
       };
 
       return RemoteControlDriver;
@@ -374,26 +387,26 @@
 
       function SpeakerdeskRemote() {
         SpeakerdeskRemote.__super__.constructor.apply(this, arguments);
-        this.container = $('.speakerdeck-iframe ').contents();
+        this.container = $j('.speakerdeck-iframe ').contents();
         this.quantity = this.getSlideQuantity();
         (typeof console !== "undefined" && console !== null) && console.log(this.container);
       }
 
       SpeakerdeskRemote.prototype.getAuthor = function() {
-        return $('#talk-details h2 a').html();
+        return $j('#talk-details h2 a').html();
       };
 
       SpeakerdeskRemote.prototype.getTitle = function() {
-        return $(document).prop('title').replace("// Speaker Deck", '').trim();
+        return $j(document).prop('title').replace("// Speaker Deck", '').trim();
       };
 
       SpeakerdeskRemote.prototype.getSlideQuantity = function() {
-        return $('.previews > img', this.container).length;
+        return $j('.previews > img', this.container).length;
       };
 
       SpeakerdeskRemote.prototype.getCurrentSlideNumber = function() {
         var current_url, m, r;
-        current_url = $('#player-content-wrapper > #slide_image', this.container).prop('src');
+        current_url = $j('#player-content-wrapper > #slide_image', this.container).prop('src');
         r = /\/slide_([0-9]+)\./gi;
         if (m = r.exec(current_url)) {
           return 1 + parseInt(m[1]);
@@ -402,19 +415,19 @@
       };
 
       SpeakerdeskRemote.prototype.getCurrentSlideScreenshot = function() {
-        return $('#player-content-wrapper > #slide_image', this.container).prop('src');
+        return $j('#player-content-wrapper > #slide_image', this.container).prop('src');
       };
 
       SpeakerdeskRemote.prototype.jump = function(num) {
-        return $('.speakerdeck-iframe ')[0].contentWindow.player.goToSlide(num);
+        return $j('.speakerdeck-iframe ')[0].contentWindow.player.goToSlide(num);
       };
 
       SpeakerdeskRemote.prototype.next = function() {
-        return $('.overnav > .next', this.container)[0].click();
+        return $j('.overnav > .next', this.container)[0].click();
       };
 
       SpeakerdeskRemote.prototype.previous = function() {
-        return $('.overnav > .prev', this.container)[0].click();
+        return $j('.overnav > .prev', this.container)[0].click();
       };
 
       return SpeakerdeskRemote;
@@ -426,27 +439,30 @@
 
       function SlideshareRemote() {
         SlideshareRemote.__super__.constructor.apply(this, arguments);
-        this.container = $('#svPlayerId');
+        this.container = $j('#svPlayerId');
         this.quantity = this.getSlideQuantity();
         (typeof console !== "undefined" && console !== null) && console.log(this.container);
       }
 
       SlideshareRemote.prototype.getAuthor = function() {
-        return $('.title .h-author-name').html();
+        return $j('.title .h-author-name').html();
       };
 
       SlideshareRemote.prototype.getSlideQuantity = function() {
-        if ($('.slide_container').length > 0) {
-          return $('.slide_container .slide', this.container).length;
+        if ($j('.slide_container').length > 0) {
+          return $j('.slide_container .slide', this.container).length;
         }
-        if ($('.slidesContainer').length > 0) {
-          return $('.slidesContainer .jsplBgColorBigfoot').length;
+        if ($j('.slidesContainer').length > 0) {
+          return $j('.slidesContainer .jsplBgColorBigfoot').length;
         }
       };
 
       SlideshareRemote.prototype.getCurrentSlideNumber = function() {
         var n;
-        n = parseInt($('.goToSlideLabel > input', this.container).val());
+        if ($j('.goToSlideLabel > input', this.container).length === 0) {
+          throw new Error("This page doesn't contain a valid slide.");
+        }
+        n = parseInt($j('.goToSlideLabel > input', this.container).val());
         if (n <= 1) {
           return 1;
         }
@@ -456,8 +472,8 @@
       SlideshareRemote.prototype.getCurrentSlideScreenshot = function() {
         var n, url;
         n = this.getCurrentSlideNumber();
-        if ($('.slide_container > .slide').eq(n - 1).find('img').length > 0) {
-          url = $('.slide_container > .slide').eq(n - 1).find('img').prop('src');
+        if ($j('.slide_container > .slide').eq(n - 1).find('img').length > 0) {
+          url = $j('.slide_container > .slide').eq(n - 1).find('img').prop('src');
           if (url.indexOf('image') >= 1) {
             return url;
           }
@@ -470,15 +486,15 @@
         e = $.Event('keyup');
         e.which = 13;
         e.keyCode = 13;
-        return $('.navActions .goToSlideLabel input', this.container).val(num).trigger(e);
+        return $j('.navActions .goToSlideLabel input', this.container).val(num).trigger(e);
       };
 
       SlideshareRemote.prototype.next = function() {
-        return $('.nav > .btnNext', this.container)[0].click();
+        return $j('.nav > .btnNext', this.container)[0].click();
       };
 
       SlideshareRemote.prototype.previous = function() {
-        return $('.nav > .btnPrevious', this.container)[0].click();
+        return $j('.nav > .btnPrevious', this.container)[0].click();
       };
 
       return SlideshareRemote;

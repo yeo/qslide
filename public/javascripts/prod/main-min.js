@@ -1,39 +1,41 @@
 
 /*
- RequireJS 2.1.4 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
+ RequireJS 2.1.11 Copyright (c) 2010-2014, The Dojo Foundation All Rights Reserved.
  Available via the MIT or new BSD license.
  see: http://github.com/jrburke/requirejs for details
 */
 var requirejs,require,define;
-(function(Y){function I(b){return"[object Function]"===L.call(b)}function J(b){return"[object Array]"===L.call(b)}function x(b,c){if(b){var d;for(d=0;d<b.length&&(!b[d]||!c(b[d],d,b));d+=1);}}function M(b,c){if(b){var d;for(d=b.length-1;-1<d&&(!b[d]||!c(b[d],d,b));d-=1);}}function r(b,c){return da.call(b,c)}function i(b,c){return r(b,c)&&b[c]}function E(b,c){for(var d in b)if(r(b,d)&&c(b[d],d))break}function Q(b,c,d,i){c&&E(c,function(c,h){if(d||!r(b,h))i&&"string"!==typeof c?(b[h]||(b[h]={}),Q(b[h],
-c,d,i)):b[h]=c});return b}function t(b,c){return function(){return c.apply(b,arguments)}}function Z(b){if(!b)return b;var c=Y;x(b.split("."),function(b){c=c[b]});return c}function F(b,c,d,i){c=Error(c+"\nhttp://requirejs.org/docs/errors.html#"+b);c.requireType=b;c.requireModules=i;d&&(c.originalError=d);return c}function ea(b){function c(a,f,v){var e,n,b,c,d,k,g,h=f&&f.split("/");e=h;var l=m.map,j=l&&l["*"];if(a&&"."===a.charAt(0))if(f){e=i(m.pkgs,f)?h=[f]:h.slice(0,h.length-1);f=a=e.concat(a.split("/"));
-for(e=0;f[e];e+=1)if(n=f[e],"."===n)f.splice(e,1),e-=1;else if(".."===n)if(1===e&&(".."===f[2]||".."===f[0]))break;else 0<e&&(f.splice(e-1,2),e-=2);e=i(m.pkgs,f=a[0]);a=a.join("/");e&&a===f+"/"+e.main&&(a=f)}else 0===a.indexOf("./")&&(a=a.substring(2));if(v&&(h||j)&&l){f=a.split("/");for(e=f.length;0<e;e-=1){b=f.slice(0,e).join("/");if(h)for(n=h.length;0<n;n-=1)if(v=i(l,h.slice(0,n).join("/")))if(v=i(v,b)){c=v;d=e;break}if(c)break;!k&&(j&&i(j,b))&&(k=i(j,b),g=e)}!c&&k&&(c=k,d=g);c&&(f.splice(0,d,
-c),a=f.join("/"))}return a}function d(a){z&&x(document.getElementsByTagName("script"),function(f){if(f.getAttribute("data-requiremodule")===a&&f.getAttribute("data-requirecontext")===k.contextName)return f.parentNode.removeChild(f),!0})}function y(a){var f=i(m.paths,a);if(f&&J(f)&&1<f.length)return d(a),f.shift(),k.require.undef(a),k.require([a]),!0}function g(a){var f,b=a?a.indexOf("!"):-1;-1<b&&(f=a.substring(0,b),a=a.substring(b+1,a.length));return[f,a]}function h(a,f,b,e){var n,u,d=null,h=f?f.name:
-null,l=a,m=!0,j="";a||(m=!1,a="_@r"+(L+=1));a=g(a);d=a[0];a=a[1];d&&(d=c(d,h,e),u=i(p,d));a&&(d?j=u&&u.normalize?u.normalize(a,function(a){return c(a,h,e)}):c(a,h,e):(j=c(a,h,e),a=g(j),d=a[0],j=a[1],b=!0,n=k.nameToUrl(j)));b=d&&!u&&!b?"_unnormalized"+(M+=1):"";return{prefix:d,name:j,parentMap:f,unnormalized:!!b,url:n,originalName:l,isDefine:m,id:(d?d+"!"+j:j)+b}}function q(a){var f=a.id,b=i(j,f);b||(b=j[f]=new k.Module(a));return b}function s(a,f,b){var e=a.id,n=i(j,e);if(r(p,e)&&(!n||n.defineEmitComplete))"defined"===
-f&&b(p[e]);else q(a).on(f,b)}function A(a,f){var b=a.requireModules,e=!1;if(f)f(a);else if(x(b,function(f){if(f=i(j,f))f.error=a,f.events.error&&(e=!0,f.emit("error",a))}),!e)l.onError(a)}function w(){R.length&&(fa.apply(G,[G.length-1,0].concat(R)),R=[])}function B(a,f,b){var e=a.map.id;a.error?a.emit("error",a.error):(f[e]=!0,x(a.depMaps,function(e,c){var d=e.id,h=i(j,d);h&&(!a.depMatched[c]&&!b[d])&&(i(f,d)?(a.defineDep(c,p[d]),a.check()):B(h,f,b))}),b[e]=!0)}function C(){var a,f,b,e,n=(b=1E3*m.waitSeconds)&&
-k.startTime+b<(new Date).getTime(),c=[],h=[],g=!1,l=!0;if(!T){T=!0;E(j,function(b){a=b.map;f=a.id;if(b.enabled&&(a.isDefine||h.push(b),!b.error))if(!b.inited&&n)y(f)?g=e=!0:(c.push(f),d(f));else if(!b.inited&&(b.fetched&&a.isDefine)&&(g=!0,!a.prefix))return l=!1});if(n&&c.length)return b=F("timeout","Load timeout for modules: "+c,null,c),b.contextName=k.contextName,A(b);l&&x(h,function(a){B(a,{},{})});if((!n||e)&&g)if((z||$)&&!U)U=setTimeout(function(){U=0;C()},50);T=!1}}function D(a){r(p,a[0])||
-q(h(a[0],null,!0)).init(a[1],a[2])}function H(a){var a=a.currentTarget||a.srcElement,b=k.onScriptLoad;a.detachEvent&&!V?a.detachEvent("onreadystatechange",b):a.removeEventListener("load",b,!1);b=k.onScriptError;(!a.detachEvent||V)&&a.removeEventListener("error",b,!1);return{node:a,id:a&&a.getAttribute("data-requiremodule")}}function K(){var a;for(w();G.length;){a=G.shift();if(null===a[0])return A(F("mismatch","Mismatched anonymous define() module: "+a[a.length-1]));D(a)}}var T,W,k,N,U,m={waitSeconds:7,
-baseUrl:"./",paths:{},pkgs:{},shim:{},map:{},config:{}},j={},X={},G=[],p={},S={},L=1,M=1;N={require:function(a){return a.require?a.require:a.require=k.makeRequire(a.map)},exports:function(a){a.usingExports=!0;if(a.map.isDefine)return a.exports?a.exports:a.exports=p[a.map.id]={}},module:function(a){return a.module?a.module:a.module={id:a.map.id,uri:a.map.url,config:function(){return m.config&&i(m.config,a.map.id)||{}},exports:p[a.map.id]}}};W=function(a){this.events=i(X,a.id)||{};this.map=a;this.shim=
-i(m.shim,a.id);this.depExports=[];this.depMaps=[];this.depMatched=[];this.pluginMaps={};this.depCount=0};W.prototype={init:function(a,b,c,e){e=e||{};if(!this.inited){this.factory=b;if(c)this.on("error",c);else this.events.error&&(c=t(this,function(a){this.emit("error",a)}));this.depMaps=a&&a.slice(0);this.errback=c;this.inited=!0;this.ignore=e.ignore;e.enabled||this.enabled?this.enable():this.check()}},defineDep:function(a,b){this.depMatched[a]||(this.depMatched[a]=!0,this.depCount-=1,this.depExports[a]=
-b)},fetch:function(){if(!this.fetched){this.fetched=!0;k.startTime=(new Date).getTime();var a=this.map;if(this.shim)k.makeRequire(this.map,{enableBuildCallback:!0})(this.shim.deps||[],t(this,function(){return a.prefix?this.callPlugin():this.load()}));else return a.prefix?this.callPlugin():this.load()}},load:function(){var a=this.map.url;S[a]||(S[a]=!0,k.load(this.map.id,a))},check:function(){if(this.enabled&&!this.enabling){var a,b,c=this.map.id;b=this.depExports;var e=this.exports,n=this.factory;
-if(this.inited)if(this.error)this.emit("error",this.error);else{if(!this.defining){this.defining=!0;if(1>this.depCount&&!this.defined){if(I(n)){if(this.events.error)try{e=k.execCb(c,n,b,e)}catch(d){a=d}else e=k.execCb(c,n,b,e);this.map.isDefine&&((b=this.module)&&void 0!==b.exports&&b.exports!==this.exports?e=b.exports:void 0===e&&this.usingExports&&(e=this.exports));if(a)return a.requireMap=this.map,a.requireModules=[this.map.id],a.requireType="define",A(this.error=a)}else e=n;this.exports=e;if(this.map.isDefine&&
-!this.ignore&&(p[c]=e,l.onResourceLoad))l.onResourceLoad(k,this.map,this.depMaps);delete j[c];this.defined=!0}this.defining=!1;this.defined&&!this.defineEmitted&&(this.defineEmitted=!0,this.emit("defined",this.exports),this.defineEmitComplete=!0)}}else this.fetch()}},callPlugin:function(){var a=this.map,b=a.id,d=h(a.prefix);this.depMaps.push(d);s(d,"defined",t(this,function(e){var n,d;d=this.map.name;var v=this.map.parentMap?this.map.parentMap.name:null,g=k.makeRequire(a.parentMap,{enableBuildCallback:!0});
-if(this.map.unnormalized){if(e.normalize&&(d=e.normalize(d,function(a){return c(a,v,!0)})||""),e=h(a.prefix+"!"+d,this.map.parentMap),s(e,"defined",t(this,function(a){this.init([],function(){return a},null,{enabled:!0,ignore:!0})})),d=i(j,e.id)){this.depMaps.push(e);if(this.events.error)d.on("error",t(this,function(a){this.emit("error",a)}));d.enable()}}else n=t(this,function(a){this.init([],function(){return a},null,{enabled:!0})}),n.error=t(this,function(a){this.inited=!0;this.error=a;a.requireModules=
-[b];E(j,function(a){0===a.map.id.indexOf(b+"_unnormalized")&&delete j[a.map.id]});A(a)}),n.fromText=t(this,function(e,c){var d=a.name,u=h(d),v=O;c&&(e=c);v&&(O=!1);q(u);r(m.config,b)&&(m.config[d]=m.config[b]);try{l.exec(e)}catch(j){return A(F("fromtexteval","fromText eval for "+b+" failed: "+j,j,[b]))}v&&(O=!0);this.depMaps.push(u);k.completeLoad(d);g([d],n)}),e.load(a.name,g,n,m)}));k.enable(d,this);this.pluginMaps[d.id]=d},enable:function(){this.enabling=this.enabled=!0;x(this.depMaps,t(this,function(a,
-b){var c,e;if("string"===typeof a){a=h(a,this.map.isDefine?this.map:this.map.parentMap,!1,!this.skipMap);this.depMaps[b]=a;if(c=i(N,a.id)){this.depExports[b]=c(this);return}this.depCount+=1;s(a,"defined",t(this,function(a){this.defineDep(b,a);this.check()}));this.errback&&s(a,"error",this.errback)}c=a.id;e=j[c];!r(N,c)&&(e&&!e.enabled)&&k.enable(a,this)}));E(this.pluginMaps,t(this,function(a){var b=i(j,a.id);b&&!b.enabled&&k.enable(a,this)}));this.enabling=!1;this.check()},on:function(a,b){var c=
-this.events[a];c||(c=this.events[a]=[]);c.push(b)},emit:function(a,b){x(this.events[a],function(a){a(b)});"error"===a&&delete this.events[a]}};k={config:m,contextName:b,registry:j,defined:p,urlFetched:S,defQueue:G,Module:W,makeModuleMap:h,nextTick:l.nextTick,configure:function(a){a.baseUrl&&"/"!==a.baseUrl.charAt(a.baseUrl.length-1)&&(a.baseUrl+="/");var b=m.pkgs,c=m.shim,e={paths:!0,config:!0,map:!0};E(a,function(a,b){e[b]?"map"===b?Q(m[b],a,!0,!0):Q(m[b],a,!0):m[b]=a});a.shim&&(E(a.shim,function(a,
-b){J(a)&&(a={deps:a});if((a.exports||a.init)&&!a.exportsFn)a.exportsFn=k.makeShimExports(a);c[b]=a}),m.shim=c);a.packages&&(x(a.packages,function(a){a="string"===typeof a?{name:a}:a;b[a.name]={name:a.name,location:a.location||a.name,main:(a.main||"main").replace(ga,"").replace(aa,"")}}),m.pkgs=b);E(j,function(a,b){!a.inited&&!a.map.unnormalized&&(a.map=h(b))});if(a.deps||a.callback)k.require(a.deps||[],a.callback)},makeShimExports:function(a){return function(){var b;a.init&&(b=a.init.apply(Y,arguments));
-return b||a.exports&&Z(a.exports)}},makeRequire:function(a,d){function g(e,c,u){var i,m;d.enableBuildCallback&&(c&&I(c))&&(c.__requireJsBuild=!0);if("string"===typeof e){if(I(c))return A(F("requireargs","Invalid require call"),u);if(a&&r(N,e))return N[e](j[a.id]);if(l.get)return l.get(k,e,a);i=h(e,a,!1,!0);i=i.id;return!r(p,i)?A(F("notloaded",'Module name "'+i+'" has not been loaded yet for context: '+b+(a?"":". Use require([])"))):p[i]}K();k.nextTick(function(){K();m=q(h(null,a));m.skipMap=d.skipMap;
-m.init(e,c,u,{enabled:!0});C()});return g}d=d||{};Q(g,{isBrowser:z,toUrl:function(b){var d,f=b.lastIndexOf("."),h=b.split("/")[0];if(-1!==f&&(!("."===h||".."===h)||1<f))d=b.substring(f,b.length),b=b.substring(0,f);b=k.nameToUrl(c(b,a&&a.id,!0),d||".fake");return d?b:b.substring(0,b.length-5)},defined:function(b){return r(p,h(b,a,!1,!0).id)},specified:function(b){b=h(b,a,!1,!0).id;return r(p,b)||r(j,b)}});a||(g.undef=function(b){w();var c=h(b,a,!0),d=i(j,b);delete p[b];delete S[c.url];delete X[b];
-d&&(d.events.defined&&(X[b]=d.events),delete j[b])});return g},enable:function(a){i(j,a.id)&&q(a).enable()},completeLoad:function(a){var b,c,d=i(m.shim,a)||{},h=d.exports;for(w();G.length;){c=G.shift();if(null===c[0]){c[0]=a;if(b)break;b=!0}else c[0]===a&&(b=!0);D(c)}c=i(j,a);if(!b&&!r(p,a)&&c&&!c.inited){if(m.enforceDefine&&(!h||!Z(h)))return y(a)?void 0:A(F("nodefine","No define call for "+a,null,[a]));D([a,d.deps||[],d.exportsFn])}C()},nameToUrl:function(a,b){var c,d,h,g,k,j;if(l.jsExtRegExp.test(a))g=
-a+(b||"");else{c=m.paths;d=m.pkgs;g=a.split("/");for(k=g.length;0<k;k-=1)if(j=g.slice(0,k).join("/"),h=i(d,j),j=i(c,j)){J(j)&&(j=j[0]);g.splice(0,k,j);break}else if(h){c=a===h.name?h.location+"/"+h.main:h.location;g.splice(0,k,c);break}g=g.join("/");g+=b||(/\?/.test(g)?"":".js");g=("/"===g.charAt(0)||g.match(/^[\w\+\.\-]+:/)?"":m.baseUrl)+g}return m.urlArgs?g+((-1===g.indexOf("?")?"?":"&")+m.urlArgs):g},load:function(a,b){l.load(k,a,b)},execCb:function(a,b,c,d){return b.apply(d,c)},onScriptLoad:function(a){if("load"===
-a.type||ha.test((a.currentTarget||a.srcElement).readyState))P=null,a=H(a),k.completeLoad(a.id)},onScriptError:function(a){var b=H(a);if(!y(b.id))return A(F("scripterror","Script error",a,[b.id]))}};k.require=k.makeRequire();return k}var l,w,B,D,s,H,P,K,ba,ca,ia=/(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/mg,ja=/[^.]\s*require\s*\(\s*["']([^'"\s]+)["']\s*\)/g,aa=/\.js$/,ga=/^\.\//;w=Object.prototype;var L=w.toString,da=w.hasOwnProperty,fa=Array.prototype.splice,z=!!("undefined"!==typeof window&&navigator&&
-document),$=!z&&"undefined"!==typeof importScripts,ha=z&&"PLAYSTATION 3"===navigator.platform?/^complete$/:/^(complete|loaded)$/,V="undefined"!==typeof opera&&"[object Opera]"===opera.toString(),C={},q={},R=[],O=!1;if("undefined"===typeof define){if("undefined"!==typeof requirejs){if(I(requirejs))return;q=requirejs;requirejs=void 0}"undefined"!==typeof require&&!I(require)&&(q=require,require=void 0);l=requirejs=function(b,c,d,y){var g,h="_";!J(b)&&"string"!==typeof b&&(g=b,J(c)?(b=c,c=d,d=y):b=[]);
-g&&g.context&&(h=g.context);(y=i(C,h))||(y=C[h]=l.s.newContext(h));g&&y.configure(g);return y.require(b,c,d)};l.config=function(b){return l(b)};l.nextTick="undefined"!==typeof setTimeout?function(b){setTimeout(b,4)}:function(b){b()};require||(require=l);l.version="2.1.4";l.jsExtRegExp=/^\/|:|\?|\.js$/;l.isBrowser=z;w=l.s={contexts:C,newContext:ea};l({});x(["toUrl","undef","defined","specified"],function(b){l[b]=function(){var c=C._;return c.require[b].apply(c,arguments)}});if(z&&(B=w.head=document.getElementsByTagName("head")[0],
-D=document.getElementsByTagName("base")[0]))B=w.head=D.parentNode;l.onError=function(b){throw b;};l.load=function(b,c,d){var i=b&&b.config||{},g;if(z)return g=i.xhtml?document.createElementNS("http://www.w3.org/1999/xhtml","html:script"):document.createElement("script"),g.type=i.scriptType||"text/javascript",g.charset="utf-8",g.async=!0,g.setAttribute("data-requirecontext",b.contextName),g.setAttribute("data-requiremodule",c),g.attachEvent&&!(g.attachEvent.toString&&0>g.attachEvent.toString().indexOf("[native code"))&&
-!V?(O=!0,g.attachEvent("onreadystatechange",b.onScriptLoad)):(g.addEventListener("load",b.onScriptLoad,!1),g.addEventListener("error",b.onScriptError,!1)),g.src=d,K=g,D?B.insertBefore(g,D):B.appendChild(g),K=null,g;$&&(importScripts(d),b.completeLoad(c))};z&&M(document.getElementsByTagName("script"),function(b){B||(B=b.parentNode);if(s=b.getAttribute("data-main"))return q.baseUrl||(H=s.split("/"),ba=H.pop(),ca=H.length?H.join("/")+"/":"./",q.baseUrl=ca,s=ba),s=s.replace(aa,""),q.deps=q.deps?q.deps.concat(s):
-[s],!0});define=function(b,c,d){var i,g;"string"!==typeof b&&(d=c,c=b,b=null);J(c)||(d=c,c=[]);!c.length&&I(d)&&d.length&&(d.toString().replace(ia,"").replace(ja,function(b,d){c.push(d)}),c=(1===d.length?["require"]:["require","exports","module"]).concat(c));if(O){if(!(i=K))P&&"interactive"===P.readyState||M(document.getElementsByTagName("script"),function(b){if("interactive"===b.readyState)return P=b}),i=P;i&&(b||(b=i.getAttribute("data-requiremodule")),g=C[i.getAttribute("data-requirecontext")])}(g?
-g.defQueue:R).push([b,c,d])};define.amd={jQuery:!0};l.exec=function(b){return eval(b)};l(q)}})(this);
+(function(ca){function G(b){return"[object Function]"===M.call(b)}function H(b){return"[object Array]"===M.call(b)}function v(b,c){if(b){var d;for(d=0;d<b.length&&(!b[d]||!c(b[d],d,b));d+=1);}}function U(b,c){if(b){var d;for(d=b.length-1;-1<d&&(!b[d]||!c(b[d],d,b));d-=1);}}function s(b,c){return ga.call(b,c)}function j(b,c){return s(b,c)&&b[c]}function B(b,c){for(var d in b)if(s(b,d)&&c(b[d],d))break}function V(b,c,d,g){c&&B(c,function(c,h){if(d||!s(b,h))g&&"object"===typeof c&&c&&!H(c)&&!G(c)&&!(c instanceof
+RegExp)?(b[h]||(b[h]={}),V(b[h],c,d,g)):b[h]=c});return b}function t(b,c){return function(){return c.apply(b,arguments)}}function da(b){throw b;}function ea(b){if(!b)return b;var c=ca;v(b.split("."),function(b){c=c[b]});return c}function C(b,c,d,g){c=Error(c+"\nhttp://requirejs.org/docs/errors.html#"+b);c.requireType=b;c.requireModules=g;d&&(c.originalError=d);return c}function ha(b){function c(a,e,b){var f,n,c,d,g,h,i,I=e&&e.split("/");n=I;var m=l.map,k=m&&m["*"];if(a&&"."===a.charAt(0))if(e){n=
+I.slice(0,I.length-1);a=a.split("/");e=a.length-1;l.nodeIdCompat&&R.test(a[e])&&(a[e]=a[e].replace(R,""));n=a=n.concat(a);d=n.length;for(e=0;e<d;e++)if(c=n[e],"."===c)n.splice(e,1),e-=1;else if(".."===c)if(1===e&&(".."===n[2]||".."===n[0]))break;else 0<e&&(n.splice(e-1,2),e-=2);a=a.join("/")}else 0===a.indexOf("./")&&(a=a.substring(2));if(b&&m&&(I||k)){n=a.split("/");e=n.length;a:for(;0<e;e-=1){d=n.slice(0,e).join("/");if(I)for(c=I.length;0<c;c-=1)if(b=j(m,I.slice(0,c).join("/")))if(b=j(b,d)){f=b;
+g=e;break a}!h&&(k&&j(k,d))&&(h=j(k,d),i=e)}!f&&h&&(f=h,g=i);f&&(n.splice(0,g,f),a=n.join("/"))}return(f=j(l.pkgs,a))?f:a}function d(a){z&&v(document.getElementsByTagName("script"),function(e){if(e.getAttribute("data-requiremodule")===a&&e.getAttribute("data-requirecontext")===i.contextName)return e.parentNode.removeChild(e),!0})}function g(a){var e=j(l.paths,a);if(e&&H(e)&&1<e.length)return e.shift(),i.require.undef(a),i.require([a]),!0}function u(a){var e,b=a?a.indexOf("!"):-1;-1<b&&(e=a.substring(0,
+b),a=a.substring(b+1,a.length));return[e,a]}function m(a,e,b,f){var n,d,g=null,h=e?e.name:null,l=a,m=!0,k="";a||(m=!1,a="_@r"+(M+=1));a=u(a);g=a[0];a=a[1];g&&(g=c(g,h,f),d=j(p,g));a&&(g?k=d&&d.normalize?d.normalize(a,function(a){return c(a,h,f)}):c(a,h,f):(k=c(a,h,f),a=u(k),g=a[0],k=a[1],b=!0,n=i.nameToUrl(k)));b=g&&!d&&!b?"_unnormalized"+(Q+=1):"";return{prefix:g,name:k,parentMap:e,unnormalized:!!b,url:n,originalName:l,isDefine:m,id:(g?g+"!"+k:k)+b}}function q(a){var e=a.id,b=j(k,e);b||(b=k[e]=new i.Module(a));
+return b}function r(a,e,b){var f=a.id,n=j(k,f);if(s(p,f)&&(!n||n.defineEmitComplete))"defined"===e&&b(p[f]);else if(n=q(a),n.error&&"error"===e)b(n.error);else n.on(e,b)}function w(a,e){var b=a.requireModules,f=!1;if(e)e(a);else if(v(b,function(e){if(e=j(k,e))e.error=a,e.events.error&&(f=!0,e.emit("error",a))}),!f)h.onError(a)}function x(){S.length&&(ia.apply(A,[A.length,0].concat(S)),S=[])}function y(a){delete k[a];delete W[a]}function F(a,e,b){var f=a.map.id;a.error?a.emit("error",a.error):(e[f]=
+!0,v(a.depMaps,function(f,c){var d=f.id,g=j(k,d);g&&(!a.depMatched[c]&&!b[d])&&(j(e,d)?(a.defineDep(c,p[d]),a.check()):F(g,e,b))}),b[f]=!0)}function D(){var a,e,b=(a=1E3*l.waitSeconds)&&i.startTime+a<(new Date).getTime(),f=[],c=[],h=!1,k=!0;if(!X){X=!0;B(W,function(a){var i=a.map,m=i.id;if(a.enabled&&(i.isDefine||c.push(a),!a.error))if(!a.inited&&b)g(m)?h=e=!0:(f.push(m),d(m));else if(!a.inited&&(a.fetched&&i.isDefine)&&(h=!0,!i.prefix))return k=!1});if(b&&f.length)return a=C("timeout","Load timeout for modules: "+
+f,null,f),a.contextName=i.contextName,w(a);k&&v(c,function(a){F(a,{},{})});if((!b||e)&&h)if((z||fa)&&!Y)Y=setTimeout(function(){Y=0;D()},50);X=!1}}function E(a){s(p,a[0])||q(m(a[0],null,!0)).init(a[1],a[2])}function K(a){var a=a.currentTarget||a.srcElement,e=i.onScriptLoad;a.detachEvent&&!Z?a.detachEvent("onreadystatechange",e):a.removeEventListener("load",e,!1);e=i.onScriptError;(!a.detachEvent||Z)&&a.removeEventListener("error",e,!1);return{node:a,id:a&&a.getAttribute("data-requiremodule")}}function L(){var a;
+for(x();A.length;){a=A.shift();if(null===a[0])return w(C("mismatch","Mismatched anonymous define() module: "+a[a.length-1]));E(a)}}var X,$,i,N,Y,l={waitSeconds:7,baseUrl:"./",paths:{},bundles:{},pkgs:{},shim:{},config:{}},k={},W={},aa={},A=[],p={},T={},ba={},M=1,Q=1;N={require:function(a){return a.require?a.require:a.require=i.makeRequire(a.map)},exports:function(a){a.usingExports=!0;if(a.map.isDefine)return a.exports?p[a.map.id]=a.exports:a.exports=p[a.map.id]={}},module:function(a){return a.module?
+a.module:a.module={id:a.map.id,uri:a.map.url,config:function(){return j(l.config,a.map.id)||{}},exports:a.exports||(a.exports={})}}};$=function(a){this.events=j(aa,a.id)||{};this.map=a;this.shim=j(l.shim,a.id);this.depExports=[];this.depMaps=[];this.depMatched=[];this.pluginMaps={};this.depCount=0};$.prototype={init:function(a,e,b,f){f=f||{};if(!this.inited){this.factory=e;if(b)this.on("error",b);else this.events.error&&(b=t(this,function(a){this.emit("error",a)}));this.depMaps=a&&a.slice(0);this.errback=
+b;this.inited=!0;this.ignore=f.ignore;f.enabled||this.enabled?this.enable():this.check()}},defineDep:function(a,e){this.depMatched[a]||(this.depMatched[a]=!0,this.depCount-=1,this.depExports[a]=e)},fetch:function(){if(!this.fetched){this.fetched=!0;i.startTime=(new Date).getTime();var a=this.map;if(this.shim)i.makeRequire(this.map,{enableBuildCallback:!0})(this.shim.deps||[],t(this,function(){return a.prefix?this.callPlugin():this.load()}));else return a.prefix?this.callPlugin():this.load()}},load:function(){var a=
+this.map.url;T[a]||(T[a]=!0,i.load(this.map.id,a))},check:function(){if(this.enabled&&!this.enabling){var a,e,b=this.map.id;e=this.depExports;var f=this.exports,c=this.factory;if(this.inited)if(this.error)this.emit("error",this.error);else{if(!this.defining){this.defining=!0;if(1>this.depCount&&!this.defined){if(G(c)){if(this.events.error&&this.map.isDefine||h.onError!==da)try{f=i.execCb(b,c,e,f)}catch(d){a=d}else f=i.execCb(b,c,e,f);this.map.isDefine&&void 0===f&&((e=this.module)?f=e.exports:this.usingExports&&
+(f=this.exports));if(a)return a.requireMap=this.map,a.requireModules=this.map.isDefine?[this.map.id]:null,a.requireType=this.map.isDefine?"define":"require",w(this.error=a)}else f=c;this.exports=f;if(this.map.isDefine&&!this.ignore&&(p[b]=f,h.onResourceLoad))h.onResourceLoad(i,this.map,this.depMaps);y(b);this.defined=!0}this.defining=!1;this.defined&&!this.defineEmitted&&(this.defineEmitted=!0,this.emit("defined",this.exports),this.defineEmitComplete=!0)}}else this.fetch()}},callPlugin:function(){var a=
+this.map,b=a.id,d=m(a.prefix);this.depMaps.push(d);r(d,"defined",t(this,function(f){var d,g;g=j(ba,this.map.id);var J=this.map.name,u=this.map.parentMap?this.map.parentMap.name:null,p=i.makeRequire(a.parentMap,{enableBuildCallback:!0});if(this.map.unnormalized){if(f.normalize&&(J=f.normalize(J,function(a){return c(a,u,!0)})||""),f=m(a.prefix+"!"+J,this.map.parentMap),r(f,"defined",t(this,function(a){this.init([],function(){return a},null,{enabled:!0,ignore:!0})})),g=j(k,f.id)){this.depMaps.push(f);
+if(this.events.error)g.on("error",t(this,function(a){this.emit("error",a)}));g.enable()}}else g?(this.map.url=i.nameToUrl(g),this.load()):(d=t(this,function(a){this.init([],function(){return a},null,{enabled:!0})}),d.error=t(this,function(a){this.inited=!0;this.error=a;a.requireModules=[b];B(k,function(a){0===a.map.id.indexOf(b+"_unnormalized")&&y(a.map.id)});w(a)}),d.fromText=t(this,function(f,c){var g=a.name,J=m(g),k=O;c&&(f=c);k&&(O=!1);q(J);s(l.config,b)&&(l.config[g]=l.config[b]);try{h.exec(f)}catch(j){return w(C("fromtexteval",
+"fromText eval for "+b+" failed: "+j,j,[b]))}k&&(O=!0);this.depMaps.push(J);i.completeLoad(g);p([g],d)}),f.load(a.name,p,d,l))}));i.enable(d,this);this.pluginMaps[d.id]=d},enable:function(){W[this.map.id]=this;this.enabling=this.enabled=!0;v(this.depMaps,t(this,function(a,b){var c,f;if("string"===typeof a){a=m(a,this.map.isDefine?this.map:this.map.parentMap,!1,!this.skipMap);this.depMaps[b]=a;if(c=j(N,a.id)){this.depExports[b]=c(this);return}this.depCount+=1;r(a,"defined",t(this,function(a){this.defineDep(b,
+a);this.check()}));this.errback&&r(a,"error",t(this,this.errback))}c=a.id;f=k[c];!s(N,c)&&(f&&!f.enabled)&&i.enable(a,this)}));B(this.pluginMaps,t(this,function(a){var b=j(k,a.id);b&&!b.enabled&&i.enable(a,this)}));this.enabling=!1;this.check()},on:function(a,b){var c=this.events[a];c||(c=this.events[a]=[]);c.push(b)},emit:function(a,b){v(this.events[a],function(a){a(b)});"error"===a&&delete this.events[a]}};i={config:l,contextName:b,registry:k,defined:p,urlFetched:T,defQueue:A,Module:$,makeModuleMap:m,
+nextTick:h.nextTick,onError:w,configure:function(a){a.baseUrl&&"/"!==a.baseUrl.charAt(a.baseUrl.length-1)&&(a.baseUrl+="/");var b=l.shim,c={paths:!0,bundles:!0,config:!0,map:!0};B(a,function(a,b){c[b]?(l[b]||(l[b]={}),V(l[b],a,!0,!0)):l[b]=a});a.bundles&&B(a.bundles,function(a,b){v(a,function(a){a!==b&&(ba[a]=b)})});a.shim&&(B(a.shim,function(a,c){H(a)&&(a={deps:a});if((a.exports||a.init)&&!a.exportsFn)a.exportsFn=i.makeShimExports(a);b[c]=a}),l.shim=b);a.packages&&v(a.packages,function(a){var b,
+a="string"===typeof a?{name:a}:a;b=a.name;a.location&&(l.paths[b]=a.location);l.pkgs[b]=a.name+"/"+(a.main||"main").replace(ja,"").replace(R,"")});B(k,function(a,b){!a.inited&&!a.map.unnormalized&&(a.map=m(b))});if(a.deps||a.callback)i.require(a.deps||[],a.callback)},makeShimExports:function(a){return function(){var b;a.init&&(b=a.init.apply(ca,arguments));return b||a.exports&&ea(a.exports)}},makeRequire:function(a,e){function g(f,c,d){var j,l;e.enableBuildCallback&&(c&&G(c))&&(c.__requireJsBuild=
+!0);if("string"===typeof f){if(G(c))return w(C("requireargs","Invalid require call"),d);if(a&&s(N,f))return N[f](k[a.id]);if(h.get)return h.get(i,f,a,g);j=m(f,a,!1,!0);j=j.id;return!s(p,j)?w(C("notloaded",'Module name "'+j+'" has not been loaded yet for context: '+b+(a?"":". Use require([])"))):p[j]}L();i.nextTick(function(){L();l=q(m(null,a));l.skipMap=e.skipMap;l.init(f,c,d,{enabled:!0});D()});return g}e=e||{};V(g,{isBrowser:z,toUrl:function(b){var e,d=b.lastIndexOf("."),g=b.split("/")[0];if(-1!==
+d&&(!("."===g||".."===g)||1<d))e=b.substring(d,b.length),b=b.substring(0,d);return i.nameToUrl(c(b,a&&a.id,!0),e,!0)},defined:function(b){return s(p,m(b,a,!1,!0).id)},specified:function(b){b=m(b,a,!1,!0).id;return s(p,b)||s(k,b)}});a||(g.undef=function(b){x();var c=m(b,a,!0),e=j(k,b);d(b);delete p[b];delete T[c.url];delete aa[b];U(A,function(a,c){a[0]===b&&A.splice(c,1)});e&&(e.events.defined&&(aa[b]=e.events),y(b))});return g},enable:function(a){j(k,a.id)&&q(a).enable()},completeLoad:function(a){var b,
+c,f=j(l.shim,a)||{},d=f.exports;for(x();A.length;){c=A.shift();if(null===c[0]){c[0]=a;if(b)break;b=!0}else c[0]===a&&(b=!0);E(c)}c=j(k,a);if(!b&&!s(p,a)&&c&&!c.inited){if(l.enforceDefine&&(!d||!ea(d)))return g(a)?void 0:w(C("nodefine","No define call for "+a,null,[a]));E([a,f.deps||[],f.exportsFn])}D()},nameToUrl:function(a,b,c){var f,d,g;(f=j(l.pkgs,a))&&(a=f);if(f=j(ba,a))return i.nameToUrl(f,b,c);if(h.jsExtRegExp.test(a))f=a+(b||"");else{f=l.paths;a=a.split("/");for(d=a.length;0<d;d-=1)if(g=a.slice(0,
+d).join("/"),g=j(f,g)){H(g)&&(g=g[0]);a.splice(0,d,g);break}f=a.join("/");f+=b||(/^data\:|\?/.test(f)||c?"":".js");f=("/"===f.charAt(0)||f.match(/^[\w\+\.\-]+:/)?"":l.baseUrl)+f}return l.urlArgs?f+((-1===f.indexOf("?")?"?":"&")+l.urlArgs):f},load:function(a,b){h.load(i,a,b)},execCb:function(a,b,c,d){return b.apply(d,c)},onScriptLoad:function(a){if("load"===a.type||ka.test((a.currentTarget||a.srcElement).readyState))P=null,a=K(a),i.completeLoad(a.id)},onScriptError:function(a){var b=K(a);if(!g(b.id))return w(C("scripterror",
+"Script error for: "+b.id,a,[b.id]))}};i.require=i.makeRequire();return i}var h,x,y,D,K,E,P,L,q,Q,la=/(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/mg,ma=/[^.]\s*require\s*\(\s*["']([^'"\s]+)["']\s*\)/g,R=/\.js$/,ja=/^\.\//;x=Object.prototype;var M=x.toString,ga=x.hasOwnProperty,ia=Array.prototype.splice,z=!!("undefined"!==typeof window&&"undefined"!==typeof navigator&&window.document),fa=!z&&"undefined"!==typeof importScripts,ka=z&&"PLAYSTATION 3"===navigator.platform?/^complete$/:/^(complete|loaded)$/,
+Z="undefined"!==typeof opera&&"[object Opera]"===opera.toString(),F={},r={},S=[],O=!1;if("undefined"===typeof define){if("undefined"!==typeof requirejs){if(G(requirejs))return;r=requirejs;requirejs=void 0}"undefined"!==typeof require&&!G(require)&&(r=require,require=void 0);h=requirejs=function(b,c,d,g){var u,m="_";!H(b)&&"string"!==typeof b&&(u=b,H(c)?(b=c,c=d,d=g):b=[]);u&&u.context&&(m=u.context);(g=j(F,m))||(g=F[m]=h.s.newContext(m));u&&g.configure(u);return g.require(b,c,d)};h.config=function(b){return h(b)};
+h.nextTick="undefined"!==typeof setTimeout?function(b){setTimeout(b,4)}:function(b){b()};require||(require=h);h.version="2.1.11";h.jsExtRegExp=/^\/|:|\?|\.js$/;h.isBrowser=z;x=h.s={contexts:F,newContext:ha};h({});v(["toUrl","undef","defined","specified"],function(b){h[b]=function(){var c=F._;return c.require[b].apply(c,arguments)}});if(z&&(y=x.head=document.getElementsByTagName("head")[0],D=document.getElementsByTagName("base")[0]))y=x.head=D.parentNode;h.onError=da;h.createNode=function(b){var c=
+b.xhtml?document.createElementNS("http://www.w3.org/1999/xhtml","html:script"):document.createElement("script");c.type=b.scriptType||"text/javascript";c.charset="utf-8";c.async=!0;return c};h.load=function(b,c,d){var g=b&&b.config||{};if(z)return g=h.createNode(g,c,d),g.setAttribute("data-requirecontext",b.contextName),g.setAttribute("data-requiremodule",c),g.attachEvent&&!(g.attachEvent.toString&&0>g.attachEvent.toString().indexOf("[native code"))&&!Z?(O=!0,g.attachEvent("onreadystatechange",b.onScriptLoad)):
+(g.addEventListener("load",b.onScriptLoad,!1),g.addEventListener("error",b.onScriptError,!1)),g.src=d,L=g,D?y.insertBefore(g,D):y.appendChild(g),L=null,g;if(fa)try{importScripts(d),b.completeLoad(c)}catch(j){b.onError(C("importscripts","importScripts failed for "+c+" at "+d,j,[c]))}};z&&!r.skipDataMain&&U(document.getElementsByTagName("script"),function(b){y||(y=b.parentNode);if(K=b.getAttribute("data-main"))return q=K,r.baseUrl||(E=q.split("/"),q=E.pop(),Q=E.length?E.join("/")+"/":"./",r.baseUrl=
+Q),q=q.replace(R,""),h.jsExtRegExp.test(q)&&(q=K),r.deps=r.deps?r.deps.concat(q):[q],!0});define=function(b,c,d){var g,h;"string"!==typeof b&&(d=c,c=b,b=null);H(c)||(d=c,c=null);!c&&G(d)&&(c=[],d.length&&(d.toString().replace(la,"").replace(ma,function(b,d){c.push(d)}),c=(1===d.length?["require"]:["require","exports","module"]).concat(c)));if(O){if(!(g=L))P&&"interactive"===P.readyState||U(document.getElementsByTagName("script"),function(b){if("interactive"===b.readyState)return P=b}),g=P;g&&(b||
+(b=g.getAttribute("data-requiremodule")),h=F[g.getAttribute("data-requirecontext")])}(h?h.defQueue:S).push([b,c,d])};define.amd={jQuery:!0};h.exec=function(b){return eval(b)};h(r)}})(this);
+
 
 define("requireLib", function(){});
 
@@ -70,7 +72,7 @@ define("backbone", ["underscore"], (function (global) {
 /**
 http://phpjs.org/functions/sha1/
 */
-define('sha1',[],function() {
+define('sha1',['jquery-private'],function($j) {
 /**
  * SHA256 Hash Algorithm Plugin
  *
@@ -228,35 +230,35 @@ define('sha1',[],function() {
 
 	// standard sha256 implementation: var x = $.sha256(value);
 	// standard sha266hmac implementation: varx = $.sha256hmac(value1, value2);
-	$.extend({
-		sha256 : function(string){
-			string = prep(string);
-			return binb2hex(core_sha256(str2binb(string),string.length * chrsz));
-		},
-		sha256b64 : function (string) {
-			string = prep(string);
-			return binb2b64(core_sha256(str2binb(string), string.length * chrsz));
-		},
+	//$j.extend({
+		//sha256 : function(string){
+			//string = prep(string);
+			//return binb2hex(core_sha256(str2binb(string),string.length * chrsz));
+		//},
+		//sha256b64 : function (string) {
+			//string = prep(string);
+			//return binb2b64(core_sha256(str2binb(string), string.length * chrsz));
+		//},
 		/*
 		 *
 		 */
-		sha256hmachex : function (key, data) {
-			key = prep(key);
-			data = prep(data);
-			return binb2hex(core_hmac_sha256(key, data));
-		},
+		//sha256hmachex : function (key, data) {
+			//key = prep(key);
+			//data = prep(data);
+			//return binb2hex(core_hmac_sha256(key, data));
+		//},
 		/*
 		 *
 		 */
-		sha256hmacb64 : function (key, data) {
-			key = prep(key);
-			data = prep(data);
-			return binb2b64(core_hmac_sha256(key, data));
-		},
-		sha256config : function(bits){
-			chrsz = parseInt(bits) || 8;
-		}
-	});
+		//sha256hmacb64 : function (key, data) {
+			//key = prep(key);
+			//data = prep(data);
+			//return binb2b64(core_hmac_sha256(key, data));
+		//},
+		//sha256config : function(bits){
+			//chrsz = parseInt(bits) || 8;
+		//}
+	//});
 
   return function (string) {
     string = prep(string);
@@ -424,8 +426,9 @@ define("firebase", (function (global) {
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define('app',['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'], function($_, _, Backbone, sha1, __Firebase__) {
-    var AppView, BACKEND_DATA_HOST, Command, CommandQueue, Connection, RabbitRemote, Remote, RemoteControlDriver, ScribdRemote, Slide, SlideshareRemote, SpeakerdeskRemote, ToggleView, WelcomeView;
+  define('app',['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'], function($j, _, Backbone, sha1, __Firebase__) {
+    var $, AppView, BACKEND_DATA_HOST, Command, CommandQueue, Connection, RabbitRemote, Remote, RemoteControlDriver, ScribdRemote, Slide, SlideshareRemote, SpeakerdeskRemote, ToggleView, WelcomeView;
+    $ = $j;
     BACKEND_DATA_HOST = "https://qslider.firebaseio.com/";
     Connection = Backbone.Model.extend({
       defaults: {
@@ -470,11 +473,11 @@ define("firebase", (function (global) {
         this.$el.html(this.template({
           device: this.device
         }));
-        $('body').append(this.$el);
+        $j('body').append(this.$el);
         return this;
       },
       toggleBoard: function() {
-        return $('#qcommander').show();
+        return $j('#qcommander').show();
       }
     });
     WelcomeView = Backbone.View.extend({
@@ -641,12 +644,17 @@ define("firebase", (function (global) {
         bc = "https://chart.googleapis.com/chart?chs=350x350&cht=qr&chl=" + (encodeURI(JSON.stringify(code))) + "&choe=UTF-8";
         this.connection = new Connection(code);
         this.connection.set('bc', bc);
-        this.remote = new Remote(code.url);
-        this.connection.set('author', this.remote.getAuthor());
-        this.connection.set('currentSlideUrl', this.remote.driver.getCurrentSlideScreenshot());
-        this.connection.set('currentSlideNumber', this.remote.driver.getCurrentSlideNumber());
-        this.connection.set('quantity', this.remote.driver.quantity);
-        this.connection.set('title', this.remote.driver.getTitle());
+        try {
+          this.remote = new Remote(code.url);
+          this.connection.set('author', this.remote.getAuthor());
+          this.connection.set('currentSlideUrl', this.remote.driver.getCurrentSlideScreenshot());
+          this.connection.set('currentSlideNumber', this.remote.driver.getCurrentSlideNumber());
+          this.connection.set('quantity', this.remote.driver.quantity);
+          this.connection.set('title', this.remote.driver.getTitle());
+        } catch (error) {
+          alert(error);
+          return false;
+        }
         baseFirebaseUrl = this.baseFirebaseUrl = "" + BACKEND_DATA_HOST + (this.connection.get('token')) + "/";
         this.queue.url = "" + baseFirebaseUrl + "qc/";
         (typeof console !== "undefined" && console !== null) && console.log(this.queue);
@@ -676,7 +684,7 @@ define("firebase", (function (global) {
         this.$el.css('position', 'fixed').css('text-align', 'center').css('zIndex', 9999).css('width', 800).css('height', 700).css('left', '50%').css('margin-left', '-350px').css('top', 0).css('padding-top', '2em').css('background', '#666').css('color', '#ccc');
         this.$el.html(this.template(this.connection.attributes));
         (typeof console !== "undefined" && console !== null) && console.log(this.$el);
-        $('body').append(this.$el);
+        $j('body').append(this.$el);
         return this;
       },
       events: {
@@ -705,18 +713,25 @@ define("firebase", (function (global) {
       }
 
       Remote.prototype.setupRemote = function() {
-        return this.driver = (function() {
-          switch (false) {
-            case !(this.url.indexOf('speakerdeck.com/') > 1):
-              return new SpeakerdeskRemote;
-            case !(this.url.indexOf('slideshare.net/') > 1):
-              return new SlideshareRemote;
-            case !(this.url.indexOf('scribd.com/') > 1):
-              return new ScribdRemote;
-            default:
-              return new RabbitRemote;
-          }
-        }).call(this);
+        try {
+          this.driver = (function() {
+            switch (false) {
+              case !(this.url.indexOf('speakerdeck.com/') > 1):
+                return new SpeakerdeskRemote;
+              case !(this.url.indexOf('slideshare.net/') > 1):
+                return new SlideshareRemote;
+              case !(this.url.indexOf('scribd.com/') > 1):
+                return new ScribdRemote;
+              case !(this.url.indexOf('drive.google.com/') > 1):
+                return new GoogleRemote;
+              default:
+                throw new Error("Not supported yet");
+            }
+          }).call(this);
+          return this;
+        } catch (error) {
+          throw error;
+        }
       };
 
       Remote.prototype.control = function() {
@@ -782,7 +797,7 @@ define("firebase", (function (global) {
       RemoteControlDriver.prototype.getAuthor = function() {};
 
       RemoteControlDriver.prototype.getTitle = function() {
-        return $(document).prop('title');
+        return $j(document).prop('title');
       };
 
       return RemoteControlDriver;
@@ -794,26 +809,26 @@ define("firebase", (function (global) {
 
       function SpeakerdeskRemote() {
         SpeakerdeskRemote.__super__.constructor.apply(this, arguments);
-        this.container = $('.speakerdeck-iframe ').contents();
+        this.container = $j('.speakerdeck-iframe ').contents();
         this.quantity = this.getSlideQuantity();
         (typeof console !== "undefined" && console !== null) && console.log(this.container);
       }
 
       SpeakerdeskRemote.prototype.getAuthor = function() {
-        return $('#talk-details h2 a').html();
+        return $j('#talk-details h2 a').html();
       };
 
       SpeakerdeskRemote.prototype.getTitle = function() {
-        return $(document).prop('title').replace("// Speaker Deck", '').trim();
+        return $j(document).prop('title').replace("// Speaker Deck", '').trim();
       };
 
       SpeakerdeskRemote.prototype.getSlideQuantity = function() {
-        return $('.previews > img', this.container).length;
+        return $j('.previews > img', this.container).length;
       };
 
       SpeakerdeskRemote.prototype.getCurrentSlideNumber = function() {
         var current_url, m, r;
-        current_url = $('#player-content-wrapper > #slide_image', this.container).prop('src');
+        current_url = $j('#player-content-wrapper > #slide_image', this.container).prop('src');
         r = /\/slide_([0-9]+)\./gi;
         if (m = r.exec(current_url)) {
           return 1 + parseInt(m[1]);
@@ -822,19 +837,19 @@ define("firebase", (function (global) {
       };
 
       SpeakerdeskRemote.prototype.getCurrentSlideScreenshot = function() {
-        return $('#player-content-wrapper > #slide_image', this.container).prop('src');
+        return $j('#player-content-wrapper > #slide_image', this.container).prop('src');
       };
 
       SpeakerdeskRemote.prototype.jump = function(num) {
-        return $('.speakerdeck-iframe ')[0].contentWindow.player.goToSlide(num);
+        return $j('.speakerdeck-iframe ')[0].contentWindow.player.goToSlide(num);
       };
 
       SpeakerdeskRemote.prototype.next = function() {
-        return $('.overnav > .next', this.container)[0].click();
+        return $j('.overnav > .next', this.container)[0].click();
       };
 
       SpeakerdeskRemote.prototype.previous = function() {
-        return $('.overnav > .prev', this.container)[0].click();
+        return $j('.overnav > .prev', this.container)[0].click();
       };
 
       return SpeakerdeskRemote;
@@ -846,27 +861,30 @@ define("firebase", (function (global) {
 
       function SlideshareRemote() {
         SlideshareRemote.__super__.constructor.apply(this, arguments);
-        this.container = $('#svPlayerId');
+        this.container = $j('#svPlayerId');
         this.quantity = this.getSlideQuantity();
         (typeof console !== "undefined" && console !== null) && console.log(this.container);
       }
 
       SlideshareRemote.prototype.getAuthor = function() {
-        return $('.title .h-author-name').html();
+        return $j('.title .h-author-name').html();
       };
 
       SlideshareRemote.prototype.getSlideQuantity = function() {
-        if ($('.slide_container').length > 0) {
-          return $('.slide_container .slide', this.container).length;
+        if ($j('.slide_container').length > 0) {
+          return $j('.slide_container .slide', this.container).length;
         }
-        if ($('.slidesContainer').length > 0) {
-          return $('.slidesContainer .jsplBgColorBigfoot').length;
+        if ($j('.slidesContainer').length > 0) {
+          return $j('.slidesContainer .jsplBgColorBigfoot').length;
         }
       };
 
       SlideshareRemote.prototype.getCurrentSlideNumber = function() {
         var n;
-        n = parseInt($('.goToSlideLabel > input', this.container).val());
+        if ($j('.goToSlideLabel > input', this.container).length === 0) {
+          throw new Error("This page doesn't contain a valid slide.");
+        }
+        n = parseInt($j('.goToSlideLabel > input', this.container).val());
         if (n <= 1) {
           return 1;
         }
@@ -876,8 +894,8 @@ define("firebase", (function (global) {
       SlideshareRemote.prototype.getCurrentSlideScreenshot = function() {
         var n, url;
         n = this.getCurrentSlideNumber();
-        if ($('.slide_container > .slide').eq(n - 1).find('img').length > 0) {
-          url = $('.slide_container > .slide').eq(n - 1).find('img').prop('src');
+        if ($j('.slide_container > .slide').eq(n - 1).find('img').length > 0) {
+          url = $j('.slide_container > .slide').eq(n - 1).find('img').prop('src');
           if (url.indexOf('image') >= 1) {
             return url;
           }
@@ -890,15 +908,15 @@ define("firebase", (function (global) {
         e = $.Event('keyup');
         e.which = 13;
         e.keyCode = 13;
-        return $('.navActions .goToSlideLabel input', this.container).val(num).trigger(e);
+        return $j('.navActions .goToSlideLabel input', this.container).val(num).trigger(e);
       };
 
       SlideshareRemote.prototype.next = function() {
-        return $('.nav > .btnNext', this.container)[0].click();
+        return $j('.nav > .btnNext', this.container)[0].click();
       };
 
       SlideshareRemote.prototype.previous = function() {
-        return $('.nav > .btnPrevious', this.container)[0].click();
+        return $j('.nav > .btnPrevious', this.container)[0].click();
       };
 
       return SlideshareRemote;
@@ -964,17 +982,9 @@ require.config({
     "exports": "_"
   },
 
-  "easing" : {
-    // "deps": ["jquery"],
-  },
-
-  "bootstrap" : {
-    // "deps": ["jquery"],
-  },
-
   "backbone": {
     // Depends on underscore/lodash and jQuery
-    "deps": ["underscore"], //, "jquery"],
+    "deps": ["underscore", "jquery"],
     // "deps": ["underscore", "jquery"],
 
     // Exports the global window.Backbone object
