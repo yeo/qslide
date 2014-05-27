@@ -26,17 +26,9 @@ require.config({
     "exports": "_"
   },
 
-  "easing" : {
-    // "deps": ["jquery"],
-  },
-
-  "bootstrap" : {
-    // "deps": ["jquery"],
-  },
-
   "backbone": {
     // Depends on underscore/lodash and jQuery
-    "deps": ["underscore"], //, "jquery"],
+    "deps": ["underscore", "jquery"],
     // "deps": ["underscore", "jquery"],
 
     // Exports the global window.Backbone object
