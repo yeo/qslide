@@ -1,7 +1,7 @@
 /**
 http://phpjs.org/functions/sha1/
 */
-define(function() {
+define(['jquery-private'],function($j) {
 /**
  * SHA256 Hash Algorithm Plugin
  *
@@ -156,38 +156,6 @@ define(function() {
 		string = typeof string == 'object' ? $(string).val() : string.toString();
 		return string;
 	};
-
-	// standard sha256 implementation: var x = $.sha256(value);
-	// standard sha266hmac implementation: varx = $.sha256hmac(value1, value2);
-	$.extend({
-		sha256 : function(string){
-			string = prep(string);
-			return binb2hex(core_sha256(str2binb(string),string.length * chrsz));
-		},
-		sha256b64 : function (string) {
-			string = prep(string);
-			return binb2b64(core_sha256(str2binb(string), string.length * chrsz));
-		},
-		/*
-		 *
-		 */
-		sha256hmachex : function (key, data) {
-			key = prep(key);
-			data = prep(data);
-			return binb2hex(core_hmac_sha256(key, data));
-		},
-		/*
-		 *
-		 */
-		sha256hmacb64 : function (key, data) {
-			key = prep(key);
-			data = prep(data);
-			return binb2b64(core_hmac_sha256(key, data));
-		},
-		sha256config : function(bits){
-			chrsz = parseInt(bits) || 8;
-		}
-	});
 
   return function (string) {
     string = prep(string);
