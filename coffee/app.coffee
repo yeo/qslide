@@ -1,6 +1,23 @@
 'use strict'
 
-define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($j, _, Backbone, sha1, __Firebase__) ->
+define([
+  'jquery-private', 
+  'underscore',
+  'backbone',
+  'sha1',
+  'firebase',
+  'remote'
+  'remotedriver',
+  'google'
+],  (
+  $j, 
+  _, 
+  Backbone, 
+  sha1, 
+  __Firebase__, 
+  Remote,
+  RemoteControlDriver,
+  GoogleRemote) ->
   $=$j
   BACKEND_DATA_HOST = "https://qslider.firebaseio.com/"
   Connection = Backbone.Model.extend
@@ -304,158 +321,13 @@ define ['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'],  ($j, _
     resetData:  ()->
       this.r.setAwards(Rewards)
   
-      
-  class Remote 
-    constructor: (@url) ->
-      @driver = {}
-      this.setupRemote()
-    # Based on url, load corresponding remote driver  
-    setupRemote: () -> 
-      try 
-        @driver = switch
-          when @url.indexOf('speakerdeck.com/') > 1 then new SpeakerdeskRemote
-          when @url.indexOf('slideshare.net/') > 1  then new SlideshareRemote
-          when @url.indexOf('scribd.com/') > 1  then new ScribdRemote
-          when @url.indexOf('drive.google.com/') > 1  then new GoogleRemote
-          else throw new Error("Not supported yet")
-        return this    
-      catch error
-        throw error
-
-    control: () ->
-      @driver
-
-    getCurrentSlide: () ->
-      url = @driver.getCurrentSlideScreenshot()
-      console? && console.log url
-
-    getAuthor: () ->
-      @driver.getAuthor()
-
-    previous: (cb) ->
-      #@driver.jump(@driver.currentSlide() - 1a
-      @driver.previous()
-      cb(
-        url: @driver.getCurrentSlideScreenshot()
-        currentSlideNumber: @driver.getCurrentSlideNumber()
-      )
-      #this.trigger('transitionSLide', {url: this.getCurrentSlide()})
-    next: (cb) ->
-      #@driver.jump(@driver.currentSlide() + 1)
-      @driver.next()
-      cb(
-        url: @driver.getCurrentSlideScreenshot()
-        currentSlideNumber: @driver.getCurrentSlideNumber()
-      )
-    jump: (num, cb) ->
-      @driver.jump num
-      cb(
-        url: @driver.getCurrentSlideScreenshot()
-        currentSlideNumber: @driver.getCurrentSlideNumber()
-      )
-
-  # Base control class 
-  class RemoteControlDriver
-    constructor: () ->
-      @currentSlide = 0
-      @container = {}
-
-    # which driver will be used for this URL
-    match: (url) ->
-         
-    jump: () ->
-    next: () ->
-    previous: () ->
-    getCurrentSlideNumber: () ->
-    getCurrentSlideScreenshot: () ->
-    getAuthor: () ->
-    getTitle: () ->
-      $j(document).prop('title')
-
-  class SpeakerdeskRemote extends RemoteControlDriver 
-    constructor: () ->
-      super
-      # The player is put inside a iframe so, let get its contents
-      @container = $j('.speakerdeck-iframe ').contents()
-      @quantity = this.getSlideQuantity()
-      console? && console.log @container
-
-    getAuthor: () ->
-      $j('#talk-details h2 a').html()
-          #when window.location.host.indexOf('slideshare.net')  then   $j('#talk-details h2 a').html()
-    getTitle: () ->
-        $j(document).prop('title').replace("// Speaker Deck", '').trim()
-
-    getSlideQuantity: () ->
-      $j('.previews > img', @container).length
-
-    getCurrentSlideNumber: () ->
-      current_url = $j('#player-content-wrapper > #slide_image', @container).prop('src')
-      r = /\/slide_([0-9]+)\./gi
-      if m = r.exec(current_url)
-        return 1 + parseInt(m[1])
-      return false 
-
-    getCurrentSlideScreenshot: () ->
-      $j('#player-content-wrapper > #slide_image', @container).prop('src')
-    
-    jump: (num) ->
-      $j('.speakerdeck-iframe ')[0].contentWindow.player.goToSlide num
-    next: () ->
-      $j('.overnav > .next', @container)[0].click()
-    previous: () ->
-      $j('.overnav > .prev', @container)[0].click()
-
-  class SlideshareRemote extends RemoteControlDriver
-    constructor: () ->
-      super
-      @container = $j('#svPlayerId') 
-      @quantity = this.getSlideQuantity()
-      console? && console.log @container
-    
-    getAuthor: () ->
-      $j('.title .h-author-name').html()
-
-    getSlideQuantity: () ->
-      if $j('.slide_container').length > 0
-        return $j('.slide_container .slide', @container).length 
-      if $j('.slidesContainer').length > 0 
-        return $j('.slidesContainer .jsplBgColorBigfoot').length
-
-    getCurrentSlideNumber: () ->
-      if $j('.goToSlideLabel > input', this.container).length == 0
-        throw new Error("This page doesn't contain a valid slide.")
-      n = parseInt($j('.goToSlideLabel > input', @container).val())
-      if n<=1
-        return 1
-      return n
-
-    getCurrentSlideScreenshot: () ->
-      n = this.getCurrentSlideNumber()
-      if $j('.slide_container > .slide').eq(n-1).find('img').length > 0 
-        url = $j('.slide_container > .slide').eq(n-1).find('img').prop('src')
-        if url.indexOf('image')>=1
-          return url
-      return "http://placehold.it/320&text=#{n}"
-
-    jump: (num) ->
-      e = $.Event 'keyup'
-      e.which = 13
-      e.keyCode = 13
-      $j('.navActions .goToSlideLabel input', @container).val(num).trigger e
-
-    next: () ->
-      $j('.nav > .btnNext', @container)[0].click()
-    previous: () ->
-      $j('.nav > .btnPrevious', @container)[0].click()
-    
+       
   class ScribdRemote extends RemoteControlDriver
 
   class RabbitRemote extends RemoteControlDriver
-
-
+  
   return {
     init: ()->
       appView = new AppView()
   }
-  # RequireJS 
+)
