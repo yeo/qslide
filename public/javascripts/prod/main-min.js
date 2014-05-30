@@ -390,7 +390,7 @@ define("firebase", (function (global) {
 
 (function() {
 
-  define('remotedriver',[],function() {
+  define('remotedriver',['jquery-private'], function($j) {
     var RemoteControlDriver;
     return RemoteControlDriver = (function() {
 

@@ -1,6 +1,6 @@
 (function() {
 
-  define(function() {
+  define(['jquery-private'], function($j) {
     var RemoteControlDriver;
     return RemoteControlDriver = (function() {
 
