@@ -7,17 +7,14 @@ define([
   'sha1',
   'firebase',
   'remote'
-  'remotedriver',
-  'google'
 ],  (
   $j, 
   _, 
   Backbone, 
   sha1, 
   __Firebase__, 
-  Remote,
-  RemoteControlDriver,
-  GoogleRemote) ->
+  Remote
+  ) ->
   $=$j
   BACKEND_DATA_HOST = "https://qslider.firebaseio.com/"
   Connection = Backbone.Model.extend
@@ -320,11 +317,6 @@ define([
 
     resetData:  ()->
       this.r.setAwards(Rewards)
-  
-       
-  class ScribdRemote extends RemoteControlDriver
-
-  class RabbitRemote extends RemoteControlDriver
   
   return {
     init: ()->

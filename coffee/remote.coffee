@@ -4,7 +4,12 @@ define([
   'slideshare',
   'google',
   'prezi'
-], () -> 
+], (
+  $j, 
+  SpeakerdeskRemote, 
+  SlideshareRemote, 
+  GoogleRemote, 
+  PreziRemote) -> 
    class Remote 
     constructor: (@url) ->
       @driver = {}

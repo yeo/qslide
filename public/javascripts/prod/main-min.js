@@ -228,38 +228,6 @@ define('sha1',['jquery-private'],function($j) {
 		return string;
 	};
 
-	// standard sha256 implementation: var x = $.sha256(value);
-	// standard sha266hmac implementation: varx = $.sha256hmac(value1, value2);
-	//$j.extend({
-		//sha256 : function(string){
-			//string = prep(string);
-			//return binb2hex(core_sha256(str2binb(string),string.length * chrsz));
-		//},
-		//sha256b64 : function (string) {
-			//string = prep(string);
-			//return binb2b64(core_sha256(str2binb(string), string.length * chrsz));
-		//},
-		/*
-		 *
-		 */
-		//sha256hmachex : function (key, data) {
-			//key = prep(key);
-			//data = prep(data);
-			//return binb2hex(core_hmac_sha256(key, data));
-		//},
-		/*
-		 *
-		 */
-		//sha256hmacb64 : function (key, data) {
-			//key = prep(key);
-			//data = prep(data);
-			//return binb2b64(core_hmac_sha256(key, data));
-		//},
-		//sha256config : function(bits){
-			//chrsz = parseInt(bits) || 8;
-		//}
-	//});
-
   return function (string) {
     string = prep(string);
 		return binb2hex(core_sha256(str2binb(string),string.length * chrsz));
@@ -421,13 +389,400 @@ define("firebase", (function (global) {
 }(this)));
 
 (function() {
-  
 
+  define('remotedriver',[],function() {
+    var RemoteControlDriver;
+    return RemoteControlDriver = (function() {
+
+      function RemoteControlDriver() {
+        this.currentSlide = 0;
+        this.container = {};
+      }
+
+      RemoteControlDriver.prototype.match = function(url) {};
+
+      RemoteControlDriver.prototype.jump = function() {};
+
+      RemoteControlDriver.prototype.next = function() {};
+
+      RemoteControlDriver.prototype.previous = function() {};
+
+      RemoteControlDriver.prototype.getCurrentSlideNumber = function() {};
+
+      RemoteControlDriver.prototype.getCurrentSlideScreenshot = function() {};
+
+      RemoteControlDriver.prototype.getAuthor = function() {};
+
+      RemoteControlDriver.prototype.getTitle = function() {
+        return $j(document).prop('title');
+      };
+
+      return RemoteControlDriver;
+
+    })();
+  });
+
+}).call(this);
+
+(function() {
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define('app',['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase'], function($j, _, Backbone, sha1, __Firebase__) {
-    var $, AppView, BACKEND_DATA_HOST, Command, CommandQueue, Connection, RabbitRemote, Remote, RemoteControlDriver, ScribdRemote, Slide, SlideshareRemote, SpeakerdeskRemote, ToggleView, WelcomeView;
+  define('speakerdeck',['remotedriver', 'jquery-private'], function(RemoteControlDriver, $j) {
+    var SpeakerdeskRemote;
+    return SpeakerdeskRemote = (function(_super) {
+
+      __extends(SpeakerdeskRemote, _super);
+
+      function SpeakerdeskRemote() {
+        SpeakerdeskRemote.__super__.constructor.apply(this, arguments);
+        this.container = $j('.speakerdeck-iframe ').contents();
+        this.quantity = this.getSlideQuantity();
+        (typeof console !== "undefined" && console !== null) && console.log(this.container);
+      }
+
+      SpeakerdeskRemote.prototype.getAuthor = function() {
+        return $j('#talk-details h2 a').html();
+      };
+
+      SpeakerdeskRemote.prototype.getTitle = function() {
+        return $j(document).prop('title').replace("// Speaker Deck", '').trim();
+      };
+
+      SpeakerdeskRemote.prototype.getSlideQuantity = function() {
+        return $j('.previews > img', this.container).length;
+      };
+
+      SpeakerdeskRemote.prototype.getCurrentSlideNumber = function() {
+        var current_url, m, r;
+        current_url = $j('#player-content-wrapper > #slide_image', this.container).prop('src');
+        r = /\/slide_([0-9]+)\./gi;
+        if (m = r.exec(current_url)) {
+          return 1 + parseInt(m[1]);
+        }
+        return false;
+      };
+
+      SpeakerdeskRemote.prototype.getCurrentSlideScreenshot = function() {
+        return $j('#player-content-wrapper > #slide_image', this.container).prop('src');
+      };
+
+      SpeakerdeskRemote.prototype.jump = function(num) {
+        return $j('.speakerdeck-iframe ')[0].contentWindow.player.goToSlide(num);
+      };
+
+      SpeakerdeskRemote.prototype.next = function() {
+        return $j('.overnav > .next', this.container)[0].click();
+      };
+
+      SpeakerdeskRemote.prototype.previous = function() {
+        return $j('.overnav > .prev', this.container)[0].click();
+      };
+
+      return SpeakerdeskRemote;
+
+    })(RemoteControlDriver);
+  });
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  define('slideshare',['remotedriver', 'jquery-private'], function(RemoteControlDriver, $j) {
+    var SlideshareRemote;
+    return SlideshareRemote = (function(_super) {
+
+      __extends(SlideshareRemote, _super);
+
+      function SlideshareRemote() {
+        SlideshareRemote.__super__.constructor.apply(this, arguments);
+        this.container = $j('#svPlayerId');
+        this.quantity = this.getSlideQuantity();
+        (typeof console !== "undefined" && console !== null) && console.log(this.container);
+      }
+
+      SlideshareRemote.prototype.getAuthor = function() {
+        return $j('.title .h-author-name').html();
+      };
+
+      SlideshareRemote.prototype.getSlideQuantity = function() {
+        if ($j('.slide_container').length > 0) {
+          return $j('.slide_container .slide', this.container).length;
+        }
+        if ($j('.slidesContainer').length > 0) {
+          return $j('.slidesContainer .jsplBgColorBigfoot').length;
+        }
+      };
+
+      SlideshareRemote.prototype.getCurrentSlideNumber = function() {
+        var n;
+        if ($j('.goToSlideLabel > input', this.container).length === 0) {
+          throw new Error("This page doesn't contain a valid slide.");
+        }
+        n = parseInt($j('.goToSlideLabel > input', this.container).val());
+        if (n <= 1) {
+          return 1;
+        }
+        return n;
+      };
+
+      SlideshareRemote.prototype.getCurrentSlideScreenshot = function() {
+        var n, url;
+        n = this.getCurrentSlideNumber();
+        if ($j('.slide_container > .slide').eq(n - 1).find('img').length > 0) {
+          url = $j('.slide_container > .slide').eq(n - 1).find('img').prop('src');
+          if (url.indexOf('image') >= 1) {
+            return url;
+          }
+        }
+        return "http://placehold.it/320&text=" + n;
+      };
+
+      SlideshareRemote.prototype.jump = function(num) {
+        var e;
+        e = $.Event('keyup');
+        e.which = 13;
+        e.keyCode = 13;
+        return $j('.navActions .goToSlideLabel input', this.container).val(num).trigger(e);
+      };
+
+      SlideshareRemote.prototype.next = function() {
+        return $j('.nav > .btnNext', this.container)[0].click();
+      };
+
+      SlideshareRemote.prototype.previous = function() {
+        return $j('.nav > .btnPrevious', this.container)[0].click();
+      };
+
+      return SlideshareRemote;
+
+    })(RemoteControlDriver);
+  });
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  define('google',['remotedriver', 'jquery-private'], function(RemoteControlDriver, $j) {
+    var GoogleRemote;
+    return GoogleRemote = (function(_super) {
+
+      __extends(GoogleRemote, _super);
+
+      function GoogleRemote() {
+        GoogleRemote.__super__.constructor.apply(this, arguments);
+        this.container = $j('.punch-viewer-nav .punch-viewer-nav-rounded-container');
+        (typeof console !== "undefined" && console !== null) && console.log(this.container);
+      }
+
+      GoogleRemote.prototype.getAuthor = function() {
+        return "NA";
+      };
+
+      GoogleRemote.prototype.getSlideQuantity = function() {
+        if ($j('.goog-menu.goog-menu-vertical').length === 0) {
+          return 0;
+        }
+        return $j('div', $j('.goog-menu.goog-menu-vertical')[0]).length;
+      };
+
+      GoogleRemote.prototype.getCurrentSlideNumber = function() {
+        var n;
+        if ($j('.goToSlideLabel > input', this.container).length === 0) {
+          throw new Error("This page doesn't contain a valid slide.");
+        }
+        n = parseInt($j('.goToSlideLabel > input', this.container).val());
+        if (n <= 1) {
+          return 1;
+        }
+        return n;
+      };
+
+      GoogleRemote.prototype.getCurrentSlideScreenshot = function() {
+        var n;
+        n = this.getCurrentSlideNumber();
+        return "http://placehold.it/320&text=" + n;
+      };
+
+      GoogleRemote.prototype.jump = function(num) {
+        var e;
+        e = $.Event('keyup');
+        e.which = 13;
+        e.keyCode = 13;
+        return $j('.navActions .goToSlideLabel input', this.container).val(num).trigger(e);
+      };
+
+      GoogleRemote.prototype.next = function() {
+        return $j('.nav > .btnNext', this.container)[0].click();
+      };
+
+      GoogleRemote.prototype.previous = function() {
+        return $j('.nav > .btnPrevious', this.container)[0].click();
+      };
+
+      return GoogleRemote;
+
+    })(RemoteControlDriver);
+  });
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  define('prezi',['remotedriver', 'jquery-private'], function(RemoteControlDriver, $j) {
+    var PreziRemote;
+    return PreziRemote = (function(_super) {
+
+      __extends(PreziRemote, _super);
+
+      function PreziRemote() {
+        PreziRemote.__super__.constructor.apply(this, arguments);
+        this.container = $j('.punch-viewer-nav .punch-viewer-nav-rounded-container');
+        (typeof console !== "undefined" && console !== null) && console.log(this.container);
+      }
+
+      PreziRemote.prototype.getAuthor = function() {
+        return "NA";
+      };
+
+      PreziRemote.prototype.getSlideQuantity = function() {
+        if ($j('.goog-menu.goog-menu-vertical').length === 0) {
+          return 0;
+        }
+        return $j('div', $j('.goog-menu.goog-menu-vertical')[0]).length;
+      };
+
+      PreziRemote.prototype.getCurrentSlideNumber = function() {
+        var n;
+        if ($j('.goToSlideLabel > input', this.container).length === 0) {
+          throw new Error("This page doesn't contain a valid slide.");
+        }
+        n = parseInt($j('.goToSlideLabel > input', this.container).val());
+        if (n <= 1) {
+          return 1;
+        }
+        return n;
+      };
+
+      PreziRemote.prototype.getCurrentSlideScreenshot = function() {
+        var n;
+        n = this.getCurrentSlideNumber();
+        return "http://placehold.it/320&text=" + n;
+      };
+
+      PreziRemote.prototype.jump = function(num) {
+        var e;
+        e = $.Event('keyup');
+        e.which = 13;
+        e.keyCode = 13;
+        return $j('.navActions .goToSlideLabel input', this.container).val(num).trigger(e);
+      };
+
+      PreziRemote.prototype.next = function() {
+        return $j('.nav > .btnNext', this.container)[0].click();
+      };
+
+      PreziRemote.prototype.previous = function() {
+        return $j('.nav > .btnPrevious', this.container)[0].click();
+      };
+
+      return PreziRemote;
+
+    })(RemoteControlDriver);
+  });
+
+}).call(this);
+
+(function() {
+
+  define('remote',['jquery-private', 'speakerdeck', 'slideshare', 'google', 'prezi'], function($j, SpeakerdeskRemote, SlideshareRemote, GoogleRemote, PreziRemote) {
+    var Remote;
+    return Remote = (function() {
+
+      function Remote(url) {
+        this.url = url;
+        this.driver = {};
+        this.setupRemote();
+      }
+
+      Remote.prototype.setupRemote = function() {
+        try {
+          this.driver = (function() {
+            switch (false) {
+              case !(this.url.indexOf('speakerdeck.com/') > 1):
+                return new SpeakerdeskRemote;
+              case !(this.url.indexOf('slideshare.net/') > 1):
+                return new SlideshareRemote;
+              case !(this.url.indexOf('scribd.com/') > 1):
+                return new ScribdRemote;
+              case !(this.url.indexOf('google.com/') > 1):
+                return new GoogleRemote;
+              default:
+                throw new Error("Not supported yet");
+            }
+          }).call(this);
+          return this;
+        } catch (error) {
+          throw error;
+        }
+      };
+
+      Remote.prototype.control = function() {
+        return this.driver;
+      };
+
+      Remote.prototype.getCurrentSlide = function() {
+        var url;
+        url = this.driver.getCurrentSlideScreenshot();
+        return (typeof console !== "undefined" && console !== null) && console.log(url);
+      };
+
+      Remote.prototype.getAuthor = function() {
+        return this.driver.getAuthor();
+      };
+
+      Remote.prototype.previous = function(cb) {
+        this.driver.previous();
+        return cb({
+          url: this.driver.getCurrentSlideScreenshot(),
+          currentSlideNumber: this.driver.getCurrentSlideNumber()
+        });
+      };
+
+      Remote.prototype.next = function(cb) {
+        this.driver.next();
+        return cb({
+          url: this.driver.getCurrentSlideScreenshot(),
+          currentSlideNumber: this.driver.getCurrentSlideNumber()
+        });
+      };
+
+      Remote.prototype.jump = function(num, cb) {
+        this.driver.jump(num);
+        return cb({
+          url: this.driver.getCurrentSlideScreenshot(),
+          currentSlideNumber: this.driver.getCurrentSlideNumber()
+        });
+      };
+
+      return Remote;
+
+    })();
+  });
+
+}).call(this);
+
+(function() {
+  
+
+  define('app',['jquery-private', 'underscore', 'backbone', 'sha1', 'firebase', 'remote'], function($j, _, Backbone, sha1, __Firebase__, Remote) {
+    var $, AppView, BACKEND_DATA_HOST, Command, CommandQueue, Connection, Slide, ToggleView, WelcomeView;
     $ = $j;
     BACKEND_DATA_HOST = "https://qslider.firebaseio.com/";
     Connection = Backbone.Model.extend({
@@ -704,246 +1059,6 @@ define("firebase", (function (global) {
         return this.r.setAwards(Rewards);
       }
     });
-    Remote = (function() {
-
-      function Remote(url) {
-        this.url = url;
-        this.driver = {};
-        this.setupRemote();
-      }
-
-      Remote.prototype.setupRemote = function() {
-        try {
-          this.driver = (function() {
-            switch (false) {
-              case !(this.url.indexOf('speakerdeck.com/') > 1):
-                return new SpeakerdeskRemote;
-              case !(this.url.indexOf('slideshare.net/') > 1):
-                return new SlideshareRemote;
-              case !(this.url.indexOf('scribd.com/') > 1):
-                return new ScribdRemote;
-              case !(this.url.indexOf('drive.google.com/') > 1):
-                return new GoogleRemote;
-              default:
-                throw new Error("Not supported yet");
-            }
-          }).call(this);
-          return this;
-        } catch (error) {
-          throw error;
-        }
-      };
-
-      Remote.prototype.control = function() {
-        return this.driver;
-      };
-
-      Remote.prototype.getCurrentSlide = function() {
-        var url;
-        url = this.driver.getCurrentSlideScreenshot();
-        return (typeof console !== "undefined" && console !== null) && console.log(url);
-      };
-
-      Remote.prototype.getAuthor = function() {
-        return this.driver.getAuthor();
-      };
-
-      Remote.prototype.previous = function(cb) {
-        this.driver.previous();
-        return cb({
-          url: this.driver.getCurrentSlideScreenshot(),
-          currentSlideNumber: this.driver.getCurrentSlideNumber()
-        });
-      };
-
-      Remote.prototype.next = function(cb) {
-        this.driver.next();
-        return cb({
-          url: this.driver.getCurrentSlideScreenshot(),
-          currentSlideNumber: this.driver.getCurrentSlideNumber()
-        });
-      };
-
-      Remote.prototype.jump = function(num, cb) {
-        this.driver.jump(num);
-        return cb({
-          url: this.driver.getCurrentSlideScreenshot(),
-          currentSlideNumber: this.driver.getCurrentSlideNumber()
-        });
-      };
-
-      return Remote;
-
-    })();
-    RemoteControlDriver = (function() {
-
-      function RemoteControlDriver() {
-        this.currentSlide = 0;
-        this.container = {};
-      }
-
-      RemoteControlDriver.prototype.match = function(url) {};
-
-      RemoteControlDriver.prototype.jump = function() {};
-
-      RemoteControlDriver.prototype.next = function() {};
-
-      RemoteControlDriver.prototype.previous = function() {};
-
-      RemoteControlDriver.prototype.getCurrentSlideNumber = function() {};
-
-      RemoteControlDriver.prototype.getCurrentSlideScreenshot = function() {};
-
-      RemoteControlDriver.prototype.getAuthor = function() {};
-
-      RemoteControlDriver.prototype.getTitle = function() {
-        return $j(document).prop('title');
-      };
-
-      return RemoteControlDriver;
-
-    })();
-    SpeakerdeskRemote = (function(_super) {
-
-      __extends(SpeakerdeskRemote, _super);
-
-      function SpeakerdeskRemote() {
-        SpeakerdeskRemote.__super__.constructor.apply(this, arguments);
-        this.container = $j('.speakerdeck-iframe ').contents();
-        this.quantity = this.getSlideQuantity();
-        (typeof console !== "undefined" && console !== null) && console.log(this.container);
-      }
-
-      SpeakerdeskRemote.prototype.getAuthor = function() {
-        return $j('#talk-details h2 a').html();
-      };
-
-      SpeakerdeskRemote.prototype.getTitle = function() {
-        return $j(document).prop('title').replace("// Speaker Deck", '').trim();
-      };
-
-      SpeakerdeskRemote.prototype.getSlideQuantity = function() {
-        return $j('.previews > img', this.container).length;
-      };
-
-      SpeakerdeskRemote.prototype.getCurrentSlideNumber = function() {
-        var current_url, m, r;
-        current_url = $j('#player-content-wrapper > #slide_image', this.container).prop('src');
-        r = /\/slide_([0-9]+)\./gi;
-        if (m = r.exec(current_url)) {
-          return 1 + parseInt(m[1]);
-        }
-        return false;
-      };
-
-      SpeakerdeskRemote.prototype.getCurrentSlideScreenshot = function() {
-        return $j('#player-content-wrapper > #slide_image', this.container).prop('src');
-      };
-
-      SpeakerdeskRemote.prototype.jump = function(num) {
-        return $j('.speakerdeck-iframe ')[0].contentWindow.player.goToSlide(num);
-      };
-
-      SpeakerdeskRemote.prototype.next = function() {
-        return $j('.overnav > .next', this.container)[0].click();
-      };
-
-      SpeakerdeskRemote.prototype.previous = function() {
-        return $j('.overnav > .prev', this.container)[0].click();
-      };
-
-      return SpeakerdeskRemote;
-
-    })(RemoteControlDriver);
-    SlideshareRemote = (function(_super) {
-
-      __extends(SlideshareRemote, _super);
-
-      function SlideshareRemote() {
-        SlideshareRemote.__super__.constructor.apply(this, arguments);
-        this.container = $j('#svPlayerId');
-        this.quantity = this.getSlideQuantity();
-        (typeof console !== "undefined" && console !== null) && console.log(this.container);
-      }
-
-      SlideshareRemote.prototype.getAuthor = function() {
-        return $j('.title .h-author-name').html();
-      };
-
-      SlideshareRemote.prototype.getSlideQuantity = function() {
-        if ($j('.slide_container').length > 0) {
-          return $j('.slide_container .slide', this.container).length;
-        }
-        if ($j('.slidesContainer').length > 0) {
-          return $j('.slidesContainer .jsplBgColorBigfoot').length;
-        }
-      };
-
-      SlideshareRemote.prototype.getCurrentSlideNumber = function() {
-        var n;
-        if ($j('.goToSlideLabel > input', this.container).length === 0) {
-          throw new Error("This page doesn't contain a valid slide.");
-        }
-        n = parseInt($j('.goToSlideLabel > input', this.container).val());
-        if (n <= 1) {
-          return 1;
-        }
-        return n;
-      };
-
-      SlideshareRemote.prototype.getCurrentSlideScreenshot = function() {
-        var n, url;
-        n = this.getCurrentSlideNumber();
-        if ($j('.slide_container > .slide').eq(n - 1).find('img').length > 0) {
-          url = $j('.slide_container > .slide').eq(n - 1).find('img').prop('src');
-          if (url.indexOf('image') >= 1) {
-            return url;
-          }
-        }
-        return "http://placehold.it/320&text=" + n;
-      };
-
-      SlideshareRemote.prototype.jump = function(num) {
-        var e;
-        e = $.Event('keyup');
-        e.which = 13;
-        e.keyCode = 13;
-        return $j('.navActions .goToSlideLabel input', this.container).val(num).trigger(e);
-      };
-
-      SlideshareRemote.prototype.next = function() {
-        return $j('.nav > .btnNext', this.container)[0].click();
-      };
-
-      SlideshareRemote.prototype.previous = function() {
-        return $j('.nav > .btnPrevious', this.container)[0].click();
-      };
-
-      return SlideshareRemote;
-
-    })(RemoteControlDriver);
-    ScribdRemote = (function(_super) {
-
-      __extends(ScribdRemote, _super);
-
-      function ScribdRemote() {
-        return ScribdRemote.__super__.constructor.apply(this, arguments);
-      }
-
-      return ScribdRemote;
-
-    })(RemoteControlDriver);
-    RabbitRemote = (function(_super) {
-
-      __extends(RabbitRemote, _super);
-
-      function RabbitRemote() {
-        return RabbitRemote.__super__.constructor.apply(this, arguments);
-      }
-
-      return RabbitRemote;
-
-    })(RemoteControlDriver);
     return {
       init: function() {
         var appView;
