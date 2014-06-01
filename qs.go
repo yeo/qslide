@@ -6,6 +6,7 @@ import (
   "github.com/codegangsta/martini"
   "github.com/codegangsta/martini-contrib/render"
   "github.com/codegangsta/martini-contrib/sessions"
+  "github.com/codegangsta/cli"
   "os"
   "os/exec"
   "encoding/json"
@@ -38,7 +39,7 @@ func loadConfiguration() *Configuration {
 }
 
 
-func main() {
+func web() {
   var config *Configuration;
   config = loadConfiguration();
   fmt.Printf("%s is domain", config.Port);
@@ -148,4 +149,39 @@ func main() {
   err = cmd.Wait()
   http.ListenAndServe(fmt.Sprintf(":%s", config.Port), m)
   //http.ListenAndServe(":10005", m)
+}
+
+func email() {
+  fmt.Println("Start to send email")
+}
+
+func main() {
+
+  app := cli.NewApp()
+  app.Name = "qs"
+  //app.Usage = "email for mail sending, or web or none for run web interface!"
+  app.Commands = []cli.Command{
+    {
+      Name: "web",
+      ShortName: "w",
+      Usage: "run web server",
+      Action: func(c * cli.Context) {
+        web()
+      },
+    },
+    {
+      Name: "mail",
+      Usage: "Marketing email",
+      Action: func(c * cli.Context) {
+        email()
+      },
+    },
+  }
+  app.Action = func(c *cli.Context) {
+    println("Hello friend!")
+
+  }
+
+  app.Run(os.Args)
+
 }
