@@ -14,7 +14,7 @@ import (
   "math/rand"
   "log"
   "html/template"
-  "./task"
+  "github.com/qSlide/qslide/task"
 )
 const (
   PROD = "Production"
