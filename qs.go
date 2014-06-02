@@ -14,6 +14,7 @@ import (
   "math/rand"
   "log"
   "html/template"
+  "github.com/qSlide/qslide/email"
 )
 const (
   PROD = "Production"
@@ -149,10 +150,6 @@ func web() {
   err = cmd.Wait()
   http.ListenAndServe(fmt.Sprintf(":%s", config.Port), m)
   //http.ListenAndServe(":10005", m)
-}
-
-func email() {
-  fmt.Println("Start to send email")
 }
 
 func main() {
