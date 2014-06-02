@@ -1,4 +1,4 @@
-package main
+package task 
 
 import (
   "fmt"
@@ -7,8 +7,6 @@ import (
 type Email struct {
   Name string
   Subject string
-
-
 }
 
 func email() {
