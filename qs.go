@@ -14,7 +14,7 @@ import (
   "math/rand"
   "log"
   "html/template"
-  "github.com/qSlide/qslide/email"
+  "github.com/qSlide/qslide"
 )
 const (
   PROD = "Production"
