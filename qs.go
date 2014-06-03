@@ -3,7 +3,8 @@ package main
 import (
   "os"
   "github.com/codegangsta/cli"
-  "./task"
+  "github.com/qSlide/qslide/task"
+  //"./task"
 )
 
 const (
