@@ -2,12 +2,54 @@ package task
 
 import (
   "fmt"
-  //"os"
+  "os"
+  "os/exec"
+  "net/http"
+  "encoding/json"
+  "github.com/sirsean/go-mailgun/mailgun"
+  "math/rand"
+  "log"
+  "html/template"
   "github.com/codegangsta/martini"
   "github.com/codegangsta/martini-contrib/render"
   "github.com/codegangsta/martini-contrib/sessions"
-  "github.com/qSlide/qslide"
+  "github.com/codegangsta/cli"
+  //"github.com/qSlide/qslide"
 )
+
+var CmdWeb = cli.Command{
+      Name: "web",
+      ShortName: "w",
+      Usage: "run web server",
+      Action: func(c * cli.Context) {
+        Web()
+      },
+    }
+
+const (
+  PROD = "Production"
+  VERSION = "1.4.1"
+)
+
+type Configuration struct
+{
+  Env string;
+  Domain string;
+  Port string;
+  MG_API_KEY string;
+  MG_DOMAIN string;
+  CookieSecret string;
+}
+
+func loadConfiguration() *Configuration {
+  file, _ := os.Open("config.json")
+  decoder := json.NewDecoder(file)
+  configuration := &Configuration{}
+  decoder.Decode(&configuration)
+  fmt.Println(configuration) 
+  return configuration;
+}
+
 
 func Web() {
   var config *Configuration;

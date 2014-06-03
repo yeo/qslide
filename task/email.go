@@ -2,8 +2,16 @@ package task
 
 import (
   "fmt"
-  //"os"
+  "github.com/codegangsta/cli"
 )
+
+var CmdEmail = cli.Command{
+      Name: "mail",
+      Usage: "Marketing email",
+      Action: func(c * cli.Context) {
+        Market()
+      },
+    }
 
 type Email struct {
   Name string
