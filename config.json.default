@@ -1,7 +1,10 @@
 {
-  "Domain":"qslide.dev",
-  "Port":"10005",
-  "MG_API_KEY":"",
-  "MG_DOMAIN":"",
-  "CookieSecret":""
+  "Env"          : "Development",
+  "Domain"       : "slide.dev",
+  "Port"         : "10005",
+  "MG_API_KEY"   : "key-03chluuonsfb8nb-y7-eotwqxcswvko1",
+  "MG_DOMAIN"    : "mg.axcoto.com",
+  "CookieSecret" : "xxx",
+  "MandrillKey"  : "xxx"
 }
+
