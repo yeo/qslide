@@ -13,8 +13,8 @@ const (
 )
 
 func main() {
-
-  var app      = cli.NewApp()
+  var app *cli.App
+  app      = cli.NewApp()
   app.Name     = APP_NAME
   app.Version  = APP_VER
   app.Usage    = "email for mail sending, or web or none for run web interface!"
