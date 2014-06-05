@@ -2,10 +2,10 @@ package task
 
 import (
   "fmt"
-  "os"
+  //"os"
   "os/exec"
   "net/http"
-  "encoding/json"
+  //"encoding/json"
   "github.com/sirsean/go-mailgun/mailgun"
   "math/rand"
   "log"
@@ -14,7 +14,7 @@ import (
   "github.com/codegangsta/martini-contrib/render"
   "github.com/codegangsta/martini-contrib/sessions"
   "github.com/codegangsta/cli"
-  //"github.com/qSlide/qslide"
+  "github.com/qSlide/qslide/modules/app"
 )
 
 var CmdWeb = cli.Command{
@@ -26,34 +26,10 @@ var CmdWeb = cli.Command{
       },
     }
 
-const (
-  PROD = "Production"
-  VERSION = "1.4.1"
-)
-
-type Configuration struct
-{
-  Env string;
-  Domain string;
-  Port string;
-  MG_API_KEY string;
-  MG_DOMAIN string;
-  CookieSecret string;
-}
-
-func loadConfiguration() *Configuration {
-  file, _ := os.Open("config.json")
-  decoder := json.NewDecoder(file)
-  configuration := &Configuration{}
-  decoder.Decode(&configuration)
-  fmt.Println(configuration) 
-  return configuration;
-}
-
 
 func Web() {
-  var config *Configuration;
-  config = loadConfiguration();
+  var config *app.Configuration;
+  config = app.LoadConfiguration();
   fmt.Printf("%s is domain", config.Port);
   fmt.Printf("Domain: %s", config.Domain);
   m := martini.Classic()
@@ -93,7 +69,7 @@ func Web() {
       BookmarkletURL string
     }
     BookmarkletURL := "//" + config.Domain + "/javascripts/main.js"
-    if config.Env == PROD {
+    if config.Env == app.PROD {
       BookmarkletURL = "//" + config.Domain + "/javascripts/main.js"
     }
     site := Site{config.Domain, 12, config.Env, BookmarkletURL}
@@ -117,8 +93,8 @@ func Web() {
   })
 
   m.Post("/qslider/support", func (res http.ResponseWriter, req *http.Request, params martini.Params, session sessions.Session) {
-    var config *Configuration
-    config = loadConfiguration()
+    var config *app.Configuration
+    config = app.LoadConfiguration()
     mg_client := mailgun.NewClient(config.MG_API_KEY, config.MG_DOMAIN)
 
     req.ParseForm()
