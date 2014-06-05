@@ -3,6 +3,7 @@ package task
 import (
   "fmt"
   "github.com/codegangsta/cli"
+  "github.com/qSlide/qslide/modules/maillist"
 )
 
 var CmdEmail = cli.Command{
@@ -20,7 +21,7 @@ type Email struct {
 
 func Market() {
   fmt.Println("Start to send email")
-
+  
 }
 
 // Creates a new cli Application with some reasonable defaults for Name, Usage, Version and Action.
