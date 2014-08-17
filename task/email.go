@@ -38,7 +38,7 @@ func Init() {
 
 func Market() {
   fmt.Println("Start to send email")
-  Init()  
+  Init()
   Send()
 }
 
